@@ -379,7 +379,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const catalogEnd = Date.now();
         
         const scoreStart = Date.now();
-        const score = await scoreCalculator.calculateScore(enrichment, validation);
+        const score = await scorer.scoreData(extraction, enrichment, normalization, validation, cataloging);
         const scoreEnd = Date.now();
 
         const webEnrichStart = Date.now();
