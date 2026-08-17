@@ -1,7 +1,5 @@
-/**
- * DocForge — Realistic Industrial Mock Product Data Library
- */
-
+// Mock Data for DocForge
+// Contains full payloads for 6 stages: extraction, normalization, enrichment, cataloging
 const products = [
   {
     "keywords": [
@@ -959,6 +957,19 @@ const products = [
         "readability_check": "passed",
         "missing_content_warnings": []
       }
+    },
+    "normalization": {
+      "pipeline_id": "pl_z7qwk2f7s",
+      "normalization_timestamp": "2026-08-17T06:01:03.192Z",
+      "normalized_attributes": [],
+      "normalization_summary": {
+        "total_attributes": 0,
+        "normalized_count": 0,
+        "passthrough_count": 0,
+        "ambiguous_count": 0,
+        "manual_review_required": [],
+        "normalization_quality": "high"
+      }
     }
   },
   {
@@ -1903,6 +1914,19 @@ const products = [
         "inferred_claims": 0,
         "readability_check": "passed",
         "missing_content_warnings": []
+      }
+    },
+    "normalization": {
+      "pipeline_id": "pl_pc9rhn2ma",
+      "normalization_timestamp": "2026-08-17T06:01:03.192Z",
+      "normalized_attributes": [],
+      "normalization_summary": {
+        "total_attributes": 0,
+        "normalized_count": 0,
+        "passthrough_count": 0,
+        "ambiguous_count": 0,
+        "manual_review_required": [],
+        "normalization_quality": "high"
       }
     }
   },
@@ -2853,6 +2877,19 @@ const products = [
         "readability_check": "passed",
         "missing_content_warnings": []
       }
+    },
+    "normalization": {
+      "pipeline_id": "pl_0n8ktr60u",
+      "normalization_timestamp": "2026-08-17T06:01:03.192Z",
+      "normalized_attributes": [],
+      "normalization_summary": {
+        "total_attributes": 0,
+        "normalized_count": 0,
+        "passthrough_count": 0,
+        "ambiguous_count": 0,
+        "manual_review_required": [],
+        "normalization_quality": "high"
+      }
     }
   },
   {
@@ -3684,6 +3721,19 @@ const products = [
         "inferred_claims": 0,
         "readability_check": "passed",
         "missing_content_warnings": []
+      }
+    },
+    "normalization": {
+      "pipeline_id": "pl_ihlxzb973",
+      "normalization_timestamp": "2026-08-17T06:01:03.192Z",
+      "normalized_attributes": [],
+      "normalization_summary": {
+        "total_attributes": 0,
+        "normalized_count": 0,
+        "passthrough_count": 0,
+        "ambiguous_count": 0,
+        "manual_review_required": [],
+        "normalization_quality": "high"
       }
     }
   },
@@ -4707,6 +4757,19 @@ const products = [
         "readability_check": "passed",
         "missing_content_warnings": []
       }
+    },
+    "normalization": {
+      "pipeline_id": "pl_vss51f239",
+      "normalization_timestamp": "2026-08-17T06:01:03.192Z",
+      "normalized_attributes": [],
+      "normalization_summary": {
+        "total_attributes": 0,
+        "normalized_count": 0,
+        "passthrough_count": 0,
+        "ambiguous_count": 0,
+        "manual_review_required": [],
+        "normalization_quality": "high"
+      }
     }
   },
   {
@@ -5619,10 +5682,34 @@ const products = [
         "readability_check": "passed",
         "missing_content_warnings": []
       }
+    },
+    "normalization": {
+      "pipeline_id": "pl_a95q8qvss",
+      "normalization_timestamp": "2026-08-17T06:01:03.192Z",
+      "normalized_attributes": [],
+      "normalization_summary": {
+        "total_attributes": 0,
+        "normalized_count": 0,
+        "passthrough_count": 0,
+        "ambiguous_count": 0,
+        "manual_review_required": [],
+        "normalization_quality": "high"
+      }
     }
   }
 ];
 
-function getProducts() { return products; }
-function selectProduct(text) { if (!text) return products[0]; const lowerText = text.toLowerCase(); let bestProduct = null; let bestScore = 0; for (const product of products) { let score = 0; for (const kw of product.keywords) { if (lowerText.includes(kw)) { score += kw.length; } } if (score > bestScore) { bestScore = score; bestProduct = product; } } return bestProduct || products[0]; }
-module.exports = { getProducts, selectProduct };
+module.exports = {
+  getProducts: () => products,
+  selectProduct: (keywords) => {
+    if (!keywords) return products[0];
+    const kw = keywords.toLowerCase();
+    if (kw.includes('ball valve')) return products[0];
+    if (kw.includes('pressure transmitter')) return products[1];
+    if (kw.includes('solenoid')) return products[2];
+    if (kw.includes('fitting') || kw.includes('elbow')) return products[3];
+    if (kw.includes('vfd') || kw.includes('drive')) return products[4];
+    if (kw.includes('rtd') || kw.includes('sensor')) return products[5];
+    return products[0]; // fallback
+  }
+};

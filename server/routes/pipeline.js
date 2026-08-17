@@ -8,6 +8,7 @@ const chunker = require('../services/chunker');
 const extractor = require('../services/extractor');
 const enricher = require('../services/enricher');
 const cataloger = require('../services/cataloger');
+const normalizer = require('../services/normalizer');
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/', limits: { fileSize: 20 * 1024 * 1024 } });
@@ -77,6 +78,17 @@ router.post('/extract', async (req, res, next) => {
     }
 });
 
+router.post('/normalize', async (req, res, next) => {
+    try {
+        const { extraction, classification } = req.body;
+        if (!extraction || !classification) return res.status(400).json({ error: 'Extraction and classification required' });
+        const normalization = await normalizer.normalizeData(extraction, classification);
+        res.json(normalization);
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.post('/enrich', async (req, res, next) => {
     try {
         const { fileId, extraction, classification } = req.body;
@@ -133,6 +145,10 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const extraction = await extractor.extractData(chunking);
         const extractEnd = Date.now();
 
+        const normalizeStart = Date.now();
+        const normalization = await normalizer.normalizeData(extraction, classification);
+        const normalizeEnd = Date.now();
+
         const enrichStart = Date.now();
         const enrichment = await enricher.enrichData(extraction, classification);
         const enrichEnd = Date.now();
@@ -152,6 +168,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
                 preprocess: { result: preprocessing, duration_ms: preprocessEnd - preprocessStart },
                 chunk: { result: chunking, duration_ms: chunkEnd - chunkStart },
                 extract: { result: extraction, duration_ms: extractEnd - extractStart },
+                normalize: { result: normalization, duration_ms: normalizeEnd - normalizeStart },
                 enrich: { result: enrichment, duration_ms: enrichEnd - enrichStart },
                 catalog: { result: cataloging, duration_ms: catalogEnd - catalogStart }
             },

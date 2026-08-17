@@ -118,6 +118,10 @@ window.DocForge = {
     document.getElementById('collapse-enrich')?.addEventListener('click', () => this.viewers?.enrich?.collapseAll());
     document.getElementById('search-enrich')?.addEventListener('input', (e) => this.viewers?.enrich?.search(e.target.value));
 
+    document.getElementById('expand-normalize')?.addEventListener('click', () => this.viewers?.normalize?.expandAll());
+    document.getElementById('collapse-normalize')?.addEventListener('click', () => this.viewers?.normalize?.collapseAll());
+    document.getElementById('search-normalize')?.addEventListener('input', (e) => this.viewers?.normalize?.search(e.target.value));
+
     document.getElementById('expand-catalog')?.addEventListener('click', () => this.viewers?.catalog?.expandAll());
     document.getElementById('collapse-catalog')?.addEventListener('click', () => this.viewers?.catalog?.collapseAll());
     document.getElementById('search-catalog')?.addEventListener('input', (e) => this.viewers?.catalog?.search(e.target.value));
@@ -202,7 +206,7 @@ window.DocForge = {
 
     // Reset all stages to idle
     DocForgeAnimations.initPipelineConnectors();
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 8; i++) {
       DocForgeAnimations.setStageState(i, 'idle');
       document.getElementById(`duration-${i}`).textContent = '--';
     }
@@ -280,20 +284,28 @@ window.DocForge = {
       document.getElementById('duration-4').textContent = this.formatDuration(stages.extract.duration_ms);
       DocForgeAnimations.animateConnector(4, true);
 
-      // Stage 5: Enrich
+      // Stage 5: Normalize
       await this.sleep(400);
       DocForgeAnimations.setStageState(5, 'processing');
       await this.sleep(400);
       DocForgeAnimations.setStageState(5, 'complete');
-      document.getElementById('duration-5').textContent = this.formatDuration(stages.enrich.duration_ms);
+      document.getElementById('duration-5').textContent = this.formatDuration(stages.normalize.duration_ms);
       DocForgeAnimations.animateConnector(5, true);
 
-      // Stage 6: Catalog
+      // Stage 6: Enrich
       await this.sleep(400);
       DocForgeAnimations.setStageState(6, 'processing');
       await this.sleep(400);
       DocForgeAnimations.setStageState(6, 'complete');
-      document.getElementById('duration-6').textContent = this.formatDuration(stages.catalog.duration_ms);
+      document.getElementById('duration-6').textContent = this.formatDuration(stages.enrich.duration_ms);
+      DocForgeAnimations.animateConnector(6, true);
+
+      // Stage 7: Catalog
+      await this.sleep(400);
+      DocForgeAnimations.setStageState(7, 'processing');
+      await this.sleep(400);
+      DocForgeAnimations.setStageState(7, 'complete');
+      document.getElementById('duration-7').textContent = this.formatDuration(stages.catalog.duration_ms);
 
       // Build a normalized view model from the API response
       const viewModel = this.buildViewModel(result);
@@ -319,7 +331,7 @@ window.DocForge = {
       this.showToast(`Pipeline failed: ${err.message}`, 'error');
 
       // Mark the furthest incomplete stage as error
-      for (let i = 0; i < 7; i++) {
+      for (let i = 0; i < 8; i++) {
         const card = document.getElementById(`stage-${i}`);
         if (card && card.classList.contains('processing')) {
           DocForgeAnimations.setStageState(i, 'error');
@@ -342,6 +354,7 @@ window.DocForge = {
     const preprocessing = stages.preprocess.result;
     const chunking = stages.chunk.result;
     const extraction = stages.extract.result;
+    const normalization = stages.normalize ? stages.normalize.result : null;
     const enrichment = stages.enrich.result;
     const cataloging = stages.catalog ? stages.catalog.result : null;
     
@@ -370,6 +383,7 @@ window.DocForge = {
       preprocessing: preprocessing,
       chunking: chunking,
       extraction: extraction,
+      normalization: normalization,
       enrichment: enrichment,
       cataloging: cataloging,
 
@@ -408,6 +422,7 @@ window.DocForge = {
     this.renderPreprocess(data.preprocessing);
     this.renderChunking(data.chunking);
     this.renderExtraction(data.extraction);
+    if (data.normalization) this.renderNormalization(data.normalization);
     this.renderEnrichment(data.enrichment);
     if (data.cataloging) this.renderCataloging(data.cataloging);
     this.renderDataQuality(data.quality);
@@ -484,6 +499,19 @@ window.DocForge = {
       showLineNumbers: true
     });
     this.viewers.extract.render();
+  },
+
+  renderNormalization(data) {
+    const container = document.getElementById('json-viewer-normalize');
+    if (!container) return;
+    container.innerHTML = '';
+    this.viewers = this.viewers || {};
+    this.viewers.normalize = new JsonViewer(container, data, {
+      collapsedDepth: 2,
+      highlightInferred: true,
+      showLineNumbers: true
+    });
+    this.viewers.normalize.render();
   },
 
   renderEnrichment(data) {
@@ -680,9 +708,9 @@ window.DocForge = {
 
     // Show pipeline as all complete
     this.els.pipelineSection.classList.remove('hidden');
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 8; i++) {
       DocForgeAnimations.setStageState(i, 'complete');
-      if (i < 6) DocForgeAnimations.animateConnector(i, true);
+      if (i < 7) DocForgeAnimations.animateConnector(i, true);
     }
 
     // Render results

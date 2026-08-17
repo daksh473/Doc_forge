@@ -132,9 +132,9 @@
       </div>
 
       <div class="stage-card glass idle" id="stage-5">
-        <div class="stage-icon">🏭</div>
+        <div class="stage-icon">⚖️</div>
         <div class="stage-info">
-          <h3>Enrich</h3>
+          <h3>Normalize</h3>
           <span class="stage-status">Waiting...</span>
         </div>
         <div class="stage-duration" id="duration-5">--</div>
@@ -144,12 +144,24 @@
       </div>
 
       <div class="stage-card glass idle" id="stage-6">
+        <div class="stage-icon">🏭</div>
+        <div class="stage-info">
+          <h3>Enrich</h3>
+          <span class="stage-status">Waiting...</span>
+        </div>
+        <div class="stage-duration" id="duration-6">--</div>
+      </div>
+      <div class="connector" id="conn-6">
+        <div class="connector-line"></div>
+      </div>
+
+      <div class="stage-card glass idle" id="stage-7">
         <div class="stage-icon">📝</div>
         <div class="stage-info">
           <h3>Catalog</h3>
           <span class="stage-status">Waiting...</span>
         </div>
-        <div class="stage-duration" id="duration-6">--</div>
+        <div class="stage-duration" id="duration-7">--</div>
       </div>
     </section>
 
@@ -160,6 +172,7 @@
         <button class="tab-btn" data-target="tab-preprocessing">Pre-Processing</button>
         <button class="tab-btn" data-target="tab-chunking">Chunking</button>
         <button class="tab-btn" data-target="tab-extraction">Raw Extraction</button>
+        <button class="tab-btn" data-target="tab-normalization">Normalization</button>
         <button class="tab-btn" data-target="tab-enrichment">Taxonomy (Enrich)</button>
         <button class="tab-btn" data-target="tab-cataloging">Commercial Content</button>
         <button class="tab-btn" data-target="tab-quality">Data Quality</button>
@@ -230,6 +243,19 @@
             </div>
           </div>
           <div id="json-viewer-extract" class="json-viewer-container"></div>
+        </div>
+
+        <!-- Normalization Tab -->
+        <div class="tab-panel" id="tab-normalization">
+          <div class="toolbar">
+            <h4>Normalized Attributes</h4>
+            <div class="toolbar-actions">
+              <input type="text" class="json-search" placeholder="Filter keys/values..." id="search-normalize">
+              <button class="btn-icon" id="collapse-normalize" title="Collapse All">[-]</button>
+              <button class="btn-icon" id="expand-normalize" title="Expand All">[+]</button>
+            </div>
+          </div>
+          <div id="json-viewer-normalize" class="json-viewer-container"></div>
         </div>
 
         <!-- Enrichment Tab -->
