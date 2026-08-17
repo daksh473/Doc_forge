@@ -263,6 +263,11 @@ router.post('/uom', async (req, res, next) => {
     }
 });
 
+router.get('/demo/products', (req, res) => {
+    const mockProducts = require('../data/mockProducts');
+    res.json(mockProducts.getProducts());
+});
+
 router.post('/fraction', async (req, res, next) => {
     try {
         const { normalizedData } = req.body;

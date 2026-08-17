@@ -1,30 +1,91 @@
 const { v4: uuidv4 } = require('uuid');
-const { selectProduct } = require('../data/mockProducts');
 
+/**
+ * Chunker Service
+ * Genuinely chunks real parsed document text into logical sections.
+ */
 exports.chunkData = async (preprocessing) => {
-    // Add simulated delay for chunking stage (0.5 - 1 seconds)
-    await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 500));
-    
-    // Attempt to figure out which product we are working with
-    // We can infer this from the preprocessing product identity
-    let keywords = preprocessing.source_file || '';
-    if (preprocessing.sections && preprocessing.sections.length > 0) {
-        keywords += ' ' + preprocessing.sections[0].raw_content;
-    }
+    await new Promise(resolve => setTimeout(resolve, 300 + Math.random() * 200));
 
-    const product = selectProduct(keywords);
-    const chunking = JSON.parse(JSON.stringify(product.chunking));
-    
-    // Inject dynamic metadata
-    chunking.pipeline_id = uuidv4();
-    chunking.source_file = preprocessing.source_file;
-    
-    // Update chunk metadata
-    if (chunking.chunks) {
-        chunking.chunks.forEach(chunk => {
-            chunk.source_metadata.source_file = preprocessing.source_file;
+    const pipelineId = uuidv4();
+    const sourceFile = preprocessing.source_file || 'uploaded_document';
+    const sections = preprocessing.sections || [];
+
+    const chunks = [];
+    let chunkIndex = 1;
+
+    sections.forEach(sec => {
+        const text = sec.raw_content || '';
+        if (!text.trim()) return;
+
+        // If a section is large (> 600 chars), split by paragraphs into sub-chunks
+        if (text.length > 600) {
+            const paragraphs = text.split('\n').filter(p => p.trim());
+            let currentSub = '';
+
+            paragraphs.forEach(p => {
+                if ((currentSub + '\n' + p).length > 500 && currentSub.trim()) {
+                    chunks.push({
+                        chunk_id: `chunk_${String(chunkIndex++).padStart(3, '0')}`,
+                        content: currentSub.trim(),
+                        section_label: sec.section_label || '[DOCUMENT_SECTION]',
+                        page_number: 1,
+                        source_metadata: {
+                            source_file: sourceFile,
+                            char_count: currentSub.trim().length
+                        }
+                    });
+                    currentSub = p;
+                } else {
+                    currentSub += (currentSub ? '\n' : '') + p;
+                }
+            });
+
+            if (currentSub.trim()) {
+                chunks.push({
+                    chunk_id: `chunk_${String(chunkIndex++).padStart(3, '0')}`,
+                    content: currentSub.trim(),
+                    section_label: sec.section_label || '[DOCUMENT_SECTION]',
+                    page_number: 1,
+                    source_metadata: {
+                        source_file: sourceFile,
+                        char_count: currentSub.trim().length
+                    }
+                });
+            }
+        } else {
+            chunks.push({
+                chunk_id: `chunk_${String(chunkIndex++).padStart(3, '0')}`,
+                content: text.trim(),
+                section_label: sec.section_label || '[DOCUMENT_SECTION]',
+                page_number: 1,
+                source_metadata: {
+                    source_file: sourceFile,
+                    char_count: text.trim().length
+                }
+            });
+        }
+    });
+
+    if (chunks.length === 0) {
+        const text = preprocessing.fullText || preprocessing.textSample || '[No document text available]';
+        chunks.push({
+            chunk_id: 'chunk_001',
+            content: text,
+            section_label: '[DOCUMENT_CONTENT]',
+            page_number: 1,
+            source_metadata: {
+                source_file: sourceFile,
+                char_count: text.length
+            }
         });
     }
-    
-    return chunking;
+
+    return {
+        pipeline_id: pipelineId,
+        source_file: sourceFile,
+        chunking_strategy: 'section_and_paragraph_split',
+        total_chunks: chunks.length,
+        chunks: chunks
+    };
 };

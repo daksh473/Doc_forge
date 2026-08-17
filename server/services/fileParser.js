@@ -17,6 +17,7 @@ async function parsePDF(filePath) {
       hasTextLayer: pdfData.text && pdfData.text.trim().length > 0,
       charCount: pdfData.text ? pdfData.text.length : 0,
       textSample: pdfData.text ? pdfData.text.substring(0, 500) : '',
+      fullText: pdfData.text || '',
       wordCount: pdfData.text ? pdfData.text.split(/\s+/).length : 0
     };
   } catch (err) {
@@ -59,6 +60,7 @@ async function parseCSV(filePath) {
       rowCount: lines.length - 1,
       charCount: rawText.length,
       textSample: rawText.substring(0, 500),
+      fullText: rawText,
       delimiter,
       columnCount: headers.length
     };
@@ -70,6 +72,7 @@ async function parseCSV(filePath) {
       rowCount: 0,
       charCount: 0,
       textSample: '',
+      fullText: '',
       error: err.message
     };
   }
@@ -92,6 +95,7 @@ async function parseImage(filePath) {
       colorSpace: metadata.space || 'srgb',
       charCount: 0,
       hasTextLayer: false,
+      fullText: `[Image Scan ${path.basename(filePath)} - Width: ${metadata.width}px, Height: ${metadata.height}px, Format: ${metadata.format}]`,
       fileSizeBytes: metadata.size || fs.statSync(filePath).size
     };
   } catch (err) {
@@ -106,6 +110,7 @@ async function parseImage(filePath) {
       colorSpace: 'srgb',
       charCount: 0,
       hasTextLayer: false,
+      fullText: `[Image Scan ${path.basename(filePath)}]`,
       fileSizeBytes: fs.existsSync(filePath) ? fs.statSync(filePath).size : 0
     };
   }
@@ -123,6 +128,7 @@ async function parseText(text) {
     lineCount: trimmed.split('\n').length,
     wordCount: trimmed.split(/\s+/).filter(w => w).length,
     textSample: trimmed.substring(0, 500),
+    fullText: trimmed,
     hasTextLayer: true
   };
 }
