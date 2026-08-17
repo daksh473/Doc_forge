@@ -12,6 +12,7 @@ const grounder = require('../services/grounder');
 const reasoner = require('../services/reasoner');
 const cataloger = require('../services/cataloger');
 const scorer = require('../services/scorer');
+const dashboardPrep = require('../services/dashboard');
 const normalizer = require('../services/normalizer');
 
 const router = express.Router();
@@ -159,6 +160,17 @@ router.post('/reason', async (req, res, next) => {
     }
 });
 
+router.post('/dashboard', async (req, res, next) => {
+    try {
+        const { chunking, cataloging, scoring, reasoning } = req.body;
+        if (!cataloging) return res.status(400).json({ error: 'Catalog data required for dashboard' });
+        const dashboard = await dashboardPrep.prepareDashboard(chunking, cataloging, scoring, reasoning);
+        res.json(dashboard);
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
     try {
         const startTime = Date.now();
@@ -221,6 +233,10 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const scoring = await scorer.scoreData(extraction, enrichment, normalization, validation, cataloging);
         const scoreEnd = Date.now();
         
+        const dashboardStart = Date.now();
+        const dashboard = await dashboardPrep.prepareDashboard(chunking, cataloging, scoring, reasoning);
+        const dashboardEnd = Date.now();
+        
         const totalEnd = Date.now();
 
         const result = {
@@ -238,7 +254,8 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
                 ground: { result: grounding, duration_ms: groundEnd - groundStart },
                 reason: { result: reasoning, duration_ms: reasonEnd - reasonStart },
                 catalog: { result: cataloging, duration_ms: catalogEnd - catalogStart },
-                score: { result: scoring, duration_ms: scoreEnd - scoreStart }
+                score: { result: scoring, duration_ms: scoreEnd - scoreStart },
+                dashboard: { result: dashboard, duration_ms: dashboardEnd - dashboardStart }
             },
             total_duration_ms: totalEnd - startTime,
             timestamp: new Date().toISOString()

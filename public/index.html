@@ -211,6 +211,18 @@
         </div>
         <div class="stage-duration" id="duration-11">--</div>
       </div>
+      <div class="connector" id="conn-11">
+        <div class="connector-line"></div>
+      </div>
+
+      <div class="stage-card glass idle" id="stage-12">
+        <div class="stage-icon">🖥️</div>
+        <div class="stage-info">
+          <h3>Dashboard</h3>
+          <span class="stage-status">Waiting...</span>
+        </div>
+        <div class="stage-duration" id="duration-12">--</div>
+      </div>
     </section>
 
     <!-- Results Panel -->
@@ -227,6 +239,7 @@
         <button class="tab-btn" data-target="tab-reasoning">AI Reasoning</button>
         <button class="tab-btn" data-target="tab-cataloging">Commercial Content</button>
         <button class="tab-btn" data-target="tab-scoring">Quality Score</button>
+        <button class="tab-btn" data-target="tab-dashboard">Review Dashboard</button>
         <button class="tab-btn" data-target="tab-export">Export</button>
         <div class="tab-indicator"></div>
       </div>
@@ -487,6 +500,18 @@
           <div id="json-viewer-reasoning" class="json-viewer-container"></div>
         </div>
 
+        <!-- Dashboard Tab -->
+        <div class="tab-panel" id="tab-dashboard">
+          <div class="toolbar">
+            <h4>Detailed Dashboard UI Payload JSON</h4>
+            <div class="toolbar-actions">
+              <button class="btn-icon" id="collapse-dashboard" title="Collapse All">[-]</button>
+              <button class="btn-icon" id="expand-dashboard" title="Expand All">[+]</button>
+            </div>
+          </div>
+          <div id="json-viewer-dashboard" class="json-viewer-container"></div>
+        </div>
+
         <!-- Export Tab -->
         <div class="tab-panel" id="tab-export">
           <div class="export-actions">
@@ -521,4 +546,5 @@
   <script src="/js/app.js"></script>
 </body>
 </html>
+
 

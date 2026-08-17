@@ -139,6 +139,9 @@ window.DocForge = {
     document.getElementById('expand-reason')?.addEventListener('click', () => this.viewers?.reasoning?.expandAll());
     document.getElementById('collapse-reason')?.addEventListener('click', () => this.viewers?.reasoning?.collapseAll());
 
+    document.getElementById('expand-dashboard')?.addEventListener('click', () => this.viewers?.dashboard?.expandAll());
+    document.getElementById('collapse-dashboard')?.addEventListener('click', () => this.viewers?.dashboard?.collapseAll());
+
     // ── Export Controls ──
     document.getElementById('btn-download-json')?.addEventListener('click', () => this.downloadExport());
     document.getElementById('btn-copy-json')?.addEventListener('click', () => {
@@ -219,7 +222,7 @@ window.DocForge = {
 
     // Reset all stages to idle
     DocForgeAnimations.initPipelineConnectors();
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 13; i++) {
       DocForgeAnimations.setStageState(i, 'idle');
       document.getElementById(`duration-${i}`).textContent = '--';
     }
@@ -357,6 +360,14 @@ window.DocForge = {
       else if (stages.score.result?.final_score?.confidence_color === 'amber') scoreStatus = 'warning';
       DocForgeAnimations.setStageState(11, scoreStatus);
       document.getElementById('duration-11').textContent = this.formatDuration(stages.score.duration_ms);
+      DocForgeAnimations.animateConnector(11, true);
+
+      // Stage 12: Dashboard
+      await this.sleep(400);
+      DocForgeAnimations.setStageState(12, 'processing');
+      await this.sleep(400);
+      DocForgeAnimations.setStageState(12, 'complete');
+      document.getElementById('duration-12').textContent = this.formatDuration(stages.dashboard.duration_ms);
 
       // Build a normalized view model from the API response
       const viewModel = this.buildViewModel(result);
@@ -382,7 +393,7 @@ window.DocForge = {
       this.showToast(`Pipeline failed: ${err.message}`, 'error');
 
       // Mark the furthest incomplete stage as error
-      for (let i = 0; i < 12; i++) {
+      for (let i = 0; i < 13; i++) {
         const card = document.getElementById(`stage-${i}`);
         if (card && card.classList.contains('processing')) {
           DocForgeAnimations.setStageState(i, 'error');
@@ -412,6 +423,7 @@ window.DocForge = {
     const reasoning = stages.reason ? stages.reason.result : null;
     const cataloging = stages.catalog ? stages.catalog.result : null;
     const scoring = stages.score ? stages.score.result : null;
+    const dashboard = stages.dashboard ? stages.dashboard.result : null;
     
     const extSummary = extraction.extraction_summary || {};
     const taxSummary = enrichment.taxonomy_summary || {};
@@ -445,6 +457,7 @@ window.DocForge = {
       reasoning: reasoning,
       cataloging: cataloging,
       scoring: scoring,
+      dashboard: dashboard,
 
       exportJson: JSON.stringify(apiResult, null, 2),
 
@@ -490,6 +503,7 @@ window.DocForge = {
     if (data.reasoning) this.renderReasoning(data.reasoning);
     if (data.cataloging) this.renderCataloging(data.cataloging);
     if (data.scoring) this.renderScoring(data.scoring);
+    if (data.dashboard) this.renderDashboard(data.dashboard);
     this.renderExport(data.exportJson);
   },
 
@@ -881,6 +895,19 @@ window.DocForge = {
     this.viewers.scoring.render();
   },
 
+  renderDashboard(data) {
+    const container = document.getElementById('json-viewer-dashboard');
+    if (!container) return;
+    container.innerHTML = '';
+    this.viewers = this.viewers || {};
+    this.viewers.dashboard = new JsonViewer(container, data, {
+      collapsedDepth: 3,
+      highlightInferred: true,
+      showLineNumbers: true
+    });
+    this.viewers.dashboard.render();
+  },
+
   renderDataQuality(data) {
     // Confidence gauge
     DocForgeAnimations.animateConfidenceGauge(data.score);
@@ -1050,9 +1077,9 @@ window.DocForge = {
 
     // Show pipeline as all complete
     this.els.pipelineSection.classList.remove('hidden');
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 13; i++) {
       DocForgeAnimations.setStageState(i, 'complete');
-      if (i < 11) DocForgeAnimations.animateConnector(i, true);
+      if (i < 12) DocForgeAnimations.animateConnector(i, true);
     }
 
     // Render results
