@@ -1,8 +1,9 @@
 const https = require('https');
+try { require('dotenv').config(); } catch (e) {}
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
-const PRIMARY_MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
-const FALLBACK_MODELS = ["openai/gpt-oss-120b", "qwen/qwen3.6-27b", "groq/compound"];
+const PRIMARY_MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
+const FALLBACK_MODELS = ["qwen/qwen3.6-27b", "groq/compound", "openai/gpt-oss-20b"];
 
 /**
  * Executes an HTTP POST request to Groq API endpoint
