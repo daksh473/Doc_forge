@@ -130,6 +130,9 @@ window.DocForge = {
     document.getElementById('collapse-catalog')?.addEventListener('click', () => this.viewers?.catalog?.collapseAll());
     document.getElementById('search-catalog')?.addEventListener('input', (e) => this.viewers?.catalog?.search(e.target.value));
 
+    document.getElementById('expand-score')?.addEventListener('click', () => this.viewers?.scoring?.expandAll());
+    document.getElementById('collapse-score')?.addEventListener('click', () => this.viewers?.scoring?.collapseAll());
+
     // ── Export Controls ──
     document.getElementById('btn-download-json')?.addEventListener('click', () => this.downloadExport());
     document.getElementById('btn-copy-json')?.addEventListener('click', () => {
@@ -210,7 +213,7 @@ window.DocForge = {
 
     // Reset all stages to idle
     DocForgeAnimations.initPipelineConnectors();
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < 10; i++) {
       DocForgeAnimations.setStageState(i, 'idle');
       document.getElementById(`duration-${i}`).textContent = '--';
     }
@@ -321,6 +324,17 @@ window.DocForge = {
       await this.sleep(400);
       DocForgeAnimations.setStageState(8, 'complete');
       document.getElementById('duration-8').textContent = this.formatDuration(stages.catalog.duration_ms);
+      DocForgeAnimations.animateConnector(8, true);
+
+      // Stage 9: Score
+      await this.sleep(400);
+      DocForgeAnimations.setStageState(9, 'processing');
+      await this.sleep(400);
+      let scoreStatus = 'complete';
+      if (stages.score.result?.final_score?.confidence_color === 'red') scoreStatus = 'error';
+      else if (stages.score.result?.final_score?.confidence_color === 'amber') scoreStatus = 'warning';
+      DocForgeAnimations.setStageState(9, scoreStatus);
+      document.getElementById('duration-9').textContent = this.formatDuration(stages.score.duration_ms);
 
       // Build a normalized view model from the API response
       const viewModel = this.buildViewModel(result);
@@ -346,7 +360,7 @@ window.DocForge = {
       this.showToast(`Pipeline failed: ${err.message}`, 'error');
 
       // Mark the furthest incomplete stage as error
-      for (let i = 0; i < 9; i++) {
+      for (let i = 0; i < 10; i++) {
         const card = document.getElementById(`stage-${i}`);
         if (card && card.classList.contains('processing')) {
           DocForgeAnimations.setStageState(i, 'error');
@@ -373,6 +387,7 @@ window.DocForge = {
     const enrichment = stages.enrich.result;
     const validation = stages.validate ? stages.validate.result : null;
     const cataloging = stages.catalog ? stages.catalog.result : null;
+    const scoring = stages.score ? stages.score.result : null;
     
     const extSummary = extraction.extraction_summary || {};
     const taxSummary = enrichment.taxonomy_summary || {};
@@ -403,6 +418,7 @@ window.DocForge = {
       enrichment: enrichment,
       validation: validation,
       cataloging: cataloging,
+      scoring: scoring,
 
       exportJson: JSON.stringify(apiResult, null, 2),
 
@@ -445,7 +461,7 @@ window.DocForge = {
     this.renderEnrichment(data.enrichment);
     if (data.validation) this.renderValidation(data.validation);
     if (data.cataloging) this.renderCataloging(data.cataloging);
-    this.renderDataQuality(data.quality);
+    if (data.scoring) this.renderScoring(data.scoring);
     this.renderExport(data.exportJson);
   },
 
@@ -601,6 +617,66 @@ window.DocForge = {
       showLineNumbers: true
     });
     this.viewers.catalog.render();
+  },
+
+  renderScoring(data) {
+    if (!data || !data.final_score) return;
+
+    // Update Verdict
+    const verdictLabel = document.getElementById('score-verdict');
+    const oneLine = document.getElementById('score-one-line');
+    const color = data.final_score.confidence_color || 'green'; // red | amber | green
+    
+    if (verdictLabel) {
+      verdictLabel.textContent = data.final_score.label.replace(/_/g, ' ').toUpperCase();
+      verdictLabel.className = color === 'red' ? 'text-rose-600' : color === 'amber' ? 'text-amber-600' : 'text-emerald-600';
+    }
+    if (oneLine && data.reviewer_summary) oneLine.textContent = data.reviewer_summary.one_line_verdict;
+
+    // Update Circle
+    const circle = document.getElementById('score-circle-color');
+    const val = document.getElementById('score-final-value');
+    if (circle && val) {
+      val.textContent = Math.round(data.final_score.score);
+      circle.className = 'score-circle ' + (color === 'red' ? 'bg-rose-500' : color === 'amber' ? 'bg-amber-500' : 'bg-emerald-500');
+    }
+
+    // Update Dimensions
+    const setDim = (id, obj) => {
+      const el = document.getElementById(id);
+      if (el && obj) el.textContent = Math.round(obj.weighted_score) + ' / ' + Math.round(obj.weight * 100);
+    };
+    if (data.dimension_scores) {
+      setDim('score-dim-ext', data.dimension_scores.extraction_completeness);
+      setDim('score-dim-src', data.dimension_scores.source_data_quality);
+      setDim('score-dim-val', data.dimension_scores.validation_outcome);
+      setDim('score-dim-norm', data.dimension_scores.normalization_coverage);
+      setDim('score-dim-cat', data.dimension_scores.catalog_content_quality);
+    }
+
+    // Priority Actions
+    const pac = document.getElementById('priority-actions-container');
+    const pal = document.getElementById('priority-actions-list');
+    if (pac && pal) {
+      if (data.priority_actions && data.priority_actions.length > 0) {
+        pac.classList.remove('hidden');
+        pal.innerHTML = data.priority_actions.map(a => `<li><strong>${a.action_type.toUpperCase()}:</strong> ${a.description} <em>(+${a.estimated_score_gain} pts)</em></li>`).join('');
+      } else {
+        pac.classList.add('hidden');
+      }
+    }
+
+    // JSON Viewer
+    const container = document.getElementById('json-viewer-scoring');
+    if (!container) return;
+    container.innerHTML = '';
+    this.viewers = this.viewers || {};
+    this.viewers.scoring = new JsonViewer(container, data, {
+      collapsedDepth: 2,
+      highlightInferred: false,
+      showLineNumbers: true
+    });
+    this.viewers.scoring.render();
   },
 
   renderDataQuality(data) {
@@ -772,9 +848,9 @@ window.DocForge = {
 
     // Show pipeline as all complete
     this.els.pipelineSection.classList.remove('hidden');
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < 10; i++) {
       DocForgeAnimations.setStageState(i, 'complete');
-      if (i < 8) DocForgeAnimations.animateConnector(i, true);
+      if (i < 9) DocForgeAnimations.animateConnector(i, true);
     }
 
     // Render results

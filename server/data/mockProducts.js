@@ -1,5 +1,5 @@
 // Mock Data for DocForge
-// Contains full payloads for 7 stages: extraction, normalization, enrichment, validation, cataloging
+// Contains full payloads for 8 stages: extraction, normalization, enrichment, validation, cataloging, scoring
 const products = [
   {
     "keywords": [
@@ -1019,6 +1019,70 @@ const products = [
         "pass_count": 25,
         "blocking_issues": []
       }
+    },
+    "quality_score": {
+      "pipeline_id": "pl_8oknnrenp",
+      "scoring_timestamp": "2026-08-17T06:24:19.077Z",
+      "dimension_scores": {
+        "extraction_completeness": {
+          "raw_score": 95,
+          "weight": 0.3,
+          "weighted_score": 28.5,
+          "score_breakdown": "Most TIER 1 and TIER 2 attributes extracted."
+        },
+        "source_data_quality": {
+          "raw_score": 100,
+          "weight": 0.25,
+          "weighted_score": 25,
+          "score_breakdown": "Clean tabular document structure."
+        },
+        "validation_outcome": {
+          "raw_score": 90,
+          "weight": 0.25,
+          "weighted_score": 22.5,
+          "score_breakdown": "Validation issues detected."
+        },
+        "normalization_coverage": {
+          "raw_score": 100,
+          "weight": 0.1,
+          "weighted_score": 10,
+          "score_breakdown": "100% of numeric attributes normalized."
+        },
+        "catalog_content_quality": {
+          "raw_score": 95,
+          "weight": 0.1,
+          "weighted_score": 9.5,
+          "score_breakdown": "Detailed description and bullets successfully generated."
+        }
+      },
+      "final_score": {
+        "score": 96,
+        "label": "publish_with_review",
+        "publish_recommendation": "review_then_publish",
+        "confidence_color": "amber"
+      },
+      "priority_actions": [
+        {
+          "priority": "2",
+          "action_type": "verify",
+          "description": "Verify if 1000 WOG is standard for this series or requires a heavy-duty rating note.",
+          "affected_attributes": [
+            "Pressure Rating"
+          ],
+          "estimated_score_gain": 10
+        }
+      ],
+      "reviewer_summary": {
+        "one_line_verdict": "Data is solid, but a pressure rating anomaly requires a quick sanity check.",
+        "top_3_issues": [
+          "Pressure rating (1000 WOG) lacks wall thickness class."
+        ],
+        "top_3_strengths": [
+          "Comprehensive dimensional data extracted.",
+          "Accurate taxonomy classification.",
+          "High quality commercial content generated."
+        ]
+      }
     }
   },
   {
@@ -2026,6 +2090,72 @@ const products = [
         "pass_count": 25,
         "blocking_issues": [
           "A1"
+        ]
+      }
+    },
+    "quality_score": {
+      "pipeline_id": "pl_0kvno116k",
+      "scoring_timestamp": "2026-08-17T06:24:19.078Z",
+      "dimension_scores": {
+        "extraction_completeness": {
+          "raw_score": 80,
+          "weight": 0.3,
+          "weighted_score": 24,
+          "score_breakdown": "Most TIER 1 and TIER 2 attributes extracted."
+        },
+        "source_data_quality": {
+          "raw_score": 100,
+          "weight": 0.25,
+          "weighted_score": 25,
+          "score_breakdown": "Clean tabular document structure."
+        },
+        "validation_outcome": {
+          "raw_score": 70,
+          "weight": 0.25,
+          "weighted_score": 17.5,
+          "score_breakdown": "Validation issues detected."
+        },
+        "normalization_coverage": {
+          "raw_score": 100,
+          "weight": 0.1,
+          "weighted_score": 10,
+          "score_breakdown": "100% of numeric attributes normalized."
+        },
+        "catalog_content_quality": {
+          "raw_score": 95,
+          "weight": 0.1,
+          "weighted_score": 9.5,
+          "score_breakdown": "Detailed description and bullets successfully generated."
+        }
+      },
+      "final_score": {
+        "score": 86,
+        "label": "insufficient_data",
+        "publish_recommendation": "return_to_source",
+        "confidence_color": "red"
+      },
+      "priority_actions": [
+        {
+          "priority": "1",
+          "action_type": "fix",
+          "description": "Resolve temperature limit contradiction or add cooling tower accessory SKU.",
+          "affected_attributes": [
+            "Operating Temperature",
+            "Accessories"
+          ],
+          "estimated_score_gain": 30
+        }
+      ],
+      "reviewer_summary": {
+        "one_line_verdict": "Cannot publish: critical safety contradiction between operating temperature and specified materials.",
+        "top_3_issues": [
+          "CRITICAL: Operating temp exceeds material limit.",
+          "Missing critical identifier for cooling tower."
+        ],
+        "top_3_strengths": [
+          "Comprehensive dimensional data extracted.",
+          "Accurate taxonomy classification.",
+          "High quality commercial content generated."
         ]
       }
     }
@@ -3036,6 +3166,58 @@ const products = [
         "pass_count": 25,
         "blocking_issues": []
       }
+    },
+    "quality_score": {
+      "pipeline_id": "pl_utogts51e",
+      "scoring_timestamp": "2026-08-17T06:24:19.078Z",
+      "dimension_scores": {
+        "extraction_completeness": {
+          "raw_score": 95,
+          "weight": 0.3,
+          "weighted_score": 28.5,
+          "score_breakdown": "Most TIER 1 and TIER 2 attributes extracted."
+        },
+        "source_data_quality": {
+          "raw_score": 100,
+          "weight": 0.25,
+          "weighted_score": 25,
+          "score_breakdown": "Clean tabular document structure."
+        },
+        "validation_outcome": {
+          "raw_score": 100,
+          "weight": 0.25,
+          "weighted_score": 25,
+          "score_breakdown": "Clean validation."
+        },
+        "normalization_coverage": {
+          "raw_score": 100,
+          "weight": 0.1,
+          "weighted_score": 10,
+          "score_breakdown": "100% of numeric attributes normalized."
+        },
+        "catalog_content_quality": {
+          "raw_score": 95,
+          "weight": 0.1,
+          "weighted_score": 9.5,
+          "score_breakdown": "Detailed description and bullets successfully generated."
+        }
+      },
+      "final_score": {
+        "score": 98,
+        "label": "catalog_ready",
+        "publish_recommendation": "auto_publish",
+        "confidence_color": "green"
+      },
+      "priority_actions": [],
+      "reviewer_summary": {
+        "one_line_verdict": "Product is fully enriched, validated, and ready for the catalog.",
+        "top_3_issues": [],
+        "top_3_strengths": [
+          "Comprehensive dimensional data extracted.",
+          "Accurate taxonomy classification.",
+          "High quality commercial content generated."
+        ]
+      }
     }
   },
   {
@@ -3926,6 +4108,58 @@ const products = [
         "info_count": 0,
         "pass_count": 25,
         "blocking_issues": []
+      }
+    },
+    "quality_score": {
+      "pipeline_id": "pl_pdfsa6h85",
+      "scoring_timestamp": "2026-08-17T06:24:19.078Z",
+      "dimension_scores": {
+        "extraction_completeness": {
+          "raw_score": 95,
+          "weight": 0.3,
+          "weighted_score": 28.5,
+          "score_breakdown": "Most TIER 1 and TIER 2 attributes extracted."
+        },
+        "source_data_quality": {
+          "raw_score": 100,
+          "weight": 0.25,
+          "weighted_score": 25,
+          "score_breakdown": "Clean tabular document structure."
+        },
+        "validation_outcome": {
+          "raw_score": 100,
+          "weight": 0.25,
+          "weighted_score": 25,
+          "score_breakdown": "Clean validation."
+        },
+        "normalization_coverage": {
+          "raw_score": 100,
+          "weight": 0.1,
+          "weighted_score": 10,
+          "score_breakdown": "100% of numeric attributes normalized."
+        },
+        "catalog_content_quality": {
+          "raw_score": 95,
+          "weight": 0.1,
+          "weighted_score": 9.5,
+          "score_breakdown": "Detailed description and bullets successfully generated."
+        }
+      },
+      "final_score": {
+        "score": 98,
+        "label": "catalog_ready",
+        "publish_recommendation": "auto_publish",
+        "confidence_color": "green"
+      },
+      "priority_actions": [],
+      "reviewer_summary": {
+        "one_line_verdict": "Product is fully enriched, validated, and ready for the catalog.",
+        "top_3_issues": [],
+        "top_3_strengths": [
+          "Comprehensive dimensional data extracted.",
+          "Accurate taxonomy classification.",
+          "High quality commercial content generated."
+        ]
       }
     }
   },
@@ -5008,6 +5242,58 @@ const products = [
         "pass_count": 25,
         "blocking_issues": []
       }
+    },
+    "quality_score": {
+      "pipeline_id": "pl_jicgthlou",
+      "scoring_timestamp": "2026-08-17T06:24:19.078Z",
+      "dimension_scores": {
+        "extraction_completeness": {
+          "raw_score": 95,
+          "weight": 0.3,
+          "weighted_score": 28.5,
+          "score_breakdown": "Most TIER 1 and TIER 2 attributes extracted."
+        },
+        "source_data_quality": {
+          "raw_score": 100,
+          "weight": 0.25,
+          "weighted_score": 25,
+          "score_breakdown": "Clean tabular document structure."
+        },
+        "validation_outcome": {
+          "raw_score": 100,
+          "weight": 0.25,
+          "weighted_score": 25,
+          "score_breakdown": "Clean validation."
+        },
+        "normalization_coverage": {
+          "raw_score": 100,
+          "weight": 0.1,
+          "weighted_score": 10,
+          "score_breakdown": "100% of numeric attributes normalized."
+        },
+        "catalog_content_quality": {
+          "raw_score": 95,
+          "weight": 0.1,
+          "weighted_score": 9.5,
+          "score_breakdown": "Detailed description and bullets successfully generated."
+        }
+      },
+      "final_score": {
+        "score": 98,
+        "label": "catalog_ready",
+        "publish_recommendation": "auto_publish",
+        "confidence_color": "green"
+      },
+      "priority_actions": [],
+      "reviewer_summary": {
+        "one_line_verdict": "Product is fully enriched, validated, and ready for the catalog.",
+        "top_3_issues": [],
+        "top_3_strengths": [
+          "Comprehensive dimensional data extracted.",
+          "Accurate taxonomy classification.",
+          "High quality commercial content generated."
+        ]
+      }
     }
   },
   {
@@ -5978,6 +6264,58 @@ const products = [
         "info_count": 0,
         "pass_count": 25,
         "blocking_issues": []
+      }
+    },
+    "quality_score": {
+      "pipeline_id": "pl_bzhqlxxlv",
+      "scoring_timestamp": "2026-08-17T06:24:19.078Z",
+      "dimension_scores": {
+        "extraction_completeness": {
+          "raw_score": 95,
+          "weight": 0.3,
+          "weighted_score": 28.5,
+          "score_breakdown": "Most TIER 1 and TIER 2 attributes extracted."
+        },
+        "source_data_quality": {
+          "raw_score": 100,
+          "weight": 0.25,
+          "weighted_score": 25,
+          "score_breakdown": "Clean tabular document structure."
+        },
+        "validation_outcome": {
+          "raw_score": 100,
+          "weight": 0.25,
+          "weighted_score": 25,
+          "score_breakdown": "Clean validation."
+        },
+        "normalization_coverage": {
+          "raw_score": 100,
+          "weight": 0.1,
+          "weighted_score": 10,
+          "score_breakdown": "100% of numeric attributes normalized."
+        },
+        "catalog_content_quality": {
+          "raw_score": 95,
+          "weight": 0.1,
+          "weighted_score": 9.5,
+          "score_breakdown": "Detailed description and bullets successfully generated."
+        }
+      },
+      "final_score": {
+        "score": 98,
+        "label": "catalog_ready",
+        "publish_recommendation": "auto_publish",
+        "confidence_color": "green"
+      },
+      "priority_actions": [],
+      "reviewer_summary": {
+        "one_line_verdict": "Product is fully enriched, validated, and ready for the catalog.",
+        "top_3_issues": [],
+        "top_3_strengths": [
+          "Comprehensive dimensional data extracted.",
+          "Accurate taxonomy classification.",
+          "High quality commercial content generated."
+        ]
       }
     }
   }

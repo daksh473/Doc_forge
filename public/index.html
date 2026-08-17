@@ -175,6 +175,18 @@
         </div>
         <div class="stage-duration" id="duration-8">--</div>
       </div>
+      <div class="connector" id="conn-8">
+        <div class="connector-line"></div>
+      </div>
+
+      <div class="stage-card glass idle" id="stage-9">
+        <div class="stage-icon">🎯</div>
+        <div class="stage-info">
+          <h3>Score</h3>
+          <span class="stage-status">Waiting...</span>
+        </div>
+        <div class="stage-duration" id="duration-9">--</div>
+      </div>
     </section>
 
     <!-- Results Panel -->
@@ -188,6 +200,7 @@
         <button class="tab-btn" data-target="tab-enrichment">Taxonomy (Enrich)</button>
         <button class="tab-btn" data-target="tab-validation">Validation Report</button>
         <button class="tab-btn" data-target="tab-cataloging">Commercial Content</button>
+        <button class="tab-btn" data-target="tab-scoring">Quality Score</button>
         <button class="tab-btn" data-target="tab-export">Export</button>
         <div class="tab-indicator"></div>
       </div>
@@ -287,14 +300,66 @@
         <!-- Cataloging Tab -->
         <div class="tab-panel" id="tab-cataloging">
           <div class="toolbar">
-            <h4>Generated Commercial Content</h4>
             <div class="toolbar-actions">
-              <input type="text" class="json-search" placeholder="Filter keys/values..." id="search-catalog">
               <button class="btn-icon" id="collapse-catalog" title="Collapse All">[-]</button>
               <button class="btn-icon" id="expand-catalog" title="Expand All">[+]</button>
             </div>
+            <div class="search-box">
+              <input type="text" id="search-catalog" placeholder="Search JSON...">
+            </div>
           </div>
           <div id="json-viewer-catalog" class="json-viewer-container"></div>
+        </div>
+
+        <!-- Scoring Tab -->
+        <div class="tab-panel" id="tab-scoring">
+          <div class="scoring-header bg-white p-6 rounded shadow mb-6 text-center">
+            <h2 class="text-3xl font-bold mb-2">Final Verdict: <span id="score-verdict" class="text-emerald-600">--</span></h2>
+            <p class="text-gray-600 italic" id="score-one-line">--</p>
+            <div class="mt-4 flex justify-center items-center gap-4">
+              <div class="score-circle" id="score-circle-color">
+                <span id="score-final-value" class="text-4xl font-bold text-white">--</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="scoring-dimensions grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+            <div class="dimension-card bg-white p-4 rounded shadow">
+              <h4 class="font-bold text-gray-700">Extraction (30%)</h4>
+              <div class="text-2xl font-bold text-blue-600 mt-2" id="score-dim-ext">--</div>
+            </div>
+            <div class="dimension-card bg-white p-4 rounded shadow">
+              <h4 class="font-bold text-gray-700">Source Quality (25%)</h4>
+              <div class="text-2xl font-bold text-blue-600 mt-2" id="score-dim-src">--</div>
+            </div>
+            <div class="dimension-card bg-white p-4 rounded shadow">
+              <h4 class="font-bold text-gray-700">Validation (25%)</h4>
+              <div class="text-2xl font-bold text-blue-600 mt-2" id="score-dim-val">--</div>
+            </div>
+            <div class="dimension-card bg-white p-4 rounded shadow">
+              <h4 class="font-bold text-gray-700">Normalization (10%)</h4>
+              <div class="text-2xl font-bold text-blue-600 mt-2" id="score-dim-norm">--</div>
+            </div>
+            <div class="dimension-card bg-white p-4 rounded shadow">
+              <h4 class="font-bold text-gray-700">Catalog Content (10%)</h4>
+              <div class="text-2xl font-bold text-blue-600 mt-2" id="score-dim-cat">--</div>
+            </div>
+          </div>
+
+          <div class="priority-actions-box bg-red-50 p-6 rounded shadow mb-6 hidden" id="priority-actions-container">
+            <h3 class="text-xl font-bold text-red-800 mb-4">⚠️ Priority Actions Required</h3>
+            <ul class="list-disc pl-6 space-y-2 text-red-700" id="priority-actions-list">
+            </ul>
+          </div>
+
+          <div class="toolbar" style="margin-top: 1rem;">
+            <h4>Detailed Scoring JSON</h4>
+            <div class="toolbar-actions">
+              <button class="btn-icon" id="collapse-score" title="Collapse All">[-]</button>
+              <button class="btn-icon" id="expand-score" title="Expand All">[+]</button>
+            </div>
+          </div>
+          <div id="json-viewer-scoring" class="json-viewer-container"></div>
         </div>
 
         <!-- Validation Tab -->

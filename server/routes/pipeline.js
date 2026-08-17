@@ -9,6 +9,7 @@ const extractor = require('../services/extractor');
 const enricher = require('../services/enricher');
 const validator = require('../services/validator');
 const cataloger = require('../services/cataloger');
+const scorer = require('../services/scorer');
 const normalizer = require('../services/normalizer');
 
 const router = express.Router();
@@ -123,6 +124,17 @@ router.post('/catalog', async (req, res, next) => {
     }
 });
 
+router.post('/score', async (req, res, next) => {
+    try {
+        const { extraction, taxonomy, normalization, validation, cataloging } = req.body;
+        if (!extraction || !taxonomy) return res.status(400).json({ error: 'Data required for scoring' });
+        const score = await scorer.scoreData(extraction, taxonomy, normalization, validation, cataloging);
+        res.json(score);
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
     try {
         const startTime = Date.now();
@@ -173,6 +185,10 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const cataloging = await cataloger.catalogData(extraction, enrichment);
         const catalogEnd = Date.now();
         
+        const scoreStart = Date.now();
+        const scoring = await scorer.scoreData(extraction, enrichment, normalization, validation, cataloging);
+        const scoreEnd = Date.now();
+        
         const totalEnd = Date.now();
 
         const result = {
@@ -187,7 +203,8 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
                 normalize: { result: normalization, duration_ms: normalizeEnd - normalizeStart },
                 enrich: { result: enrichment, duration_ms: enrichEnd - enrichStart },
                 validate: { result: validation, duration_ms: validateEnd - validateStart },
-                catalog: { result: cataloging, duration_ms: catalogEnd - catalogStart }
+                catalog: { result: cataloging, duration_ms: catalogEnd - catalogStart },
+                score: { result: scoring, duration_ms: scoreEnd - scoreStart }
             },
             total_duration_ms: totalEnd - startTime,
             timestamp: new Date().toISOString()

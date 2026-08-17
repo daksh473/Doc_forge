@@ -326,7 +326,7 @@ h1, h2, h3, h4 {
 /* Pipeline Stepper */
 .pipeline-container { 
   display: grid; 
-  grid-template-columns: 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr; 
+  grid-template-columns: 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr; 
   gap: 1rem; 
   align-items: center; 
   margin-bottom: 2rem; 
@@ -567,4 +567,22 @@ h1, h2, h3, h4 {
 .text-danger { color: var(--accent-rose); }
 .text-warning { color: var(--accent-amber); }
 .text-success { color: var(--accent-emerald); }
+
+
+/* Scoring UI */
+.score-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.bg-emerald-500 { background-color: #10b981; }
+.bg-amber-500 { background-color: #f59e0b; }
+.bg-rose-500 { background-color: #f43f5e; }
+.text-emerald-600 { color: #059669; }
+.text-amber-600 { color: #d97706; }
+.text-rose-600 { color: #e11d48; }
 
