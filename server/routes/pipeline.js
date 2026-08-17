@@ -15,6 +15,7 @@ const scorer = require('../services/scorer');
 const dashboardPrep = require('../services/dashboard');
 const normalizer = require('../services/normalizer');
 const reviewer = require('../services/reviewer');
+const exporter = require('../services/exporter');
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/', limits: { fileSize: 20 * 1024 * 1024 } });
@@ -177,7 +178,21 @@ router.post('/review', async (req, res, next) => {
         const { dashboard, humanEdits } = req.body;
         if (!dashboard || !humanEdits) return res.status(400).json({ error: 'Dashboard and humanEdits required' });
         const reviewResult = await reviewer.processReview(dashboard, humanEdits);
+        const exportResult = await exporter.generateExports(reviewResult, "all");
+        reviewResult.exports = exportResult.exports;
+        reviewResult.export_summary = exportResult.export_summary;
         res.json(reviewResult);
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.post('/export', async (req, res, next) => {
+    try {
+        const { approvedData, targetFormats } = req.body;
+        if (!approvedData) return res.status(400).json({ error: 'approvedData required for export' });
+        const result = await exporter.generateExports(approvedData, targetFormats || "all");
+        res.json(result);
     } catch (err) {
         next(err);
     }

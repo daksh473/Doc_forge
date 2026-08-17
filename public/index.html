@@ -525,11 +525,25 @@
 
         <!-- Export Tab -->
         <div class="carousel-slide" id="tab-export">
-          <div class="export-actions">
-            <button class="btn btn-primary" id="btn-download-json">Download JSON</button>
-            <button class="btn btn-outline" id="btn-copy-json">Copy to Clipboard</button>
+          <div class="export-studio-header" style="display: flex; gap: 1rem; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <label for="select-export-format" style="font-weight: 600; color: var(--text-primary);">Export Format Target:</label>
+              <select id="select-export-format" style="background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-glass); padding: 0.5rem 1rem; border-radius: var(--radius-sm); font-size: 0.9rem;">
+                <option value="json_standard">Standard JSON (Universal)</option>
+                <option value="csv_flat">Flat CSV (Bulk Database)</option>
+                <option value="pim_akeneo">Akeneo PIM JSON</option>
+                <option value="erp_sap">SAP ERP Material Master</option>
+                <option value="woocommerce">WooCommerce Product Import CSV</option>
+                <option value="full_pipeline">Full Raw Pipeline JSON</option>
+              </select>
+            </div>
+            <div class="export-actions" style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-primary" id="btn-download-json">Download Export</button>
+              <button class="btn btn-outline" id="btn-copy-json">Copy Payload</button>
+            </div>
           </div>
-          <textarea id="export-textarea" readonly></textarea>
+          <div id="export-warnings" style="display: none; background: rgba(245, 158, 11, 0.1); border: 1px solid var(--accent-amber); padding: 0.75rem; border-radius: var(--radius-sm); color: var(--accent-amber); margin-bottom: 1rem; font-size: 0.85rem;"></div>
+          <textarea id="export-textarea" readonly style="width: 100%; height: 400px; background: #0d1117; color: #a5d6ff; font-family: var(--font-mono); border: 1px solid var(--border-glass); border-radius: var(--radius-sm); padding: 1rem; resize: vertical;"></textarea>
         </div>
       </div>
     </div>

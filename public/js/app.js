@@ -149,11 +149,12 @@ window.DocForge = {
     document.getElementById('btn-simulate-review')?.addEventListener('click', () => this.submitHumanReview());
 
     // ── Export Controls ──
+    document.getElementById('select-export-format')?.addEventListener('change', () => this.updateExportView());
     document.getElementById('btn-download-json')?.addEventListener('click', () => this.downloadExport());
     document.getElementById('btn-copy-json')?.addEventListener('click', () => {
       const text = document.getElementById('export-textarea').value;
       navigator.clipboard.writeText(text).then(() => {
-        this.showToast('JSON copied to clipboard', 'success');
+        this.showToast('Payload copied to clipboard', 'success');
       });
     });
 
@@ -961,6 +962,10 @@ window.DocForge = {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const reviewResult = await res.json();
 
+      if (reviewResult.exports) {
+        this.currentApprovalExports = reviewResult.exports;
+      }
+
       this.renderApproval(reviewResult);
 
       // Show and switch to the approval slide in the carousel
@@ -1028,8 +1033,89 @@ window.DocForge = {
   },
 
   renderExport(data) {
-    const exportStr = JSON.stringify(data, null, 2);
-    document.getElementById('export-textarea').value = exportStr;
+    this.updateExportView();
+  },
+
+  updateExportView() {
+    const select = document.getElementById('select-export-format');
+    const textarea = document.getElementById('export-textarea');
+    const warningsEl = document.getElementById('export-warnings');
+    if (!select || !textarea) return;
+
+    const target = select.value;
+    let content = "";
+    let warnings = [];
+
+    const activeExports = this.currentApprovalExports || this.getMockExports();
+    
+    if (target === 'full_pipeline') {
+      content = this.currentPipelineResult?.exportJson || '{}';
+    } else if (activeExports && activeExports[target]) {
+      const exp = activeExports[target];
+      if (exp.csv_string) {
+        content = exp.csv_string;
+      } else if (exp.payload) {
+        content = JSON.stringify(exp.payload, null, 2);
+      } else {
+        content = JSON.stringify(exp, null, 2);
+      }
+      if (exp.field_mapping_warnings && exp.field_mapping_warnings.length > 0) {
+        warnings = exp.field_mapping_warnings;
+      }
+    } else {
+      content = "// Selected format payload not generated yet. Submit Human Review to generate all exports.";
+    }
+
+    textarea.value = content;
+
+    if (warnings.length > 0 && warningsEl) {
+      warningsEl.style.display = 'block';
+      warningsEl.innerHTML = `⚠️ <strong>Export Warnings:</strong><br>${warnings.join('<br>')}`;
+    } else if (warningsEl) {
+      warningsEl.style.display = 'none';
+    }
+  },
+
+  getMockExports() {
+    return {
+      json_standard: {
+        payload: {
+          title: "Ball Valve 1/2\" SS316, 1000 WOG",
+          sku: "BV-SS316-050-1000",
+          category: "Valves & Actuators > Ball Valves",
+          attributes: [
+            { name: "Body Material", value: "SS316", confidence: 100 },
+            { name: "Pressure Rating", value: "1000 PSI", confidence: 100 }
+          ]
+        }
+      },
+      csv_flat: {
+        csv_string: "PIPELINE_ID,SKU,TITLE,BODY_MATERIAL,PRESSURE_RATING_PSI,DATA_CONFIDENCE_SCORE\nPL_1001,BV-SS316-050-1000,\"Ball Valve 1/2\" SS316, 1000 WOG\",SS316,1000,100"
+      },
+      pim_akeneo: {
+        payload: {
+          identifier: "BV-SS316-050-1000",
+          family: "2_piece_ball_valves",
+          values: {
+            title: [{ data: "Ball Valve 1/2\" SS316, 1000 WOG", locale: null, scope: null }]
+          }
+        }
+      },
+      erp_sap: {
+        field_mapping_warnings: ["MATNR exceeded 18 chars limit — truncated to BV-SS316-050-1000"],
+        payload: {
+          MATNR: "BV-SS316-050-1000",
+          MAKTX: "1/2\" SS316 1000WOG Ball Valve",
+          MATKL: "VALVE_BALL",
+          MEINS: "PCE",
+          NTGEW: 0.65,
+          GEWEI: "KG"
+        }
+      },
+      woocommerce: {
+        csv_string: "ID,Type,SKU,Name,Published,Meta: Body Material,Meta: Pressure Rating\n1001,simple,BV-SS316-050-1000,\"Ball Valve 1/2\" SS316, 1000 WOG\",1,SS316,1000 PSI"
+      }
+    };
   },
 
   // ─────────────────────────────────────────────────────
@@ -1037,17 +1123,24 @@ window.DocForge = {
   // ─────────────────────────────────────────────────────
 
   downloadExport() {
-    if (!this.state.pipelineResult) return;
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(
-      JSON.stringify(this.state.pipelineResult._raw, null, 2)
-    );
+    const select = document.getElementById('select-export-format');
+    const textarea = document.getElementById('export-textarea');
+    if (!textarea || !textarea.value) return;
+
+    const target = select ? select.value : 'export';
+    const isCsv = target.includes('csv') || target === 'woocommerce';
+    const ext = isCsv ? 'csv' : 'json';
+    const mime = isCsv ? 'text/csv' : 'application/json';
+
+    const blob = new Blob([textarea.value], { type: mime });
+    const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
-    anchor.setAttribute('href', dataStr);
-    anchor.setAttribute('download', `docforge_${this.state.pipelineResult.filename || 'export'}_${Date.now()}.json`);
+    anchor.setAttribute('href', url);
+    anchor.setAttribute('download', `docforge_export_${target}_${Date.now()}.${ext}`);
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();
-    this.showToast('JSON downloaded', 'success');
+    this.showToast(`Export downloaded (${target}.${ext})`, 'success');
   },
 
   // ─────────────────────────────────────────────────────
