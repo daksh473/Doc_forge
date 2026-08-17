@@ -9,7 +9,7 @@ window.DocForgeAnimations = {
   initPipelineConnectors() {
     // Connectors are initialized via CSS. 
     // This just ensures they reset when pipeline starts.
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 8; i++) {
       const line = document.querySelector(`#conn-${i} .connector-line`);
       if (line) {
         if (window.innerWidth <= 1024) {

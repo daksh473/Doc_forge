@@ -122,6 +122,10 @@ window.DocForge = {
     document.getElementById('collapse-normalize')?.addEventListener('click', () => this.viewers?.normalize?.collapseAll());
     document.getElementById('search-normalize')?.addEventListener('input', (e) => this.viewers?.normalize?.search(e.target.value));
 
+    document.getElementById('expand-validate')?.addEventListener('click', () => this.viewers?.validate?.expandAll());
+    document.getElementById('collapse-validate')?.addEventListener('click', () => this.viewers?.validate?.collapseAll());
+    document.getElementById('search-validate')?.addEventListener('input', (e) => this.viewers?.validate?.search(e.target.value));
+
     document.getElementById('expand-catalog')?.addEventListener('click', () => this.viewers?.catalog?.expandAll());
     document.getElementById('collapse-catalog')?.addEventListener('click', () => this.viewers?.catalog?.collapseAll());
     document.getElementById('search-catalog')?.addEventListener('input', (e) => this.viewers?.catalog?.search(e.target.value));
@@ -206,7 +210,7 @@ window.DocForge = {
 
     // Reset all stages to idle
     DocForgeAnimations.initPipelineConnectors();
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 9; i++) {
       DocForgeAnimations.setStageState(i, 'idle');
       document.getElementById(`duration-${i}`).textContent = '--';
     }
@@ -300,12 +304,23 @@ window.DocForge = {
       document.getElementById('duration-6').textContent = this.formatDuration(stages.enrich.duration_ms);
       DocForgeAnimations.animateConnector(6, true);
 
-      // Stage 7: Catalog
+      // Stage 7: Validate
       await this.sleep(400);
       DocForgeAnimations.setStageState(7, 'processing');
       await this.sleep(400);
-      DocForgeAnimations.setStageState(7, 'complete');
-      document.getElementById('duration-7').textContent = this.formatDuration(stages.catalog.duration_ms);
+      let valStatus = 'complete';
+      if (stages.validate.result?.overall_validation_status === 'CRITICAL_BLOCK') valStatus = 'error';
+      else if (stages.validate.result?.overall_validation_status === 'WARNING') valStatus = 'warning';
+      DocForgeAnimations.setStageState(7, valStatus);
+      document.getElementById('duration-7').textContent = this.formatDuration(stages.validate.duration_ms);
+      DocForgeAnimations.animateConnector(7, true);
+
+      // Stage 8: Catalog
+      await this.sleep(400);
+      DocForgeAnimations.setStageState(8, 'processing');
+      await this.sleep(400);
+      DocForgeAnimations.setStageState(8, 'complete');
+      document.getElementById('duration-8').textContent = this.formatDuration(stages.catalog.duration_ms);
 
       // Build a normalized view model from the API response
       const viewModel = this.buildViewModel(result);
@@ -331,7 +346,7 @@ window.DocForge = {
       this.showToast(`Pipeline failed: ${err.message}`, 'error');
 
       // Mark the furthest incomplete stage as error
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < 9; i++) {
         const card = document.getElementById(`stage-${i}`);
         if (card && card.classList.contains('processing')) {
           DocForgeAnimations.setStageState(i, 'error');
@@ -356,6 +371,7 @@ window.DocForge = {
     const extraction = stages.extract.result;
     const normalization = stages.normalize ? stages.normalize.result : null;
     const enrichment = stages.enrich.result;
+    const validation = stages.validate ? stages.validate.result : null;
     const cataloging = stages.catalog ? stages.catalog.result : null;
     
     const extSummary = extraction.extraction_summary || {};
@@ -385,7 +401,10 @@ window.DocForge = {
       extraction: extraction,
       normalization: normalization,
       enrichment: enrichment,
+      validation: validation,
       cataloging: cataloging,
+
+      exportJson: JSON.stringify(apiResult, null, 2),
 
       quality: {
         score: score,
@@ -424,9 +443,10 @@ window.DocForge = {
     this.renderExtraction(data.extraction);
     if (data.normalization) this.renderNormalization(data.normalization);
     this.renderEnrichment(data.enrichment);
+    if (data.validation) this.renderValidation(data.validation);
     if (data.cataloging) this.renderCataloging(data.cataloging);
     this.renderDataQuality(data.quality);
-    this.renderExport(data._raw);
+    this.renderExport(data.exportJson);
   },
 
   renderClassification(data) {
@@ -524,6 +544,50 @@ window.DocForge = {
       showLineNumbers: true
     });
     this.viewers.enrich.render();
+  },
+
+  renderValidation(data) {
+    const statusBadge = document.getElementById('val-status-badge');
+    const compScore = document.getElementById('val-completeness-score');
+    const compGauge = document.getElementById('val-completeness-gauge');
+    const critCount = document.getElementById('val-crit-count');
+    const warnCount = document.getElementById('val-warn-count');
+
+    // Update status badge
+    if (statusBadge) {
+      statusBadge.textContent = data.overall_validation_status;
+      statusBadge.className = 'badge-large';
+      if (data.overall_validation_status === 'CRITICAL_BLOCK') statusBadge.classList.add('bg-danger');
+      else if (data.overall_validation_status === 'WARNING') statusBadge.classList.add('bg-warning');
+      else statusBadge.classList.add('bg-success');
+    }
+
+    // Update completeness
+    if (compScore && compGauge && data.completeness_report) {
+      const score = data.completeness_report.completeness_score || 0;
+      compScore.textContent = `${score}%`;
+      const offset = 125 - (125 * score / 100);
+      compGauge.style.strokeDashoffset = offset;
+      if (score < 50) compGauge.style.stroke = 'var(--accent-rose)';
+      else if (score < 80) compGauge.style.stroke = 'var(--accent-amber)';
+      else compGauge.style.stroke = 'var(--accent-emerald)';
+    }
+
+    // Update issue counts
+    if (critCount) critCount.textContent = data.validation_summary?.critical_count || 0;
+    if (warnCount) warnCount.textContent = data.validation_summary?.warning_count || 0;
+
+    // JSON Viewer
+    const container = document.getElementById('json-viewer-validate');
+    if (!container) return;
+    container.innerHTML = '';
+    this.viewers = this.viewers || {};
+    this.viewers.validate = new JsonViewer(container, data, {
+      collapsedDepth: 2,
+      highlightInferred: false,
+      showLineNumbers: true
+    });
+    this.viewers.validate.render();
   },
 
   renderCataloging(data) {
@@ -708,9 +772,9 @@ window.DocForge = {
 
     // Show pipeline as all complete
     this.els.pipelineSection.classList.remove('hidden');
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 9; i++) {
       DocForgeAnimations.setStageState(i, 'complete');
-      if (i < 7) DocForgeAnimations.animateConnector(i, true);
+      if (i < 8) DocForgeAnimations.animateConnector(i, true);
     }
 
     // Render results

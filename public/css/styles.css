@@ -326,10 +326,12 @@ h1, h2, h3, h4 {
 /* Pipeline Stepper */
 .pipeline-container { 
   display: grid; 
-  grid-template-columns: 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr; 
+  grid-template-columns: 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr; 
   gap: 1rem; 
   align-items: center; 
   margin-bottom: 2rem; 
+  overflow-x: auto;
+  padding-bottom: 1rem;
 }
 
 .stage-card {
@@ -534,3 +536,35 @@ h1, h2, h3, h4 {
   .connector-line { width: 100%; height: 0%; top: 0; left: 0; background: linear-gradient(180deg, var(--accent-blue), var(--accent-cyan)); transition: height var(--transition-slow); }
   .quality-dashboard { grid-template-columns: 1fr; }
 }
+
+/* Validation Tab */
+.validation-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.val-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  text-align: center;
+}
+.val-card h4 {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+.issues-count {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+}
+.text-danger { color: var(--accent-rose); }
+.text-warning { color: var(--accent-amber); }
+.text-success { color: var(--accent-emerald); }
+

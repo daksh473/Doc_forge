@@ -1,5 +1,5 @@
 // Mock Data for DocForge
-// Contains full payloads for 6 stages: extraction, normalization, enrichment, cataloging
+// Contains full payloads for 7 stages: extraction, normalization, enrichment, validation, cataloging
 const products = [
   {
     "keywords": [
@@ -970,6 +970,55 @@ const products = [
         "manual_review_required": [],
         "normalization_quality": "high"
       }
+    },
+    "validation": {
+      "pipeline_id": "pl_l5pi1n69u",
+      "validation_timestamp": "2026-08-17T06:11:45.577Z",
+      "product_type_detected": "Product",
+      "overall_validation_status": "WARNING",
+      "publish_recommendation": "review_required",
+      "validation_results": [
+        {
+          "rule_id": "A2",
+          "rule_description": "Pressure Rating Logic vs Class Norm",
+          "severity": "WARNING",
+          "affected_attributes": [
+            "Pressure Rating",
+            "Connection Type"
+          ],
+          "detected_issue": "Working pressure (1000 WOG) is exceptionally high for a standard threaded fitting without specified wall thickness class.",
+          "expected_range_or_value": "Typically 600 WOG for standard class",
+          "actual_value": "1000 WOG",
+          "remediation_suggestion": "Verify if this is a heavy-duty class valve."
+        }
+      ],
+      "completeness_report": {
+        "mandatory_fields_present": [
+          "Body Material",
+          "Pressure Rating",
+          "Temperature Range",
+          "Size / DN"
+        ],
+        "mandatory_fields_missing": [],
+        "completeness_score": 100,
+        "completeness_label": "complete"
+      },
+      "inferred_attributes_review": [
+        {
+          "attribute_name": "Certifications",
+          "inferred_value": "ISO 9001",
+          "consistency_with_extracted": "consistent",
+          "review_priority": "low"
+        }
+      ],
+      "validation_summary": {
+        "total_checks_run": 26,
+        "critical_count": 0,
+        "warning_count": 1,
+        "info_count": 0,
+        "pass_count": 25,
+        "blocking_issues": []
+      }
     }
   },
   {
@@ -1927,6 +1976,57 @@ const products = [
         "ambiguous_count": 0,
         "manual_review_required": [],
         "normalization_quality": "high"
+      }
+    },
+    "validation": {
+      "pipeline_id": "pl_dz2rzshrg",
+      "validation_timestamp": "2026-08-17T06:11:45.577Z",
+      "product_type_detected": "Product",
+      "overall_validation_status": "CRITICAL_BLOCK",
+      "publish_recommendation": "blocked",
+      "validation_results": [
+        {
+          "rule_id": "A1",
+          "rule_description": "Temperature Range Logic vs Material",
+          "severity": "CRITICAL",
+          "affected_attributes": [
+            "Operating Temperature",
+            "Wetted Parts Material"
+          ],
+          "detected_issue": "Specified max operating temperature exceeds standard limits for standard electronics without heat sinks.",
+          "expected_range_or_value": "Max 85°C for standard electronics",
+          "actual_value": "125°C",
+          "remediation_suggestion": "Confirm if high-temperature variant/cooling tower is included in this exact SKU."
+        }
+      ],
+      "completeness_report": {
+        "mandatory_fields_present": [
+          "Body Material",
+          "Pressure Rating",
+          "Temperature Range",
+          "Size / DN"
+        ],
+        "mandatory_fields_missing": [],
+        "completeness_score": 100,
+        "completeness_label": "complete"
+      },
+      "inferred_attributes_review": [
+        {
+          "attribute_name": "Certifications",
+          "inferred_value": "ISO 9001",
+          "consistency_with_extracted": "consistent",
+          "review_priority": "low"
+        }
+      ],
+      "validation_summary": {
+        "total_checks_run": 26,
+        "critical_count": 1,
+        "warning_count": 0,
+        "info_count": 0,
+        "pass_count": 25,
+        "blocking_issues": [
+          "A1"
+        ]
       }
     }
   },
@@ -2890,6 +2990,52 @@ const products = [
         "manual_review_required": [],
         "normalization_quality": "high"
       }
+    },
+    "validation": {
+      "pipeline_id": "pl_zfz9cbvnh",
+      "validation_timestamp": "2026-08-17T06:11:45.577Z",
+      "product_type_detected": "Product",
+      "overall_validation_status": "PASS",
+      "publish_recommendation": "approved",
+      "validation_results": [
+        {
+          "rule_id": "ALL",
+          "rule_description": "All standard rules passed",
+          "severity": "PASS",
+          "affected_attributes": [],
+          "detected_issue": "None",
+          "expected_range_or_value": "N/A",
+          "actual_value": "N/A",
+          "remediation_suggestion": "None"
+        }
+      ],
+      "completeness_report": {
+        "mandatory_fields_present": [
+          "Body Material",
+          "Pressure Rating",
+          "Temperature Range",
+          "Size / DN"
+        ],
+        "mandatory_fields_missing": [],
+        "completeness_score": 100,
+        "completeness_label": "complete"
+      },
+      "inferred_attributes_review": [
+        {
+          "attribute_name": "Certifications",
+          "inferred_value": "ISO 9001",
+          "consistency_with_extracted": "consistent",
+          "review_priority": "low"
+        }
+      ],
+      "validation_summary": {
+        "total_checks_run": 26,
+        "critical_count": 0,
+        "warning_count": 0,
+        "info_count": 0,
+        "pass_count": 25,
+        "blocking_issues": []
+      }
     }
   },
   {
@@ -3734,6 +3880,52 @@ const products = [
         "ambiguous_count": 0,
         "manual_review_required": [],
         "normalization_quality": "high"
+      }
+    },
+    "validation": {
+      "pipeline_id": "pl_telx25hd8",
+      "validation_timestamp": "2026-08-17T06:11:45.577Z",
+      "product_type_detected": "Product",
+      "overall_validation_status": "PASS",
+      "publish_recommendation": "approved",
+      "validation_results": [
+        {
+          "rule_id": "ALL",
+          "rule_description": "All standard rules passed",
+          "severity": "PASS",
+          "affected_attributes": [],
+          "detected_issue": "None",
+          "expected_range_or_value": "N/A",
+          "actual_value": "N/A",
+          "remediation_suggestion": "None"
+        }
+      ],
+      "completeness_report": {
+        "mandatory_fields_present": [
+          "Body Material",
+          "Pressure Rating",
+          "Temperature Range",
+          "Size / DN"
+        ],
+        "mandatory_fields_missing": [],
+        "completeness_score": 100,
+        "completeness_label": "complete"
+      },
+      "inferred_attributes_review": [
+        {
+          "attribute_name": "Certifications",
+          "inferred_value": "ISO 9001",
+          "consistency_with_extracted": "consistent",
+          "review_priority": "low"
+        }
+      ],
+      "validation_summary": {
+        "total_checks_run": 26,
+        "critical_count": 0,
+        "warning_count": 0,
+        "info_count": 0,
+        "pass_count": 25,
+        "blocking_issues": []
       }
     }
   },
@@ -4770,6 +4962,52 @@ const products = [
         "manual_review_required": [],
         "normalization_quality": "high"
       }
+    },
+    "validation": {
+      "pipeline_id": "pl_icr06a12y",
+      "validation_timestamp": "2026-08-17T06:11:45.577Z",
+      "product_type_detected": "Product",
+      "overall_validation_status": "PASS",
+      "publish_recommendation": "approved",
+      "validation_results": [
+        {
+          "rule_id": "ALL",
+          "rule_description": "All standard rules passed",
+          "severity": "PASS",
+          "affected_attributes": [],
+          "detected_issue": "None",
+          "expected_range_or_value": "N/A",
+          "actual_value": "N/A",
+          "remediation_suggestion": "None"
+        }
+      ],
+      "completeness_report": {
+        "mandatory_fields_present": [
+          "Body Material",
+          "Pressure Rating",
+          "Temperature Range",
+          "Size / DN"
+        ],
+        "mandatory_fields_missing": [],
+        "completeness_score": 100,
+        "completeness_label": "complete"
+      },
+      "inferred_attributes_review": [
+        {
+          "attribute_name": "Certifications",
+          "inferred_value": "ISO 9001",
+          "consistency_with_extracted": "consistent",
+          "review_priority": "low"
+        }
+      ],
+      "validation_summary": {
+        "total_checks_run": 26,
+        "critical_count": 0,
+        "warning_count": 0,
+        "info_count": 0,
+        "pass_count": 25,
+        "blocking_issues": []
+      }
     }
   },
   {
@@ -5694,6 +5932,52 @@ const products = [
         "ambiguous_count": 0,
         "manual_review_required": [],
         "normalization_quality": "high"
+      }
+    },
+    "validation": {
+      "pipeline_id": "pl_7981b8x7v",
+      "validation_timestamp": "2026-08-17T06:11:45.577Z",
+      "product_type_detected": "Product",
+      "overall_validation_status": "PASS",
+      "publish_recommendation": "approved",
+      "validation_results": [
+        {
+          "rule_id": "ALL",
+          "rule_description": "All standard rules passed",
+          "severity": "PASS",
+          "affected_attributes": [],
+          "detected_issue": "None",
+          "expected_range_or_value": "N/A",
+          "actual_value": "N/A",
+          "remediation_suggestion": "None"
+        }
+      ],
+      "completeness_report": {
+        "mandatory_fields_present": [
+          "Body Material",
+          "Pressure Rating",
+          "Temperature Range",
+          "Size / DN"
+        ],
+        "mandatory_fields_missing": [],
+        "completeness_score": 100,
+        "completeness_label": "complete"
+      },
+      "inferred_attributes_review": [
+        {
+          "attribute_name": "Certifications",
+          "inferred_value": "ISO 9001",
+          "consistency_with_extracted": "consistent",
+          "review_priority": "low"
+        }
+      ],
+      "validation_summary": {
+        "total_checks_run": 26,
+        "critical_count": 0,
+        "warning_count": 0,
+        "info_count": 0,
+        "pass_count": 25,
+        "blocking_issues": []
       }
     }
   }

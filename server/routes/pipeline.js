@@ -7,6 +7,7 @@ const preprocessor = require('../services/preprocessor');
 const chunker = require('../services/chunker');
 const extractor = require('../services/extractor');
 const enricher = require('../services/enricher');
+const validator = require('../services/validator');
 const cataloger = require('../services/cataloger');
 const normalizer = require('../services/normalizer');
 
@@ -100,6 +101,17 @@ router.post('/enrich', async (req, res, next) => {
     }
 });
 
+router.post('/validate', async (req, res, next) => {
+    try {
+        const { normalization, taxonomy } = req.body;
+        if (!normalization || !taxonomy) return res.status(400).json({ error: 'Normalization and taxonomy required' });
+        const validation = await validator.validateData(normalization, taxonomy);
+        res.json(validation);
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.post('/catalog', async (req, res, next) => {
     try {
         const { extraction, taxonomy } = req.body;
@@ -153,6 +165,10 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const enrichment = await enricher.enrichData(extraction, classification);
         const enrichEnd = Date.now();
         
+        const validateStart = Date.now();
+        const validation = await validator.validateData(normalization, enrichment);
+        const validateEnd = Date.now();
+        
         const catalogStart = Date.now();
         const cataloging = await cataloger.catalogData(extraction, enrichment);
         const catalogEnd = Date.now();
@@ -170,6 +186,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
                 extract: { result: extraction, duration_ms: extractEnd - extractStart },
                 normalize: { result: normalization, duration_ms: normalizeEnd - normalizeStart },
                 enrich: { result: enrichment, duration_ms: enrichEnd - enrichStart },
+                validate: { result: validation, duration_ms: validateEnd - validateStart },
                 catalog: { result: cataloging, duration_ms: catalogEnd - catalogStart }
             },
             total_duration_ms: totalEnd - startTime,

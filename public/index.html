@@ -156,12 +156,24 @@
       </div>
 
       <div class="stage-card glass idle" id="stage-7">
+        <div class="stage-icon">🛡️</div>
+        <div class="stage-info">
+          <h3>Validate</h3>
+          <span class="stage-status">Waiting...</span>
+        </div>
+        <div class="stage-duration" id="duration-7">--</div>
+      </div>
+      <div class="connector" id="conn-7">
+        <div class="connector-line"></div>
+      </div>
+
+      <div class="stage-card glass idle" id="stage-8">
         <div class="stage-icon">📝</div>
         <div class="stage-info">
           <h3>Catalog</h3>
           <span class="stage-status">Waiting...</span>
         </div>
-        <div class="stage-duration" id="duration-7">--</div>
+        <div class="stage-duration" id="duration-8">--</div>
       </div>
     </section>
 
@@ -174,8 +186,8 @@
         <button class="tab-btn" data-target="tab-extraction">Raw Extraction</button>
         <button class="tab-btn" data-target="tab-normalization">Normalization</button>
         <button class="tab-btn" data-target="tab-enrichment">Taxonomy (Enrich)</button>
+        <button class="tab-btn" data-target="tab-validation">Validation Report</button>
         <button class="tab-btn" data-target="tab-cataloging">Commercial Content</button>
-        <button class="tab-btn" data-target="tab-quality">Data Quality</button>
         <button class="tab-btn" data-target="tab-export">Export</button>
         <div class="tab-indicator"></div>
       </div>
@@ -285,45 +297,40 @@
           <div id="json-viewer-catalog" class="json-viewer-container"></div>
         </div>
 
-        <!-- Quality Tab -->
-        <div class="tab-panel" id="tab-quality">
-          <div class="quality-grid">
-            <div class="gauge-card">
-              <h4>Overall Confidence</h4>
-              <div class="gauge-container">
+        <!-- Validation Tab -->
+        <div class="tab-panel" id="tab-validation">
+          <div class="validation-summary-grid">
+            <div class="val-card">
+              <h4>Overall Status</h4>
+              <div id="val-status-badge" class="badge-large">PASS</div>
+            </div>
+            <div class="val-card">
+              <h4>Completeness Score</h4>
+              <div class="gauge-container" style="height: 60px;">
                 <svg viewBox="0 0 100 50" class="gauge">
                   <path class="gauge-bg" d="M 10 50 A 40 40 0 0 1 90 50" />
-                  <path class="gauge-fill" id="quality-gauge-fill" d="M 10 50 A 40 40 0 0 1 90 50" stroke-dasharray="125" stroke-dashoffset="125" />
+                  <path class="gauge-fill" id="val-completeness-gauge" d="M 10 50 A 40 40 0 0 1 90 50" stroke-dasharray="125" stroke-dashoffset="125" />
                 </svg>
-                <div class="gauge-value" id="quality-score">0</div>
+                <div class="gauge-value" id="val-completeness-score">0%</div>
               </div>
             </div>
-            
-            <div class="stats-card">
-              <h4>Extraction Stats</h4>
-              <ul class="stats-list">
-                <li>
-                  <span class="stat-label">Total Fields Extracted</span>
-                  <span class="stat-value" id="stat-fields">0</span>
-                </li>
-                <li>
-                  <span class="stat-label">Inferred Fields</span>
-                  <span class="stat-value" id="stat-inferred">0</span>
-                </li>
-                <li>
-                  <span class="stat-label">Missing Critical Fields</span>
-                  <span class="stat-value" id="stat-missing">0</span>
-                </li>
-              </ul>
+            <div class="val-card">
+              <h4>Issues</h4>
+              <div class="issues-count">
+                <span class="text-danger"><strong id="val-crit-count">0</strong> CRITICAL</span>
+                <span class="text-warning"><strong id="val-warn-count">0</strong> WARNING</span>
+              </div>
             </div>
           </div>
           
-          <div class="warnings-box">
-            <h4>Warnings & Recommendations</h4>
-            <div id="quality-warnings">
-              <!-- Warnings injected here -->
+          <div class="toolbar" style="margin-top: 1rem;">
+            <h4>Detailed Validation JSON</h4>
+            <div class="toolbar-actions">
+              <button class="btn-icon" id="collapse-validate" title="Collapse All">[-]</button>
+              <button class="btn-icon" id="expand-validate" title="Expand All">[+]</button>
             </div>
           </div>
+          <div id="json-viewer-validate" class="json-viewer-container"></div>
         </div>
 
         <!-- Export Tab -->
