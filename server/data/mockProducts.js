@@ -1,5 +1,5 @@
 // Mock Data for DocForge
-// Contains full payloads for all stages including Manufacturer Web Enrichment
+// Contains full payloads for all stages including Digital Assets Manager
 const products = [
   {
     "keywords": [
@@ -3968,6 +3968,34 @@ const products = [
       },
       "review_required": true,
       "review_reason": "UNVERIFIED_DOMAIN_REQUIRES_REVIEW"
+    },
+    "digitalAssets": {
+      "status": "SOURCE_NOT_FOUND",
+      "gap_manifest": [
+        {
+          "gap_type": "missing_primary_image",
+          "severity": "CRITICAL",
+          "requirement": "Mandatory 1:1 High-Res Hero Image"
+        },
+        {
+          "gap_type": "missing_alternate_angles",
+          "severity": "OPTIONAL",
+          "requirement": "At least 1 alternate angle or dimensional diagram recommended"
+        }
+      ],
+      "source_resolution": {
+        "source_found": false,
+        "reason": "manufacturer_domain_unverified",
+        "review_required": true,
+        "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
+      },
+      "digital_assets_portfolio": {
+        "primary_image": null,
+        "alternate_images": [],
+        "total_compliant_assets": 0
+      },
+      "review_required": true,
+      "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
     }
   },
   {
@@ -7747,6 +7775,34 @@ const products = [
       },
       "review_required": true,
       "review_reason": "UNVERIFIED_DOMAIN_REQUIRES_REVIEW"
+    },
+    "digitalAssets": {
+      "status": "SOURCE_NOT_FOUND",
+      "gap_manifest": [
+        {
+          "gap_type": "missing_primary_image",
+          "severity": "CRITICAL",
+          "requirement": "Mandatory 1:1 High-Res Hero Image"
+        },
+        {
+          "gap_type": "missing_alternate_angles",
+          "severity": "OPTIONAL",
+          "requirement": "At least 1 alternate angle or dimensional diagram recommended"
+        }
+      ],
+      "source_resolution": {
+        "source_found": false,
+        "reason": "manufacturer_domain_unverified",
+        "review_required": true,
+        "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
+      },
+      "digital_assets_portfolio": {
+        "primary_image": null,
+        "alternate_images": [],
+        "total_compliant_assets": 0
+      },
+      "review_required": true,
+      "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
     }
   },
   {
@@ -11286,6 +11342,34 @@ const products = [
       },
       "review_required": true,
       "review_reason": "UNVERIFIED_DOMAIN_REQUIRES_REVIEW"
+    },
+    "digitalAssets": {
+      "status": "SOURCE_NOT_FOUND",
+      "gap_manifest": [
+        {
+          "gap_type": "missing_primary_image",
+          "severity": "CRITICAL",
+          "requirement": "Mandatory 1:1 High-Res Hero Image"
+        },
+        {
+          "gap_type": "missing_alternate_angles",
+          "severity": "OPTIONAL",
+          "requirement": "At least 1 alternate angle or dimensional diagram recommended"
+        }
+      ],
+      "source_resolution": {
+        "source_found": false,
+        "reason": "manufacturer_domain_unverified",
+        "review_required": true,
+        "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
+      },
+      "digital_assets_portfolio": {
+        "primary_image": null,
+        "alternate_images": [],
+        "total_compliant_assets": 0
+      },
+      "review_required": true,
+      "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
     }
   },
   {
@@ -14591,6 +14675,34 @@ const products = [
       },
       "review_required": true,
       "review_reason": "UNVERIFIED_DOMAIN_REQUIRES_REVIEW"
+    },
+    "digitalAssets": {
+      "status": "SOURCE_NOT_FOUND",
+      "gap_manifest": [
+        {
+          "gap_type": "missing_primary_image",
+          "severity": "CRITICAL",
+          "requirement": "Mandatory 1:1 High-Res Hero Image"
+        },
+        {
+          "gap_type": "missing_alternate_angles",
+          "severity": "OPTIONAL",
+          "requirement": "At least 1 alternate angle or dimensional diagram recommended"
+        }
+      ],
+      "source_resolution": {
+        "source_found": false,
+        "reason": "manufacturer_domain_unverified",
+        "review_required": true,
+        "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
+      },
+      "digital_assets_portfolio": {
+        "primary_image": null,
+        "alternate_images": [],
+        "total_compliant_assets": 0
+      },
+      "review_required": true,
+      "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
     }
   },
   {
@@ -18276,6 +18388,34 @@ const products = [
       },
       "review_required": true,
       "review_reason": "UNVERIFIED_DOMAIN_REQUIRES_REVIEW"
+    },
+    "digitalAssets": {
+      "status": "SOURCE_NOT_FOUND",
+      "gap_manifest": [
+        {
+          "gap_type": "missing_primary_image",
+          "severity": "CRITICAL",
+          "requirement": "Mandatory 1:1 High-Res Hero Image"
+        },
+        {
+          "gap_type": "missing_alternate_angles",
+          "severity": "OPTIONAL",
+          "requirement": "At least 1 alternate angle or dimensional diagram recommended"
+        }
+      ],
+      "source_resolution": {
+        "source_found": false,
+        "reason": "manufacturer_domain_unverified",
+        "review_required": true,
+        "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
+      },
+      "digital_assets_portfolio": {
+        "primary_image": null,
+        "alternate_images": [],
+        "total_compliant_assets": 0
+      },
+      "review_required": true,
+      "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
     }
   },
   {
@@ -21741,6 +21881,34 @@ const products = [
       },
       "review_required": true,
       "review_reason": "UNVERIFIED_DOMAIN_REQUIRES_REVIEW"
+    },
+    "digitalAssets": {
+      "status": "SOURCE_NOT_FOUND",
+      "gap_manifest": [
+        {
+          "gap_type": "missing_primary_image",
+          "severity": "CRITICAL",
+          "requirement": "Mandatory 1:1 High-Res Hero Image"
+        },
+        {
+          "gap_type": "missing_alternate_angles",
+          "severity": "OPTIONAL",
+          "requirement": "At least 1 alternate angle or dimensional diagram recommended"
+        }
+      ],
+      "source_resolution": {
+        "source_found": false,
+        "reason": "manufacturer_domain_unverified",
+        "review_required": true,
+        "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
+      },
+      "digital_assets_portfolio": {
+        "primary_image": null,
+        "alternate_images": [],
+        "total_compliant_assets": 0
+      },
+      "review_required": true,
+      "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
     }
   }
 ];

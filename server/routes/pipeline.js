@@ -23,6 +23,7 @@ const fractionConverter = require('../services/fractionConverter');
 const dedupEngine = require('../services/dedupEngine');
 const module0A_dedup = require('../services/module0A_dedup');
 const mfgWebEnricher = require('../services/mfgWebEnricher');
+const digitalAssetsManager = require('../services/digitalAssetsManager');
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/', limits: { fileSize: 20 * 1024 * 1024 } });
@@ -291,6 +292,16 @@ router.post('/web-enrich', async (req, res, next) => {
     }
 });
 
+router.post('/digital-assets', async (req, res, next) => {
+    try {
+        const { productData } = req.body;
+        const result = await digitalAssetsManager.processDigitalAssets(productData);
+        res.json(result);
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
     try {
         const startTime = Date.now();
@@ -385,6 +396,10 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const webEnrichStart = Date.now();
         const webEnrichment = await mfgWebEnricher.enrichFromManufacturerWeb(extraction);
         const webEnrichEnd = Date.now();
+
+        const assetsStart = Date.now();
+        const digitalAssets = await digitalAssetsManager.processDigitalAssets(extraction);
+        const assetsEnd = Date.now();
         
         const dashboardStart = Date.now();
         const dashboard = await dashboardPrep.prepareDashboard(chunking, cataloging, score, reasoning);
@@ -415,6 +430,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
                 catalog: { result: cataloging, duration_ms: catalogEnd - catalogStart },
                 score: { result: score, duration_ms: scoreEnd - scoreStart },
                 webEnrichment: { result: webEnrichment, duration_ms: webEnrichEnd - webEnrichStart },
+                digitalAssets: { result: digitalAssets, duration_ms: assetsEnd - assetsStart },
                 dashboard: { result: dashboard, duration_ms: dashboardEnd - dashboardStart }
             },
             total_duration_ms: totalEnd - startTime,
