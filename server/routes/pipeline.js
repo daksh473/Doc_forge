@@ -18,6 +18,7 @@ const reviewer = require('../services/reviewer');
 const exporter = require('../services/exporter');
 const lovEngine = require('../services/lovEngine');
 const mfgNormalizer = require('../services/mfgNormalizer');
+const uomValidator = require('../services/uomValidator');
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/', limits: { fileSize: 20 * 1024 * 1024 } });
@@ -220,6 +221,16 @@ router.post('/mfg', async (req, res, next) => {
     }
 });
 
+router.post('/uom', async (req, res, next) => {
+    try {
+        const { normalizedData } = req.body;
+        const result = await uomValidator.validateUOM(normalizedData);
+        res.json(result);
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
     try {
         const startTime = Date.now();
@@ -271,6 +282,10 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         });
         const mfgEnd = Date.now();
 
+        const uomStart = Date.now();
+        const uomValid = await uomValidator.validateUOM(normalization || extraction);
+        const uomEnd = Date.now();
+
         const enrichStart = Date.now();
         const enrichment = await enricher.enrichData(extraction, classification);
         const enrichEnd = Date.now();
@@ -313,6 +328,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
                 normalize: { result: normalization, duration_ms: normalizeEnd - normalizeStart },
                 lov: { result: lovMatching, duration_ms: lovEnd - lovStart },
                 mfg: { result: mfgNormal, duration_ms: mfgEnd - mfgStart },
+                uom: { result: uomValid, duration_ms: uomEnd - uomStart },
                 enrich: { result: enrichment, duration_ms: enrichEnd - enrichStart },
                 validate: { result: validation, duration_ms: validateEnd - validateStart },
                 ground: { result: grounding, duration_ms: groundEnd - groundStart },

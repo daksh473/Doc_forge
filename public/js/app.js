@@ -131,6 +131,10 @@ window.DocForge = {
     document.getElementById('collapse-mfg')?.addEventListener('click', () => this.viewers?.mfg?.collapseAll());
     document.getElementById('search-mfg')?.addEventListener('input', (e) => this.viewers?.mfg?.search(e.target.value));
 
+    document.getElementById('expand-uom')?.addEventListener('click', () => this.viewers?.uom?.expandAll());
+    document.getElementById('collapse-uom')?.addEventListener('click', () => this.viewers?.uom?.collapseAll());
+    document.getElementById('search-uom')?.addEventListener('input', (e) => this.viewers?.uom?.search(e.target.value));
+
     document.getElementById('expand-validate')?.addEventListener('click', () => this.viewers?.validate?.expandAll());
     document.getElementById('collapse-validate')?.addEventListener('click', () => this.viewers?.validate?.collapseAll());
     document.getElementById('search-validate')?.addEventListener('input', (e) => this.viewers?.validate?.search(e.target.value));
@@ -440,6 +444,7 @@ window.DocForge = {
     const normalization = stages.normalize ? stages.normalize.result : null;
     const lov = stages.lov ? stages.lov.result : null;
     const mfg = stages.mfg ? stages.mfg.result : null;
+    const uom = stages.uom ? stages.uom.result : null;
     const enrichment = stages.enrich ? stages.enrich.result : null;
     const validation = stages.validate ? stages.validate.result : null;
     const grounding = stages.ground ? stages.ground.result : null;
@@ -476,6 +481,7 @@ window.DocForge = {
       normalization: normalization,
       lov: lov,
       mfg: mfg,
+      uom: uom,
       enrichment: enrichment,
       validation: validation,
       grounding: grounding,
@@ -524,6 +530,7 @@ window.DocForge = {
     if (data.normalization) this.renderNormalization(data.normalization);
     if (data.lov) this.renderLOV(data.lov);
     if (data.mfg) this.renderMfg(data.mfg);
+    if (data.uom) this.renderUOM(data.uom);
     if (data.enrichment) this.renderEnrichment(data.enrichment);
     if (data.validation) this.renderValidation(data.validation);
     if (data.grounding) this.renderGrounding(data.grounding);
@@ -644,6 +651,19 @@ window.DocForge = {
       showLineNumbers: true
     });
     this.viewers.mfg.render();
+  },
+
+  renderUOM(data) {
+    const container = document.getElementById('json-viewer-uom');
+    if (!container) return;
+    container.innerHTML = '';
+    this.viewers = this.viewers || {};
+    this.viewers.uom = new JsonViewer(container, data, {
+      collapsedDepth: 2,
+      highlightInferred: false,
+      showLineNumbers: true
+    });
+    this.viewers.uom.render();
   },
 
   renderEnrichment(data) {
@@ -1191,7 +1211,7 @@ window.DocForge = {
     this.state.currentSlide = 0;
     this.slideTitles = [
       'Classification', 'Pre-Processing', 'Chunking', 'Raw Extraction',
-      'Normalization', 'LOV Verification', 'Mfg & Brand', 'Taxonomy (Enrich)', 'Validation Report', 'Source Grounding',
+      'Normalization', 'LOV Verification', 'Mfg & Brand', 'UOM Validation', 'Taxonomy (Enrich)', 'Validation Report', 'Source Grounding',
       'AI Reasoning', 'Commercial Content', 'Quality Score', 'Review Dashboard',
       'Final Approval', 'Export'
     ];

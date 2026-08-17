@@ -1,5 +1,5 @@
 // Mock Data for DocForge
-// Contains full payloads for all stages including Manufacturer & Brand Normalisation
+// Contains full payloads for all stages including UOM Validation
 const products = [
   {
     "keywords": [
@@ -1638,6 +1638,150 @@ const products = [
         "needs_supplier_contact": true,
         "ready_for_pipeline": false
       }
+    },
+    "uom": {
+      "pipeline_id": "pl_z7qwk2f7s",
+      "uom_validation_timestamp": "2026-08-17T08:22:04.516Z",
+      "validated_units": [
+        {
+          "attribute_name": "Size",
+          "raw_unit_string": "inch",
+          "numeric_value": "1/2",
+          "measurement_type": "Length/Size",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "IN",
+          "approved_full_value": "1/2 IN",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "1/2 inch",
+          "spacing_after": "1/2 IN",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant 'inch' to approved UOM 'IN'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Pressure Rating",
+          "raw_unit_string": "psi",
+          "numeric_value": "1000",
+          "measurement_type": "Pressure",
+          "match_strategy": "exact",
+          "approved_abbreviation": "PSI",
+          "approved_full_value": "1000 PSI",
+          "confidence": 100,
+          "uom_status": "approved",
+          "spacing_corrected": false,
+          "spacing_before": "1000 psi",
+          "spacing_after": "1000 PSI",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": false,
+          "correction_log": null,
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Temperature Limit",
+          "raw_unit_string": "°F",
+          "numeric_value": "0-200",
+          "measurement_type": "Temperature",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "DEG F",
+          "approved_full_value": "0 DEG F to 200 DEG F",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "0-200 °F",
+          "spacing_after": "0 DEG F to 200 DEG F",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "corrected",
+            "range_format": "corrected"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant '°F' to approved UOM 'DEG F'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Weight",
+          "raw_unit_string": "lbs",
+          "numeric_value": "3.5",
+          "measurement_type": "Weight/Mass",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "LB",
+          "approved_full_value": "3.5 LB",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "3.5 lbs",
+          "spacing_after": "3.5 LB",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant 'lbs' to approved UOM 'LB'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Custom Resistance",
+          "raw_unit_string": "custom_ohms",
+          "numeric_value": "50",
+          "measurement_type": "unknown",
+          "match_strategy": "no_match",
+          "approved_abbreviation": null,
+          "approved_full_value": null,
+          "confidence": 0,
+          "uom_status": "NO_APPROVED_FORM",
+          "spacing_corrected": false,
+          "spacing_before": "50 custom_ohms",
+          "spacing_after": "50 custom_ohms",
+          "house_style_checks": {
+            "uppercase": "corrected",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": false,
+          "correction_log": null,
+          "severity": "warning",
+          "review_flag": "NO_APPROVED_FORM"
+        }
+      ],
+      "uom_validation_summary": {
+        "total_units_validated": 5,
+        "exact_match_count": 1,
+        "auto_corrected_count": 3,
+        "review_required_count": 1,
+        "no_approved_form_count": 1,
+        "spacing_corrections_count": 0,
+        "house_style_corrections_count": 3,
+        "uom_compliance_rate": "80%",
+        "uom_compliance_grade": "C",
+        "critical_issues": [],
+        "all_units_compliant": false
+      }
     }
   },
   {
@@ -3182,6 +3326,150 @@ const products = [
         "needs_supplier_contact": true,
         "ready_for_pipeline": false
       }
+    },
+    "uom": {
+      "pipeline_id": "pl_pc9rhn2ma",
+      "uom_validation_timestamp": "2026-08-17T08:22:05.722Z",
+      "validated_units": [
+        {
+          "attribute_name": "Size",
+          "raw_unit_string": "inch",
+          "numeric_value": "1/2",
+          "measurement_type": "Length/Size",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "IN",
+          "approved_full_value": "1/2 IN",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "1/2 inch",
+          "spacing_after": "1/2 IN",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant 'inch' to approved UOM 'IN'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Pressure Rating",
+          "raw_unit_string": "psi",
+          "numeric_value": "1000",
+          "measurement_type": "Pressure",
+          "match_strategy": "exact",
+          "approved_abbreviation": "PSI",
+          "approved_full_value": "1000 PSI",
+          "confidence": 100,
+          "uom_status": "approved",
+          "spacing_corrected": false,
+          "spacing_before": "1000 psi",
+          "spacing_after": "1000 PSI",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": false,
+          "correction_log": null,
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Temperature Limit",
+          "raw_unit_string": "°F",
+          "numeric_value": "0-200",
+          "measurement_type": "Temperature",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "DEG F",
+          "approved_full_value": "0 DEG F to 200 DEG F",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "0-200 °F",
+          "spacing_after": "0 DEG F to 200 DEG F",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "corrected",
+            "range_format": "corrected"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant '°F' to approved UOM 'DEG F'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Weight",
+          "raw_unit_string": "lbs",
+          "numeric_value": "3.5",
+          "measurement_type": "Weight/Mass",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "LB",
+          "approved_full_value": "3.5 LB",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "3.5 lbs",
+          "spacing_after": "3.5 LB",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant 'lbs' to approved UOM 'LB'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Custom Resistance",
+          "raw_unit_string": "custom_ohms",
+          "numeric_value": "50",
+          "measurement_type": "unknown",
+          "match_strategy": "no_match",
+          "approved_abbreviation": null,
+          "approved_full_value": null,
+          "confidence": 0,
+          "uom_status": "NO_APPROVED_FORM",
+          "spacing_corrected": false,
+          "spacing_before": "50 custom_ohms",
+          "spacing_after": "50 custom_ohms",
+          "house_style_checks": {
+            "uppercase": "corrected",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": false,
+          "correction_log": null,
+          "severity": "warning",
+          "review_flag": "NO_APPROVED_FORM"
+        }
+      ],
+      "uom_validation_summary": {
+        "total_units_validated": 5,
+        "exact_match_count": 1,
+        "auto_corrected_count": 3,
+        "review_required_count": 1,
+        "no_approved_form_count": 1,
+        "spacing_corrections_count": 0,
+        "house_style_corrections_count": 3,
+        "uom_compliance_rate": "80%",
+        "uom_compliance_grade": "C",
+        "critical_issues": [],
+        "all_units_compliant": false
+      }
     }
   },
   {
@@ -4606,6 +4894,150 @@ const products = [
         "needs_supplier_contact": true,
         "ready_for_pipeline": false
       }
+    },
+    "uom": {
+      "pipeline_id": "pl_0n8ktr60u",
+      "uom_validation_timestamp": "2026-08-17T08:22:06.926Z",
+      "validated_units": [
+        {
+          "attribute_name": "Size",
+          "raw_unit_string": "inch",
+          "numeric_value": "1/2",
+          "measurement_type": "Length/Size",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "IN",
+          "approved_full_value": "1/2 IN",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "1/2 inch",
+          "spacing_after": "1/2 IN",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant 'inch' to approved UOM 'IN'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Pressure Rating",
+          "raw_unit_string": "psi",
+          "numeric_value": "1000",
+          "measurement_type": "Pressure",
+          "match_strategy": "exact",
+          "approved_abbreviation": "PSI",
+          "approved_full_value": "1000 PSI",
+          "confidence": 100,
+          "uom_status": "approved",
+          "spacing_corrected": false,
+          "spacing_before": "1000 psi",
+          "spacing_after": "1000 PSI",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": false,
+          "correction_log": null,
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Temperature Limit",
+          "raw_unit_string": "°F",
+          "numeric_value": "0-200",
+          "measurement_type": "Temperature",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "DEG F",
+          "approved_full_value": "0 DEG F to 200 DEG F",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "0-200 °F",
+          "spacing_after": "0 DEG F to 200 DEG F",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "corrected",
+            "range_format": "corrected"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant '°F' to approved UOM 'DEG F'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Weight",
+          "raw_unit_string": "lbs",
+          "numeric_value": "3.5",
+          "measurement_type": "Weight/Mass",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "LB",
+          "approved_full_value": "3.5 LB",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "3.5 lbs",
+          "spacing_after": "3.5 LB",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant 'lbs' to approved UOM 'LB'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Custom Resistance",
+          "raw_unit_string": "custom_ohms",
+          "numeric_value": "50",
+          "measurement_type": "unknown",
+          "match_strategy": "no_match",
+          "approved_abbreviation": null,
+          "approved_full_value": null,
+          "confidence": 0,
+          "uom_status": "NO_APPROVED_FORM",
+          "spacing_corrected": false,
+          "spacing_before": "50 custom_ohms",
+          "spacing_after": "50 custom_ohms",
+          "house_style_checks": {
+            "uppercase": "corrected",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": false,
+          "correction_log": null,
+          "severity": "warning",
+          "review_flag": "NO_APPROVED_FORM"
+        }
+      ],
+      "uom_validation_summary": {
+        "total_units_validated": 5,
+        "exact_match_count": 1,
+        "auto_corrected_count": 3,
+        "review_required_count": 1,
+        "no_approved_form_count": 1,
+        "spacing_corrections_count": 0,
+        "house_style_corrections_count": 3,
+        "uom_compliance_rate": "80%",
+        "uom_compliance_grade": "C",
+        "critical_issues": [],
+        "all_units_compliant": false
+      }
     }
   },
   {
@@ -5912,6 +6344,150 @@ const products = [
         "reviewer_action": "CONTACT_SUPPLIER",
         "needs_supplier_contact": true,
         "ready_for_pipeline": false
+      }
+    },
+    "uom": {
+      "pipeline_id": "pl_ihlxzb973",
+      "uom_validation_timestamp": "2026-08-17T08:22:08.137Z",
+      "validated_units": [
+        {
+          "attribute_name": "Size",
+          "raw_unit_string": "inch",
+          "numeric_value": "1/2",
+          "measurement_type": "Length/Size",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "IN",
+          "approved_full_value": "1/2 IN",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "1/2 inch",
+          "spacing_after": "1/2 IN",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant 'inch' to approved UOM 'IN'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Pressure Rating",
+          "raw_unit_string": "psi",
+          "numeric_value": "1000",
+          "measurement_type": "Pressure",
+          "match_strategy": "exact",
+          "approved_abbreviation": "PSI",
+          "approved_full_value": "1000 PSI",
+          "confidence": 100,
+          "uom_status": "approved",
+          "spacing_corrected": false,
+          "spacing_before": "1000 psi",
+          "spacing_after": "1000 PSI",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": false,
+          "correction_log": null,
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Temperature Limit",
+          "raw_unit_string": "°F",
+          "numeric_value": "0-200",
+          "measurement_type": "Temperature",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "DEG F",
+          "approved_full_value": "0 DEG F to 200 DEG F",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "0-200 °F",
+          "spacing_after": "0 DEG F to 200 DEG F",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "corrected",
+            "range_format": "corrected"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant '°F' to approved UOM 'DEG F'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Weight",
+          "raw_unit_string": "lbs",
+          "numeric_value": "3.5",
+          "measurement_type": "Weight/Mass",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "LB",
+          "approved_full_value": "3.5 LB",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "3.5 lbs",
+          "spacing_after": "3.5 LB",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant 'lbs' to approved UOM 'LB'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Custom Resistance",
+          "raw_unit_string": "custom_ohms",
+          "numeric_value": "50",
+          "measurement_type": "unknown",
+          "match_strategy": "no_match",
+          "approved_abbreviation": null,
+          "approved_full_value": null,
+          "confidence": 0,
+          "uom_status": "NO_APPROVED_FORM",
+          "spacing_corrected": false,
+          "spacing_before": "50 custom_ohms",
+          "spacing_after": "50 custom_ohms",
+          "house_style_checks": {
+            "uppercase": "corrected",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": false,
+          "correction_log": null,
+          "severity": "warning",
+          "review_flag": "NO_APPROVED_FORM"
+        }
+      ],
+      "uom_validation_summary": {
+        "total_units_validated": 5,
+        "exact_match_count": 1,
+        "auto_corrected_count": 3,
+        "review_required_count": 1,
+        "no_approved_form_count": 1,
+        "spacing_corrections_count": 0,
+        "house_style_corrections_count": 3,
+        "uom_compliance_rate": "80%",
+        "uom_compliance_grade": "C",
+        "critical_issues": [],
+        "all_units_compliant": false
       }
     }
   },
@@ -7410,6 +7986,150 @@ const products = [
         "needs_supplier_contact": true,
         "ready_for_pipeline": false
       }
+    },
+    "uom": {
+      "pipeline_id": "pl_vss51f239",
+      "uom_validation_timestamp": "2026-08-17T08:22:09.339Z",
+      "validated_units": [
+        {
+          "attribute_name": "Size",
+          "raw_unit_string": "inch",
+          "numeric_value": "1/2",
+          "measurement_type": "Length/Size",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "IN",
+          "approved_full_value": "1/2 IN",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "1/2 inch",
+          "spacing_after": "1/2 IN",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant 'inch' to approved UOM 'IN'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Pressure Rating",
+          "raw_unit_string": "psi",
+          "numeric_value": "1000",
+          "measurement_type": "Pressure",
+          "match_strategy": "exact",
+          "approved_abbreviation": "PSI",
+          "approved_full_value": "1000 PSI",
+          "confidence": 100,
+          "uom_status": "approved",
+          "spacing_corrected": false,
+          "spacing_before": "1000 psi",
+          "spacing_after": "1000 PSI",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": false,
+          "correction_log": null,
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Temperature Limit",
+          "raw_unit_string": "°F",
+          "numeric_value": "0-200",
+          "measurement_type": "Temperature",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "DEG F",
+          "approved_full_value": "0 DEG F to 200 DEG F",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "0-200 °F",
+          "spacing_after": "0 DEG F to 200 DEG F",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "corrected",
+            "range_format": "corrected"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant '°F' to approved UOM 'DEG F'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Weight",
+          "raw_unit_string": "lbs",
+          "numeric_value": "3.5",
+          "measurement_type": "Weight/Mass",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "LB",
+          "approved_full_value": "3.5 LB",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "3.5 lbs",
+          "spacing_after": "3.5 LB",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant 'lbs' to approved UOM 'LB'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Custom Resistance",
+          "raw_unit_string": "custom_ohms",
+          "numeric_value": "50",
+          "measurement_type": "unknown",
+          "match_strategy": "no_match",
+          "approved_abbreviation": null,
+          "approved_full_value": null,
+          "confidence": 0,
+          "uom_status": "NO_APPROVED_FORM",
+          "spacing_corrected": false,
+          "spacing_before": "50 custom_ohms",
+          "spacing_after": "50 custom_ohms",
+          "house_style_checks": {
+            "uppercase": "corrected",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": false,
+          "correction_log": null,
+          "severity": "warning",
+          "review_flag": "NO_APPROVED_FORM"
+        }
+      ],
+      "uom_validation_summary": {
+        "total_units_validated": 5,
+        "exact_match_count": 1,
+        "auto_corrected_count": 3,
+        "review_required_count": 1,
+        "no_approved_form_count": 1,
+        "spacing_corrections_count": 0,
+        "house_style_corrections_count": 3,
+        "uom_compliance_rate": "80%",
+        "uom_compliance_grade": "C",
+        "critical_issues": [],
+        "all_units_compliant": false
+      }
     }
   },
   {
@@ -8796,6 +9516,150 @@ const products = [
         "reviewer_action": "CONTACT_SUPPLIER",
         "needs_supplier_contact": true,
         "ready_for_pipeline": false
+      }
+    },
+    "uom": {
+      "pipeline_id": "pl_a95q8qvss",
+      "uom_validation_timestamp": "2026-08-17T08:22:10.546Z",
+      "validated_units": [
+        {
+          "attribute_name": "Size",
+          "raw_unit_string": "inch",
+          "numeric_value": "1/2",
+          "measurement_type": "Length/Size",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "IN",
+          "approved_full_value": "1/2 IN",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "1/2 inch",
+          "spacing_after": "1/2 IN",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant 'inch' to approved UOM 'IN'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Pressure Rating",
+          "raw_unit_string": "psi",
+          "numeric_value": "1000",
+          "measurement_type": "Pressure",
+          "match_strategy": "exact",
+          "approved_abbreviation": "PSI",
+          "approved_full_value": "1000 PSI",
+          "confidence": 100,
+          "uom_status": "approved",
+          "spacing_corrected": false,
+          "spacing_before": "1000 psi",
+          "spacing_after": "1000 PSI",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": false,
+          "correction_log": null,
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Temperature Limit",
+          "raw_unit_string": "°F",
+          "numeric_value": "0-200",
+          "measurement_type": "Temperature",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "DEG F",
+          "approved_full_value": "0 DEG F to 200 DEG F",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "0-200 °F",
+          "spacing_after": "0 DEG F to 200 DEG F",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "corrected",
+            "range_format": "corrected"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant '°F' to approved UOM 'DEG F'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Weight",
+          "raw_unit_string": "lbs",
+          "numeric_value": "3.5",
+          "measurement_type": "Weight/Mass",
+          "match_strategy": "variant_mapping",
+          "approved_abbreviation": "LB",
+          "approved_full_value": "3.5 LB",
+          "confidence": 95,
+          "uom_status": "corrected",
+          "spacing_corrected": false,
+          "spacing_before": "3.5 lbs",
+          "spacing_after": "3.5 LB",
+          "house_style_checks": {
+            "uppercase": "pass",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": true,
+          "correction_log": "Mapped variant 'lbs' to approved UOM 'LB'.",
+          "severity": "ok",
+          "review_flag": null
+        },
+        {
+          "attribute_name": "Custom Resistance",
+          "raw_unit_string": "custom_ohms",
+          "numeric_value": "50",
+          "measurement_type": "unknown",
+          "match_strategy": "no_match",
+          "approved_abbreviation": null,
+          "approved_full_value": null,
+          "confidence": 0,
+          "uom_status": "NO_APPROVED_FORM",
+          "spacing_corrected": false,
+          "spacing_before": "50 custom_ohms",
+          "spacing_after": "50 custom_ohms",
+          "house_style_checks": {
+            "uppercase": "corrected",
+            "space_between": "pass",
+            "no_period": "pass",
+            "degree_symbol": "na",
+            "range_format": "na"
+          },
+          "auto_corrected": false,
+          "correction_log": null,
+          "severity": "warning",
+          "review_flag": "NO_APPROVED_FORM"
+        }
+      ],
+      "uom_validation_summary": {
+        "total_units_validated": 5,
+        "exact_match_count": 1,
+        "auto_corrected_count": 3,
+        "review_required_count": 1,
+        "no_approved_form_count": 1,
+        "spacing_corrections_count": 0,
+        "house_style_corrections_count": 3,
+        "uom_compliance_rate": "80%",
+        "uom_compliance_grade": "C",
+        "critical_issues": [],
+        "all_units_compliant": false
       }
     }
   }
