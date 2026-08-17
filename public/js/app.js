@@ -187,6 +187,9 @@ window.DocForge = {
     // ── Export Controls ──
     document.getElementById('select-export-format')?.addEventListener('change', () => this.updateExportView());
     document.getElementById('btn-download-json')?.addEventListener('click', () => this.downloadExport());
+    document.getElementById('btn-download-batch-csv')?.addEventListener('click', () => {
+      window.location.href = '/api/export/batch';
+    });
     document.getElementById('btn-copy-json')?.addEventListener('click', () => {
       const text = document.getElementById('export-textarea').value;
       navigator.clipboard.writeText(text).then(() => {

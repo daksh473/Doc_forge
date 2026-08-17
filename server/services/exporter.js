@@ -1,6 +1,6 @@
 /**
  * Industrial Catalog Export Engine Service
- * Transforms approved product data into 5 target export formats:
+ * Transforms real approved product data / job objects into 5 target export formats:
  * - json_standard
  * - csv_flat
  * - pim_akeneo
@@ -8,11 +8,161 @@
  * - woocommerce
  */
 
+function extractProductRecord(approvedData) {
+  const jobId = approvedData.jobId || approvedData.pipeline_id || ("PL_" + Date.now());
+  const stages = approvedData.stages || {};
+  
+  const extraction = stages.extract?.result || approvedData.extraction || {};
+  const normalization = stages.normalize?.result || approvedData.normalization || {};
+  const taxonomy = stages.classify?.result || approvedData.taxonomy || {};
+  const cataloging = stages.catalog?.result || approvedData.cataloging || {};
+  const validation = stages.validate?.result || approvedData.validation || {};
+  const scoring = stages.score?.result || approvedData.score?.result || approvedData.scoring || {};
+  const mod0a = stages.module0a?.result || approvedData.module0a || {};
+  const mfg = stages.mfg?.result || approvedData.mfg || {};
+
+  const originalRow = approvedData.originalRow || {};
+
+  const productIdent = extraction.product_identification || {};
+  const title = cataloging.commercial_catalog?.product_title || productIdent.raw_title || originalRow.Part_Desc || "Industrial Product";
+  const sku = productIdent.model_number || productIdent.part_number || originalRow.Mfg_Part_Num || ("SKU_" + String(jobId).substring(0, 8));
+  const mfgName = mfg.canonical_mfg || mfg.Unilog_Brand || productIdent.manufacturer || originalRow.Part_Manuf || originalRow.Unilog_Brand || "";
+
+  const categoryPath = taxonomy.taxonomy?.category_path || taxonomy.category_path || (taxonomy.document_type ? ["Industrial", taxonomy.document_type] : ["Industrial Catalog"]);
+  const catL1 = categoryPath[0] || "";
+  const catL2 = categoryPath[1] || "";
+  const catL3 = categoryPath[2] || "";
+
+  const attributes = (normalization.attributes && Array.isArray(normalization.attributes))
+    ? normalization.attributes
+    : (extraction.attributes || []);
+
+  const confScore = scoring.final_score?.score || 90;
+  const valStatus = validation.overall_validation_status || "PASS";
+  const isDuplicate = mod0a.possible_duplicate_of ? "TRUE" : "FALSE";
+  const possibleDupOf = mod0a.possible_duplicate_of || "";
+
+  return {
+    jobId,
+    originalRow,
+    sku,
+    title,
+    mfgName,
+    catL1,
+    catL2,
+    catL3,
+    attributes,
+    cataloging,
+    confScore,
+    valStatus,
+    isDuplicate,
+    possibleDupOf,
+    extraction,
+    normalization,
+    taxonomy,
+    validation,
+    scoring
+  };
+}
+
+function escapeCsvCell(cell) {
+  if (cell === null || cell === undefined) return "";
+  const str = String(cell);
+  if (str.includes('"') || str.includes(',') || str.includes('\n') || str.includes('\r')) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return str;
+}
+
+function buildCsvRowForRecord(record, allHeaderKeys) {
+  const rowMap = {};
+
+  // 1. Original Row fields (if present)
+  if (record.originalRow && typeof record.originalRow === 'object') {
+    Object.keys(record.originalRow).forEach(k => {
+      rowMap[k] = record.originalRow[k];
+    });
+  }
+
+  // 2. Enriched Pipeline fields
+  rowMap["JOB_ID"] = record.jobId;
+  rowMap["SKU"] = record.sku;
+  rowMap["TITLE"] = record.title;
+  rowMap["CANONICAL_MANUFACTURER"] = record.mfgName;
+  rowMap["CATEGORY_L1"] = record.catL1;
+  rowMap["CATEGORY_L2"] = record.catL2;
+  rowMap["CATEGORY_L3"] = record.catL3;
+  rowMap["INVOICE_DESCRIPTION"] = record.cataloging.commercial_catalog?.invoice_description || "";
+  rowMap["MOBILE_DESCRIPTION"] = record.cataloging.commercial_catalog?.mobile_description || "";
+  rowMap["OVERALL_CONFIDENCE_SCORE"] = record.confScore;
+  rowMap["VALIDATION_STATUS"] = record.valStatus;
+  rowMap["IS_DUPLICATE"] = record.isDuplicate;
+  rowMap["POSSIBLE_DUPLICATE_OF"] = record.possibleDupOf;
+
+  // 3. Dynamic Attribute columns
+  record.attributes.forEach(attr => {
+    if (attr.attribute_name) {
+      const colName = "ATTR_" + attr.attribute_name.toUpperCase().replace(/[^A-Z0-9]/g, '_');
+      const val = attr.standardized_value || attr.raw_value || "";
+      const unit = attr.standardized_unit || attr.raw_unit || "";
+      rowMap[colName] = unit ? `${val} ${unit}`.trim() : val;
+    }
+  });
+
+  return allHeaderKeys.map(k => escapeCsvCell(rowMap[k] ?? ""));
+}
+
+function generateBatchCSV(jobsList) {
+  if (!Array.isArray(jobsList) || jobsList.length === 0) {
+    return "";
+  }
+
+  const records = jobsList.map(extractProductRecord);
+  const headersSet = new Set();
+
+  // First add original row keys if present
+  records.forEach(rec => {
+    if (rec.originalRow && typeof rec.originalRow === 'object') {
+      Object.keys(rec.originalRow).forEach(k => headersSet.add(k));
+    }
+  });
+
+  // Standard enriched headers
+  const standardEnriched = [
+    "JOB_ID", "SKU", "TITLE", "CANONICAL_MANUFACTURER",
+    "CATEGORY_L1", "CATEGORY_L2", "CATEGORY_L3",
+    "INVOICE_DESCRIPTION", "MOBILE_DESCRIPTION",
+    "OVERALL_CONFIDENCE_SCORE", "VALIDATION_STATUS",
+    "IS_DUPLICATE", "POSSIBLE_DUPLICATE_OF"
+  ];
+  standardEnriched.forEach(h => headersSet.add(h));
+
+  // Dynamic attribute headers
+  records.forEach(rec => {
+    rec.attributes.forEach(attr => {
+      if (attr.attribute_name) {
+        const colName = "ATTR_" + attr.attribute_name.toUpperCase().replace(/[^A-Z0-9]/g, '_');
+        headersSet.add(colName);
+      }
+    });
+  });
+
+  const allHeaders = Array.from(headersSet);
+  const csvLines = [allHeaders.map(escapeCsvCell).join(",")];
+
+  records.forEach(rec => {
+    const rowCells = buildCsvRowForRecord(rec, allHeaders);
+    csvLines.push(rowCells.join(","));
+  });
+
+  return csvLines.join("\n");
+}
+
 function generateExports(approvedData, targetFormats = "all") {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const pipelineId = approvedData.pipeline_id || "PL_DEMO_99";
-      const reviewSessionId = approvedData.review_session_id || "REV_DEMO_01";
+      const rec = extractProductRecord(approvedData);
+      const pipelineId = rec.jobId;
       const timestamp = new Date().toISOString();
 
       const targets = (targetFormats === "all" || !targetFormats) 
@@ -22,7 +172,6 @@ function generateExports(approvedData, targetFormats = "all") {
       const exports = {};
       const formatsGenerated = [];
 
-      // ── 1. Standard JSON ──
       if (targets.includes("json_standard")) {
         exports.json_standard = {
           generated: true,
@@ -31,68 +180,22 @@ function generateExports(approvedData, targetFormats = "all") {
             pipeline_id: pipelineId,
             export_timestamp: timestamp,
             product: {
-              title: "Ball Valve 1/2\" SS316, 1000 WOG",
-              short_title: "1/2\" SS316 Ball Valve",
-              sku: "BV-SS316-050-1000",
-              category_l1: "Valves & Actuators",
-              category_l2: "Ball Valves",
-              category_l3: "2-Piece Ball Valves",
-              category_l4: "Threaded NPT",
-              hs_code: "8481.80.30",
-              attributes: [
-                {
-                  name: "Body Material",
-                  raw_value: "SS316",
-                  raw_unit: null,
-                  standardized_value: "Stainless Steel 316",
-                  standardized_unit: null,
-                  inferred: false,
-                  human_verified: true,
-                  confidence: 100
-                },
-                {
-                  name: "Pressure Rating",
-                  raw_value: "1000 WOG",
-                  raw_unit: "PSI",
-                  standardized_value: "1000",
-                  standardized_unit: "PSI",
-                  inferred: false,
-                  human_verified: true,
-                  confidence: 100
-                },
-                {
-                  name: "Enclosure Rating",
-                  raw_value: "NEMA 4X",
-                  raw_unit: null,
-                  standardized_value: "NEMA 4X",
-                  standardized_unit: null,
-                  inferred: false,
-                  human_verified: true,
-                  confidence: 100
-                }
-              ],
-              catalog_content: {
-                short_summary: "Premium 1/2\" 2-piece SS316 ball valve rated for 1000 WOG cold working pressure.",
-                detailed_description: "Industrial-grade 2-piece stainless steel 316 ball valve designed for harsh corrosive environments. Features standard port design, PTFE seats, and NPT threaded connections.",
-                bullet_features: [
-                  "Corrosion-resistant SS316 body and ball",
-                  "1000 WOG / CWP pressure rating",
-                  "NPT female threaded ends according to ASME B1.20.1",
-                  "PTFE seats and stem packing for chemical compatibility"
-                ],
-                target_industries: ["Chemical Processing", "Oil & Gas", "Water Treatment", "Food & Beverage"],
-                compatible_media: ["Water", "Oil", "Gas", "Mild Acids"],
-                not_recommended_for: ["Severe Slurry", "Steam over 150 PSI"]
-              },
-              search_tags: {
-                primary_keywords: ["ss316 ball valve", "1/2 inch valve", "1000 wog valve"],
-                long_tail_phrases: ["stainless steel 316 2 piece NPT ball valve 1000 psi"]
-              },
+              title: rec.title,
+              sku: rec.sku,
+              manufacturer: rec.mfgName,
+              category_l1: rec.catL1,
+              category_l2: rec.catL2,
+              category_l3: rec.catL3,
+              attributes: rec.attributes.map(a => ({
+                name: a.attribute_name,
+                raw_value: a.raw_value,
+                standardized_value: a.standardized_value,
+                confidence: a.confidence_score || 85
+              })),
+              catalog_content: rec.cataloging.commercial_catalog || {},
               data_quality: {
-                overall_confidence: 100,
-                inferred_fields_count: 0,
-                human_verified_fields_count: 15,
-                export_grade: "A"
+                overall_confidence: rec.confScore,
+                validation_status: rec.valStatus
               }
             }
           }
@@ -100,26 +203,11 @@ function generateExports(approvedData, targetFormats = "all") {
         formatsGenerated.push("json_standard");
       }
 
-      // ── 2. Flat CSV ──
       if (targets.includes("csv_flat")) {
-        const headers = [
-          "PIPELINE_ID", "SKU", "TITLE", "CATEGORY_L3", 
-          "BODY_MATERIAL", "PRESSURE_RATING_PSI", "ENCLOSURE_RATING", 
-          "COMPATIBLE_MEDIA", "DATA_CONFIDENCE_SCORE", "HUMAN_VERIFIED"
-        ];
-        const row = [
-          pipelineId,
-          "BV-SS316-050-1000",
-          "Ball Valve 1/2\" SS316, 1000 WOG",
-          "2-Piece Ball Valves",
-          "Stainless Steel 316",
-          "1000",
-          "NEMA 4X",
-          "Water|Oil|Gas|Mild Acids",
-          "100",
-          "TRUE"
-        ];
-        const csvString = `${headers.join(",")}\n${row.map(v => `"${v}"`).join(",")}`;
+        const csvString = generateBatchCSV([approvedData]);
+        const lines = csvString.split("\n");
+        const headers = lines[0] ? lines[0].split(",") : [];
+        const row = lines[1] ? lines[1].split(",") : [];
 
         exports.csv_flat = {
           generated: true,
@@ -130,82 +218,56 @@ function generateExports(approvedData, targetFormats = "all") {
         formatsGenerated.push("csv_flat");
       }
 
-      // ── 3. Akeneo PIM ──
       if (targets.includes("pim_akeneo")) {
+        const attrValues = {};
+        rec.attributes.forEach(a => {
+          if (a.attribute_name) {
+            const key = a.attribute_name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            attrValues[key] = [{ data: a.standardized_value || a.raw_value, locale: null, scope: null }];
+          }
+        });
         exports.pim_akeneo = {
           generated: true,
           payload: {
-            identifier: "BV-SS316-050-1000",
-            family: "2_piece_ball_valves",
-            categories: ["valves_actuators", "ball_valves", "2_piece_ball_valves"],
+            identifier: rec.sku,
+            family: rec.catL2 ? rec.catL2.toLowerCase().replace(/[^a-z0-9]/g, '_') : "industrial_catalog",
+            categories: [rec.catL1, rec.catL2, rec.catL3].filter(Boolean),
             values: {
-              title: [{ data: "Ball Valve 1/2\" SS316, 1000 WOG", locale: null, scope: null }],
-              body_material: [{ data: "SS316", locale: null, scope: null }],
-              pressure_rating_psi: [{ data: 1000, locale: null, scope: null }],
-              enclosure_rating: [{ data: "NEMA 4X", locale: null, scope: null }],
-              compatible_media: [{ data: ["Water", "Oil", "Gas", "Mild Acids"], locale: null, scope: null }]
-            },
-            associations: {}
+              title: [{ data: rec.title, locale: null, scope: null }],
+              manufacturer: [{ data: rec.mfgName, locale: null, scope: null }],
+              ...attrValues
+            }
           }
         };
         formatsGenerated.push("pim_akeneo");
       }
 
-      // ── 4. ERP SAP MM ──
       if (targets.includes("erp_sap")) {
         const warnings = [];
-        const rawSku = "BV-SS316-050-1000";
-        const shortTitle = "1/2\" SS316 1000WOG Ball Valve";
-
-        if (rawSku.length > 18) warnings.push("MATNR exceeded 18 chars limit — truncated.");
-        if (shortTitle.length > 40) warnings.push("MAKTX exceeded 40 chars limit — truncated.");
+        if (rec.sku.length > 18) warnings.push("MATNR exceeded 18 chars limit — truncated.");
+        if (rec.title.length > 40) warnings.push("MAKTX exceeded 40 chars limit — truncated.");
 
         exports.erp_sap = {
           generated: true,
           field_mapping_warnings: warnings,
           payload: {
-            MATNR: rawSku.substring(0, 18).toUpperCase().replace(/\s+/g, ''),
-            MAKTX: shortTitle.substring(0, 40),
-            MATKL: "VALVE_BALL",
+            MATNR: rec.sku.substring(0, 18).toUpperCase().replace(/\s+/g, ''),
+            MAKTX: rec.title.substring(0, 40),
+            MATKL: rec.catL2 ? rec.catL2.toUpperCase().replace(/\s+/g, '_') : "INDUSTRIAL",
             MEINS: "PCE",
-            NTGEW: 0.65,
-            GEWEI: "KG",
-            MTART: "HAWA",
-            SAP_ATTRIBUTES: {
-              WRK_PRESS: "1000 PSI",
-              MAT_BODY: "SS316"
-            }
+            SAP_ATTRIBUTES: rec.attributes.reduce((acc, a) => {
+              if (a.attribute_name) {
+                acc[a.attribute_name.substring(0, 10).toUpperCase().replace(/[^A-Z0-9]/g, '_')] = a.standardized_value || a.raw_value;
+              }
+              return acc;
+            }, {})
           }
         };
         formatsGenerated.push("erp_sap");
       }
 
-      // ── 5. WooCommerce CSV ──
       if (targets.includes("woocommerce")) {
-        const wooHeaders = [
-          "ID", "Type", "SKU", "Name", "Published", "Short description",
-          "Description", "Categories", "Tags", "Weight", "Length", "Width", "Height",
-          "Regular price", "Meta: Body Material", "Meta: Pressure Rating", "Meta: Enclosure Rating"
-        ];
-        const wooRow = [
-          "1001",
-          "simple",
-          "BV-SS316-050-1000",
-          "Ball Valve 1/2\" SS316, 1000 WOG",
-          "1",
-          "Premium 1/2\" 2-piece SS316 ball valve rated for 1000 WOG.",
-          "Industrial-grade 2-piece stainless steel 316 ball valve designed for harsh corrosive environments.",
-          "Valves & Actuators > Ball Valves > 2-Piece Ball Valves",
-          "ss316, ball valve, 1000 wog",
-          "0.65",
-          "2.5", "1.8", "1.8",
-          "45.00",
-          "Stainless Steel 316",
-          "1000 PSI",
-          "NEMA 4X"
-        ];
-        const wooCsvString = `${wooHeaders.join(",")}\n${wooRow.map(v => `"${v}"`).join(",")}`;
-
+        const wooCsvString = generateBatchCSV([approvedData]);
         exports.woocommerce = {
           generated: true,
           csv_string: wooCsvString
@@ -215,23 +277,21 @@ function generateExports(approvedData, targetFormats = "all") {
 
       resolve({
         pipeline_id: pipelineId,
-        review_session_id: reviewSessionId,
         export_timestamp: timestamp,
         approved_for_export: true,
         exports,
         export_summary: {
           formats_generated: formatsGenerated,
           formats_failed: [],
-          export_grade: "A",
-          grade_basis: "A = all TIER1 verified, zero unresolved flags, reviewer approved",
-          traceability_id: `${pipelineId}_${reviewSessionId}_${Date.now()}`
+          export_grade: rec.confScore >= 90 ? "A" : "B",
+          traceability_id: `${pipelineId}_${Date.now()}`
         }
       });
-
-    }, 1000);
+    }, 300);
   });
 }
 
 module.exports = {
-  generateExports
+  generateExports,
+  generateBatchCSV
 };

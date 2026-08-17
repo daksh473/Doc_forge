@@ -349,6 +349,15 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const jobId = uuidv4();
         let metadata, filename;
 
+        let originalRow = null;
+        if (req.body.originalRow) {
+            try {
+                originalRow = typeof req.body.originalRow === 'string' ? JSON.parse(req.body.originalRow) : req.body.originalRow;
+            } catch (e) {
+                originalRow = null;
+            }
+        }
+
         const uploadStart = Date.now();
         if (req.file) {
             metadata = await fileParser.parseFile(req.file.path, req.file.mimetype);
@@ -507,6 +516,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const result = {
             jobId,
             filename,
+            originalRow,
             stages: {
                 upload: { result: metadata, duration_ms: uploadEnd - uploadStart },
                 module0a: { result: mod0aResult, duration_ms: mod0aEnd - mod0aStart },
@@ -544,6 +554,29 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
 
 router.get('/history', (req, res) => {
     res.json(jobsHistory.slice(0, 10));
+});
+
+router.all(['/export/batch', '/export/arranged'], async (req, res, next) => {
+    try {
+        let jobsToExport = [];
+        if (req.body && Array.isArray(req.body.jobIds) && req.body.jobIds.length > 0) {
+            jobsToExport = jobsHistory.filter(j => req.body.jobIds.includes(j.jobId));
+        } else {
+            jobsToExport = jobsHistory;
+        }
+
+        if (!jobsToExport || jobsToExport.length === 0) {
+            return res.status(400).json({ error: "no processed jobs available to export" });
+        }
+
+        const csvString = exporter.generateBatchCSV(jobsToExport);
+        const filename = `arranged_catalog_export_${Date.now()}.csv`;
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        return res.send(csvString);
+    } catch (err) {
+        next(err);
+    }
 });
 
 module.exports = router;
