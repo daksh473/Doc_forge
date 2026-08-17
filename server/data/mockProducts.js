@@ -1,5 +1,5 @@
 // Mock Data for DocForge
-// Contains full payloads for all stages including Digital Assets Manager
+// Contains full payloads for all stages including Ground Truth Evaluation Engine
 const products = [
   {
     "keywords": [
@@ -3996,6 +3996,68 @@ const products = [
       },
       "review_required": true,
       "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
+    },
+    "evaluation": {
+      "pipeline_id": "PL_EVAL_1786978473296",
+      "evaluation_timestamp": "2026-08-17T14:54:33.296Z",
+      "benchmark_dataset": "Unilog-Sample_200_Items-Input-vs-Output.xlsx (Labelled Ground Truth)",
+      "overall_benchmark_score": 98.79,
+      "letter_grade": "A+ (EXEMPLARY UNILOG COMPLIANT)",
+      "metric_breakdown": {
+        "field_accuracy_score": {
+          "score": 96.8,
+          "weight": "30%",
+          "status": "PASS",
+          "detail": "Fuzzy semantic & character match against Delivery Format"
+        },
+        "invoice_desc_compliance": {
+          "score": 100,
+          "weight": "15%",
+          "status": "PASS",
+          "detail": "Length: 38/40 chars, Casing: UPPERCASE"
+        },
+        "mobile_desc_compliance": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Length: 75 chars (Target: 60-80 chars)"
+        },
+        "decimal_fraction_hyphenation": {
+          "score": 100,
+          "weight": "15%",
+          "status": "PASS",
+          "detail": "Buyer-facing fields formatted with hyphen mixed numbers (50-1/4 IN)"
+        },
+        "uom_spacing_house_style": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Passed all 22 UOM house style rules & spacing checks (24 in)"
+        },
+        "lov_vocabulary_match_rate": {
+          "score": 97.5,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Attribute values mapped to 161,000-row UniCat LOV dictionary"
+        },
+        "provenance_citation_coverage": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "100% of enriched fields carry source URL & confidence"
+        }
+      },
+      "unihack_solution_guide_compliance": {
+        "dataset_a_ground_truth_tested": true,
+        "dataset_b_content_guidelines_compliant": true,
+        "dataset_b_uom_abbreviations_compliant": true,
+        "dataset_b_fraction_conversion_compliant": true,
+        "dataset_c_unicat_mfg_brand_compliant": true,
+        "dataset_c_lov_vocabularies_compliant": true,
+        "placeholder_filtering_compliant": true,
+        "sourcing_hierarchy_compliant": true,
+        "digital_assets_compliant": true
+      }
     }
   },
   {
@@ -7803,6 +7865,68 @@ const products = [
       },
       "review_required": true,
       "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
+    },
+    "evaluation": {
+      "pipeline_id": "PL_EVAL_1786978473304",
+      "evaluation_timestamp": "2026-08-17T14:54:33.304Z",
+      "benchmark_dataset": "Unilog-Sample_200_Items-Input-vs-Output.xlsx (Labelled Ground Truth)",
+      "overall_benchmark_score": 98.79,
+      "letter_grade": "A+ (EXEMPLARY UNILOG COMPLIANT)",
+      "metric_breakdown": {
+        "field_accuracy_score": {
+          "score": 96.8,
+          "weight": "30%",
+          "status": "PASS",
+          "detail": "Fuzzy semantic & character match against Delivery Format"
+        },
+        "invoice_desc_compliance": {
+          "score": 100,
+          "weight": "15%",
+          "status": "PASS",
+          "detail": "Length: 38/40 chars, Casing: UPPERCASE"
+        },
+        "mobile_desc_compliance": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Length: 75 chars (Target: 60-80 chars)"
+        },
+        "decimal_fraction_hyphenation": {
+          "score": 100,
+          "weight": "15%",
+          "status": "PASS",
+          "detail": "Buyer-facing fields formatted with hyphen mixed numbers (50-1/4 IN)"
+        },
+        "uom_spacing_house_style": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Passed all 22 UOM house style rules & spacing checks (24 in)"
+        },
+        "lov_vocabulary_match_rate": {
+          "score": 97.5,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Attribute values mapped to 161,000-row UniCat LOV dictionary"
+        },
+        "provenance_citation_coverage": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "100% of enriched fields carry source URL & confidence"
+        }
+      },
+      "unihack_solution_guide_compliance": {
+        "dataset_a_ground_truth_tested": true,
+        "dataset_b_content_guidelines_compliant": true,
+        "dataset_b_uom_abbreviations_compliant": true,
+        "dataset_b_fraction_conversion_compliant": true,
+        "dataset_c_unicat_mfg_brand_compliant": true,
+        "dataset_c_lov_vocabularies_compliant": true,
+        "placeholder_filtering_compliant": true,
+        "sourcing_hierarchy_compliant": true,
+        "digital_assets_compliant": true
+      }
     }
   },
   {
@@ -11370,6 +11494,68 @@ const products = [
       },
       "review_required": true,
       "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
+    },
+    "evaluation": {
+      "pipeline_id": "PL_EVAL_1786978473304",
+      "evaluation_timestamp": "2026-08-17T14:54:33.304Z",
+      "benchmark_dataset": "Unilog-Sample_200_Items-Input-vs-Output.xlsx (Labelled Ground Truth)",
+      "overall_benchmark_score": 98.79,
+      "letter_grade": "A+ (EXEMPLARY UNILOG COMPLIANT)",
+      "metric_breakdown": {
+        "field_accuracy_score": {
+          "score": 96.8,
+          "weight": "30%",
+          "status": "PASS",
+          "detail": "Fuzzy semantic & character match against Delivery Format"
+        },
+        "invoice_desc_compliance": {
+          "score": 100,
+          "weight": "15%",
+          "status": "PASS",
+          "detail": "Length: 38/40 chars, Casing: UPPERCASE"
+        },
+        "mobile_desc_compliance": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Length: 75 chars (Target: 60-80 chars)"
+        },
+        "decimal_fraction_hyphenation": {
+          "score": 100,
+          "weight": "15%",
+          "status": "PASS",
+          "detail": "Buyer-facing fields formatted with hyphen mixed numbers (50-1/4 IN)"
+        },
+        "uom_spacing_house_style": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Passed all 22 UOM house style rules & spacing checks (24 in)"
+        },
+        "lov_vocabulary_match_rate": {
+          "score": 97.5,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Attribute values mapped to 161,000-row UniCat LOV dictionary"
+        },
+        "provenance_citation_coverage": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "100% of enriched fields carry source URL & confidence"
+        }
+      },
+      "unihack_solution_guide_compliance": {
+        "dataset_a_ground_truth_tested": true,
+        "dataset_b_content_guidelines_compliant": true,
+        "dataset_b_uom_abbreviations_compliant": true,
+        "dataset_b_fraction_conversion_compliant": true,
+        "dataset_c_unicat_mfg_brand_compliant": true,
+        "dataset_c_lov_vocabularies_compliant": true,
+        "placeholder_filtering_compliant": true,
+        "sourcing_hierarchy_compliant": true,
+        "digital_assets_compliant": true
+      }
     }
   },
   {
@@ -14703,6 +14889,68 @@ const products = [
       },
       "review_required": true,
       "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
+    },
+    "evaluation": {
+      "pipeline_id": "PL_EVAL_1786978473304",
+      "evaluation_timestamp": "2026-08-17T14:54:33.304Z",
+      "benchmark_dataset": "Unilog-Sample_200_Items-Input-vs-Output.xlsx (Labelled Ground Truth)",
+      "overall_benchmark_score": 98.79,
+      "letter_grade": "A+ (EXEMPLARY UNILOG COMPLIANT)",
+      "metric_breakdown": {
+        "field_accuracy_score": {
+          "score": 96.8,
+          "weight": "30%",
+          "status": "PASS",
+          "detail": "Fuzzy semantic & character match against Delivery Format"
+        },
+        "invoice_desc_compliance": {
+          "score": 100,
+          "weight": "15%",
+          "status": "PASS",
+          "detail": "Length: 38/40 chars, Casing: UPPERCASE"
+        },
+        "mobile_desc_compliance": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Length: 75 chars (Target: 60-80 chars)"
+        },
+        "decimal_fraction_hyphenation": {
+          "score": 100,
+          "weight": "15%",
+          "status": "PASS",
+          "detail": "Buyer-facing fields formatted with hyphen mixed numbers (50-1/4 IN)"
+        },
+        "uom_spacing_house_style": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Passed all 22 UOM house style rules & spacing checks (24 in)"
+        },
+        "lov_vocabulary_match_rate": {
+          "score": 97.5,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Attribute values mapped to 161,000-row UniCat LOV dictionary"
+        },
+        "provenance_citation_coverage": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "100% of enriched fields carry source URL & confidence"
+        }
+      },
+      "unihack_solution_guide_compliance": {
+        "dataset_a_ground_truth_tested": true,
+        "dataset_b_content_guidelines_compliant": true,
+        "dataset_b_uom_abbreviations_compliant": true,
+        "dataset_b_fraction_conversion_compliant": true,
+        "dataset_c_unicat_mfg_brand_compliant": true,
+        "dataset_c_lov_vocabularies_compliant": true,
+        "placeholder_filtering_compliant": true,
+        "sourcing_hierarchy_compliant": true,
+        "digital_assets_compliant": true
+      }
     }
   },
   {
@@ -18416,6 +18664,68 @@ const products = [
       },
       "review_required": true,
       "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
+    },
+    "evaluation": {
+      "pipeline_id": "PL_EVAL_1786978473304",
+      "evaluation_timestamp": "2026-08-17T14:54:33.304Z",
+      "benchmark_dataset": "Unilog-Sample_200_Items-Input-vs-Output.xlsx (Labelled Ground Truth)",
+      "overall_benchmark_score": 98.79,
+      "letter_grade": "A+ (EXEMPLARY UNILOG COMPLIANT)",
+      "metric_breakdown": {
+        "field_accuracy_score": {
+          "score": 96.8,
+          "weight": "30%",
+          "status": "PASS",
+          "detail": "Fuzzy semantic & character match against Delivery Format"
+        },
+        "invoice_desc_compliance": {
+          "score": 100,
+          "weight": "15%",
+          "status": "PASS",
+          "detail": "Length: 38/40 chars, Casing: UPPERCASE"
+        },
+        "mobile_desc_compliance": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Length: 75 chars (Target: 60-80 chars)"
+        },
+        "decimal_fraction_hyphenation": {
+          "score": 100,
+          "weight": "15%",
+          "status": "PASS",
+          "detail": "Buyer-facing fields formatted with hyphen mixed numbers (50-1/4 IN)"
+        },
+        "uom_spacing_house_style": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Passed all 22 UOM house style rules & spacing checks (24 in)"
+        },
+        "lov_vocabulary_match_rate": {
+          "score": 97.5,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Attribute values mapped to 161,000-row UniCat LOV dictionary"
+        },
+        "provenance_citation_coverage": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "100% of enriched fields carry source URL & confidence"
+        }
+      },
+      "unihack_solution_guide_compliance": {
+        "dataset_a_ground_truth_tested": true,
+        "dataset_b_content_guidelines_compliant": true,
+        "dataset_b_uom_abbreviations_compliant": true,
+        "dataset_b_fraction_conversion_compliant": true,
+        "dataset_c_unicat_mfg_brand_compliant": true,
+        "dataset_c_lov_vocabularies_compliant": true,
+        "placeholder_filtering_compliant": true,
+        "sourcing_hierarchy_compliant": true,
+        "digital_assets_compliant": true
+      }
     }
   },
   {
@@ -21909,6 +22219,68 @@ const products = [
       },
       "review_required": true,
       "review_reason": "UNVERIFIED_DOMAIN_CANNOT_SOURCE_ASSETS"
+    },
+    "evaluation": {
+      "pipeline_id": "PL_EVAL_1786978473304",
+      "evaluation_timestamp": "2026-08-17T14:54:33.304Z",
+      "benchmark_dataset": "Unilog-Sample_200_Items-Input-vs-Output.xlsx (Labelled Ground Truth)",
+      "overall_benchmark_score": 98.79,
+      "letter_grade": "A+ (EXEMPLARY UNILOG COMPLIANT)",
+      "metric_breakdown": {
+        "field_accuracy_score": {
+          "score": 96.8,
+          "weight": "30%",
+          "status": "PASS",
+          "detail": "Fuzzy semantic & character match against Delivery Format"
+        },
+        "invoice_desc_compliance": {
+          "score": 100,
+          "weight": "15%",
+          "status": "PASS",
+          "detail": "Length: 38/40 chars, Casing: UPPERCASE"
+        },
+        "mobile_desc_compliance": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Length: 75 chars (Target: 60-80 chars)"
+        },
+        "decimal_fraction_hyphenation": {
+          "score": 100,
+          "weight": "15%",
+          "status": "PASS",
+          "detail": "Buyer-facing fields formatted with hyphen mixed numbers (50-1/4 IN)"
+        },
+        "uom_spacing_house_style": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Passed all 22 UOM house style rules & spacing checks (24 in)"
+        },
+        "lov_vocabulary_match_rate": {
+          "score": 97.5,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "Attribute values mapped to 161,000-row UniCat LOV dictionary"
+        },
+        "provenance_citation_coverage": {
+          "score": 100,
+          "weight": "10%",
+          "status": "PASS",
+          "detail": "100% of enriched fields carry source URL & confidence"
+        }
+      },
+      "unihack_solution_guide_compliance": {
+        "dataset_a_ground_truth_tested": true,
+        "dataset_b_content_guidelines_compliant": true,
+        "dataset_b_uom_abbreviations_compliant": true,
+        "dataset_b_fraction_conversion_compliant": true,
+        "dataset_c_unicat_mfg_brand_compliant": true,
+        "dataset_c_lov_vocabularies_compliant": true,
+        "placeholder_filtering_compliant": true,
+        "sourcing_hierarchy_compliant": true,
+        "digital_assets_compliant": true
+      }
     }
   }
 ];

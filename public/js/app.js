@@ -155,6 +155,10 @@ window.DocForge = {
     document.getElementById('collapse-digital-assets')?.addEventListener('click', () => this.viewers?.digitalAssets?.collapseAll());
     document.getElementById('search-digital-assets')?.addEventListener('input', (e) => this.viewers?.digitalAssets?.search(e.target.value));
 
+    document.getElementById('expand-evaluation')?.addEventListener('click', () => this.viewers?.evaluation?.expandAll());
+    document.getElementById('collapse-evaluation')?.addEventListener('click', () => this.viewers?.evaluation?.collapseAll());
+    document.getElementById('search-evaluation')?.addEventListener('input', (e) => this.viewers?.evaluation?.search(e.target.value));
+
     document.getElementById('expand-validate')?.addEventListener('click', () => this.viewers?.validate?.expandAll());
     document.getElementById('collapse-validate')?.addEventListener('click', () => this.viewers?.validate?.collapseAll());
     document.getElementById('search-validate')?.addEventListener('input', (e) => this.viewers?.validate?.search(e.target.value));
@@ -470,6 +474,7 @@ window.DocForge = {
     const module0a = stages.module0a ? stages.module0a.result : null;
     const webEnrichment = stages.webEnrichment ? stages.webEnrichment.result : null;
     const digitalAssets = stages.digitalAssets ? stages.digitalAssets.result : null;
+    const evaluation = stages.evaluation ? stages.evaluation.result : null;
     const enrichment = stages.enrich ? stages.enrich.result : null;
     const validation = stages.validate ? stages.validate.result : null;
     const grounding = stages.ground ? stages.ground.result : null;
@@ -512,6 +517,7 @@ window.DocForge = {
       module0a: module0a,
       webEnrichment: webEnrichment,
       digitalAssets: digitalAssets,
+      evaluation: evaluation,
       enrichment: enrichment,
       validation: validation,
       grounding: grounding,
@@ -566,6 +572,7 @@ window.DocForge = {
     if (data.module0a) this.renderModule0A(data.module0a);
     if (data.webEnrichment) this.renderWebEnrichment(data.webEnrichment);
     if (data.digitalAssets) this.renderDigitalAssets(data.digitalAssets);
+    if (data.evaluation) this.renderEvaluation(data.evaluation);
     if (data.enrichment) this.renderEnrichment(data.enrichment);
     if (data.validation) this.renderValidation(data.validation);
     if (data.grounding) this.renderGrounding(data.grounding);
@@ -764,6 +771,19 @@ window.DocForge = {
       showLineNumbers: true
     });
     this.viewers.digitalAssets.render();
+  },
+
+  renderEvaluation(data) {
+    const container = document.getElementById('json-viewer-evaluation');
+    if (!container) return;
+    container.innerHTML = '';
+    this.viewers = this.viewers || {};
+    this.viewers.evaluation = new JsonViewer(container, data, {
+      collapsedDepth: 2,
+      highlightInferred: false,
+      showLineNumbers: true
+    });
+    this.viewers.evaluation.render();
   },
 
   renderEnrichment(data) {
@@ -1311,7 +1331,7 @@ window.DocForge = {
     this.state.currentSlide = 0;
     this.slideTitles = [
       'Classification', 'Pre-Processing', 'Chunking', 'Raw Extraction',
-      'Normalization', 'LOV Verification', 'Mfg & Brand', 'UOM Validation', 'Fraction Conversion', 'De-duplication', 'Module 0A Pre-Dedup', 'Mfg Web Enrichment', 'Digital Assets', 'Taxonomy (Enrich)', 'Validation Report', 'Source Grounding',
+      'Normalization', 'LOV Verification', 'Mfg & Brand', 'UOM Validation', 'Fraction Conversion', 'De-duplication', 'Module 0A Pre-Dedup', 'Mfg Web Enrichment', 'Digital Assets', 'Ground Truth Evaluation', 'Taxonomy (Enrich)', 'Validation Report', 'Source Grounding',
       'AI Reasoning', 'Commercial Content', 'Quality Score', 'Review Dashboard',
       'Final Approval', 'Export'
     ];

@@ -24,6 +24,7 @@ const dedupEngine = require('../services/dedupEngine');
 const module0A_dedup = require('../services/module0A_dedup');
 const mfgWebEnricher = require('../services/mfgWebEnricher');
 const digitalAssetsManager = require('../services/digitalAssetsManager');
+const evaluationEngine = require('../services/evaluationEngine');
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/', limits: { fileSize: 20 * 1024 * 1024 } });
@@ -302,6 +303,16 @@ router.post('/digital-assets', async (req, res, next) => {
     }
 });
 
+router.all(['/evaluate', '/evaluation/benchmark'], async (req, res, next) => {
+    try {
+        const productData = req.body.productData || {};
+        const result = evaluationEngine.evaluateRecord(productData);
+        res.json(result);
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
     try {
         const startTime = Date.now();
@@ -400,6 +411,10 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const assetsStart = Date.now();
         const digitalAssets = await digitalAssetsManager.processDigitalAssets(extraction);
         const assetsEnd = Date.now();
+
+        const evalStart = Date.now();
+        const evaluation = evaluationEngine.evaluateRecord(cataloging);
+        const evalEnd = Date.now();
         
         const dashboardStart = Date.now();
         const dashboard = await dashboardPrep.prepareDashboard(chunking, cataloging, score, reasoning);
@@ -431,6 +446,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
                 score: { result: score, duration_ms: scoreEnd - scoreStart },
                 webEnrichment: { result: webEnrichment, duration_ms: webEnrichEnd - webEnrichStart },
                 digitalAssets: { result: digitalAssets, duration_ms: assetsEnd - assetsStart },
+                evaluation: { result: evaluation, duration_ms: evalEnd - evalStart },
                 dashboard: { result: dashboard, duration_ms: dashboardEnd - dashboardStart }
             },
             total_duration_ms: totalEnd - startTime,
