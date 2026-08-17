@@ -1,5 +1,5 @@
 // Mock Data for DocForge
-// Contains full payloads for 9 stages: extraction, normalization, enrichment, validation, grounding, cataloging, scoring
+// Contains full payloads for 10 stages: extraction, normalization, enrichment, validation, grounding, reasoning, cataloging, scoring
 const products = [
   {
     "keywords": [
@@ -1183,6 +1183,103 @@ const products = [
           "Pressure Rating"
         ]
       }
+    },
+    "reasoning": {
+      "pipeline_id": "pl_rn3uv13pz",
+      "reasoning_timestamp": "2026-08-17T06:58:00.480Z",
+      "total_logs_generated": 1,
+      "logs_by_type": {
+        "inferred_attributes": 0,
+        "low_confidence_attributes": 0,
+        "conflict_attributes": 1,
+        "validation_flagged_attributes": 0
+      },
+      "reasoning_logs": [
+        {
+          "log_id": "LOG_001",
+          "attribute_name": "Pressure Rating",
+          "log_trigger": "conflict",
+          "trigger_detail": "multi_source_conflict: true",
+          "current_value": "1000 WOG",
+          "current_confidence": 85,
+          "reasoning_chain": {
+            "observation": "Document header specifies '1000 WOG'. Page 3 text specifies 'Max working pressure is 800 WOG per ANSI'.",
+            "gap": "Conflicting nominal ratings within the same source document.",
+            "steps": [
+              {
+                "step_number": 1,
+                "logic": "Analyze the location of conflicting values.",
+                "basis": "document_fact",
+                "basis_reference": null
+              },
+              {
+                "step_number": 2,
+                "logic": "The header value ('1000 WOG') is standard for this series of 2-piece SS316 valves.",
+                "basis": "industry_norm",
+                "basis_reference": "General valve spec sheets"
+              },
+              {
+                "step_number": 3,
+                "logic": "The '800 WOG per ANSI' note likely refers to a specific derated application or higher temperature condition, not the cold working pressure (CWP).",
+                "basis": "assumption",
+                "basis_reference": null
+              },
+              {
+                "step_number": 4,
+                "logic": "Default to the standard nominal CWP rating for general catalog indexing.",
+                "basis": "industry_norm",
+                "basis_reference": null
+              }
+            ],
+            "standard_reference": null,
+            "assumptions_made": [
+              "800 WOG refers to a derated condition, not the nominal rating."
+            ],
+            "inference_risk": "MEDIUM",
+            "risk_explanation": "If the manufacturer permanently derated this specific SKU to 800 WOG, publishing 1000 WOG could pose a safety risk for buyers."
+          },
+          "conflict_detail": {
+            "present": true,
+            "source_a": {
+              "value": "1000 WOG",
+              "location": "Page 1, Header Identity",
+              "confidence": 100
+            },
+            "source_b": {
+              "value": "800 WOG",
+              "location": "Page 3",
+              "confidence": 80
+            },
+            "resolution_basis": "Header Identity is standard for nominal rating classification.",
+            "reviewer_check": "Check Page 3 footnote to confirm if 800 WOG applies to high-temp or all conditions."
+          },
+          "verdict": {
+            "final_value": "1000 WOG",
+            "final_confidence": 85,
+            "use_in_catalog": true,
+            "display_as_inferred": false
+          },
+          "reviewer_action": {
+            "action_tag": "CHECK_DOCUMENT",
+            "action_instruction": "Verify the context of '800 WOG' on Page 3.",
+            "document_reference": "Page 3",
+            "estimated_review_time": "1-2 minutes"
+          }
+        }
+      ],
+      "module_4_summary": {
+        "fully_grounded_attributes": 12,
+        "inferred_attributes_logged": 0,
+        "conflict_attributes_logged": 1,
+        "block_risk_attributes": [],
+        "approve_if_correct_count": 0,
+        "check_document_count": 1,
+        "contact_supplier_count": 0,
+        "discard_value_count": 0,
+        "overall_explainability_score": 95,
+        "ready_for_human_review": true,
+        "review_estimated_time": "~2 minutes for 1 flagged attributes"
+      }
     }
   },
   {
@@ -2325,6 +2422,79 @@ const products = [
         "unverifiable_attributes": [],
         "conflict_attributes": []
       }
+    },
+    "reasoning": {
+      "pipeline_id": "pl_nk12mqup4",
+      "reasoning_timestamp": "2026-08-17T06:58:00.481Z",
+      "total_logs_generated": 1,
+      "logs_by_type": {
+        "inferred_attributes": 1,
+        "low_confidence_attributes": 0,
+        "conflict_attributes": 0,
+        "validation_flagged_attributes": 0
+      },
+      "reasoning_logs": [
+        {
+          "log_id": "LOG_002",
+          "attribute_name": "Enclosure Rating",
+          "log_trigger": "inferred",
+          "trigger_detail": "confidence: 60",
+          "current_value": "NEMA 4X / IP66",
+          "current_confidence": 60,
+          "reasoning_chain": {
+            "observation": "Document mentions 'weatherproof' and 'washdown ready'.",
+            "gap": "No explicit NEMA or IP rating provided.",
+            "steps": [
+              {
+                "step_number": 1,
+                "logic": "Washdown ready implies protection against high-pressure water jets.",
+                "basis": "document_fact",
+                "basis_reference": null
+              },
+              {
+                "step_number": 2,
+                "logic": "IP66 and NEMA 4X are the standard ratings for washdown environments.",
+                "basis": "engineering_standard",
+                "basis_reference": "NEMA 250 / IEC 60529"
+              }
+            ],
+            "standard_reference": "NEMA 250",
+            "assumptions_made": [
+              "Manufacturer uses standard definitions for 'washdown ready'."
+            ],
+            "inference_risk": "HIGH",
+            "risk_explanation": "Manufacturer might only meet IP65. Stating IP66 without certification is risky."
+          },
+          "conflict_detail": {
+            "present": false
+          },
+          "verdict": {
+            "final_value": "IP65 (Downgraded for safety)",
+            "final_confidence": 70,
+            "use_in_catalog": true,
+            "display_as_inferred": true
+          },
+          "reviewer_action": {
+            "action_tag": "CONTACT_SUPPLIER",
+            "action_instruction": "Request exact IP/NEMA certification document.",
+            "document_reference": null,
+            "estimated_review_time": "5+ minutes"
+          }
+        }
+      ],
+      "module_4_summary": {
+        "fully_grounded_attributes": 12,
+        "inferred_attributes_logged": 1,
+        "conflict_attributes_logged": 0,
+        "block_risk_attributes": [],
+        "approve_if_correct_count": 0,
+        "check_document_count": 0,
+        "contact_supplier_count": 1,
+        "discard_value_count": 0,
+        "overall_explainability_score": 95,
+        "ready_for_human_review": true,
+        "review_estimated_time": "~2 minutes for 1 flagged attributes"
+      }
     }
   },
   {
@@ -3452,6 +3622,31 @@ const products = [
         "unverifiable_attributes": [],
         "conflict_attributes": []
       }
+    },
+    "reasoning": {
+      "pipeline_id": "pl_hqk2tjq6m",
+      "reasoning_timestamp": "2026-08-17T06:58:00.481Z",
+      "total_logs_generated": 0,
+      "logs_by_type": {
+        "inferred_attributes": 0,
+        "low_confidence_attributes": 0,
+        "conflict_attributes": 0,
+        "validation_flagged_attributes": 0
+      },
+      "reasoning_logs": [],
+      "module_4_summary": {
+        "fully_grounded_attributes": 12,
+        "inferred_attributes_logged": 0,
+        "conflict_attributes_logged": 0,
+        "block_risk_attributes": [],
+        "approve_if_correct_count": 0,
+        "check_document_count": 0,
+        "contact_supplier_count": 0,
+        "discard_value_count": 0,
+        "overall_explainability_score": 95,
+        "ready_for_human_review": true,
+        "review_estimated_time": "~0 minutes for 0 flagged attributes"
+      }
     }
   },
   {
@@ -4461,6 +4656,31 @@ const products = [
         "grounding_label": "mostly_grounded",
         "unverifiable_attributes": [],
         "conflict_attributes": []
+      }
+    },
+    "reasoning": {
+      "pipeline_id": "pl_vdngnd92q",
+      "reasoning_timestamp": "2026-08-17T06:58:00.481Z",
+      "total_logs_generated": 0,
+      "logs_by_type": {
+        "inferred_attributes": 0,
+        "low_confidence_attributes": 0,
+        "conflict_attributes": 0,
+        "validation_flagged_attributes": 0
+      },
+      "reasoning_logs": [],
+      "module_4_summary": {
+        "fully_grounded_attributes": 12,
+        "inferred_attributes_logged": 0,
+        "conflict_attributes_logged": 0,
+        "block_risk_attributes": [],
+        "approve_if_correct_count": 0,
+        "check_document_count": 0,
+        "contact_supplier_count": 0,
+        "discard_value_count": 0,
+        "overall_explainability_score": 95,
+        "ready_for_human_review": true,
+        "review_estimated_time": "~0 minutes for 0 flagged attributes"
       }
     }
   },
@@ -5662,6 +5882,31 @@ const products = [
         "unverifiable_attributes": [],
         "conflict_attributes": []
       }
+    },
+    "reasoning": {
+      "pipeline_id": "pl_n2d5674gn",
+      "reasoning_timestamp": "2026-08-17T06:58:00.481Z",
+      "total_logs_generated": 0,
+      "logs_by_type": {
+        "inferred_attributes": 0,
+        "low_confidence_attributes": 0,
+        "conflict_attributes": 0,
+        "validation_flagged_attributes": 0
+      },
+      "reasoning_logs": [],
+      "module_4_summary": {
+        "fully_grounded_attributes": 12,
+        "inferred_attributes_logged": 0,
+        "conflict_attributes_logged": 0,
+        "block_risk_attributes": [],
+        "approve_if_correct_count": 0,
+        "check_document_count": 0,
+        "contact_supplier_count": 0,
+        "discard_value_count": 0,
+        "overall_explainability_score": 95,
+        "ready_for_human_review": true,
+        "review_estimated_time": "~0 minutes for 0 flagged attributes"
+      }
     }
   },
   {
@@ -6751,6 +6996,31 @@ const products = [
         "grounding_label": "mostly_grounded",
         "unverifiable_attributes": [],
         "conflict_attributes": []
+      }
+    },
+    "reasoning": {
+      "pipeline_id": "pl_btusis725",
+      "reasoning_timestamp": "2026-08-17T06:58:00.481Z",
+      "total_logs_generated": 0,
+      "logs_by_type": {
+        "inferred_attributes": 0,
+        "low_confidence_attributes": 0,
+        "conflict_attributes": 0,
+        "validation_flagged_attributes": 0
+      },
+      "reasoning_logs": [],
+      "module_4_summary": {
+        "fully_grounded_attributes": 12,
+        "inferred_attributes_logged": 0,
+        "conflict_attributes_logged": 0,
+        "block_risk_attributes": [],
+        "approve_if_correct_count": 0,
+        "check_document_count": 0,
+        "contact_supplier_count": 0,
+        "discard_value_count": 0,
+        "overall_explainability_score": 95,
+        "ready_for_human_review": true,
+        "review_estimated_time": "~0 minutes for 0 flagged attributes"
       }
     }
   }

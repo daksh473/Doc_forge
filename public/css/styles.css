@@ -326,7 +326,7 @@ h1, h2, h3, h4 {
 /* Pipeline Stepper */
 .pipeline-container { 
   display: grid; 
-  grid-template-columns: 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr; 
+  grid-template-columns: 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr 60px 1fr; 
   gap: 1rem; 
   align-items: center; 
   margin-bottom: 2rem; 

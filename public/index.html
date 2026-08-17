@@ -180,9 +180,9 @@
       </div>
 
       <div class="stage-card glass idle" id="stage-9">
-        <div class="stage-icon">📝</div>
+        <div class="stage-icon">🧠</div>
         <div class="stage-info">
-          <h3>Catalog</h3>
+          <h3>Reason</h3>
           <span class="stage-status">Waiting...</span>
         </div>
         <div class="stage-duration" id="duration-9">--</div>
@@ -192,12 +192,24 @@
       </div>
 
       <div class="stage-card glass idle" id="stage-10">
+        <div class="stage-icon">📝</div>
+        <div class="stage-info">
+          <h3>Catalog</h3>
+          <span class="stage-status">Waiting...</span>
+        </div>
+        <div class="stage-duration" id="duration-10">--</div>
+      </div>
+      <div class="connector" id="conn-10">
+        <div class="connector-line"></div>
+      </div>
+
+      <div class="stage-card glass idle" id="stage-11">
         <div class="stage-icon">🎯</div>
         <div class="stage-info">
           <h3>Score</h3>
           <span class="stage-status">Waiting...</span>
         </div>
-        <div class="stage-duration" id="duration-10">--</div>
+        <div class="stage-duration" id="duration-11">--</div>
       </div>
     </section>
 
@@ -212,6 +224,7 @@
         <button class="tab-btn" data-target="tab-enrichment">Taxonomy (Enrich)</button>
         <button class="tab-btn" data-target="tab-validation">Validation Report</button>
         <button class="tab-btn" data-target="tab-grounding">Source Grounding</button>
+        <button class="tab-btn" data-target="tab-reasoning">AI Reasoning</button>
         <button class="tab-btn" data-target="tab-cataloging">Commercial Content</button>
         <button class="tab-btn" data-target="tab-scoring">Quality Score</button>
         <button class="tab-btn" data-target="tab-export">Export</button>
@@ -449,6 +462,31 @@
           <div id="json-viewer-grounding" class="json-viewer-container"></div>
         </div>
 
+        <!-- Reasoning Tab -->
+        <div class="tab-panel" id="tab-reasoning">
+          <div class="reasoning-header bg-white p-4 rounded shadow mb-6 flex justify-between items-center">
+            <div>
+              <h3 class="text-xl font-bold">Reasoning Transparency Engine</h3>
+              <p class="text-gray-600">Auditable logic chains for inferred attributes and data conflicts.</p>
+            </div>
+            <div class="text-right">
+              <div class="text-3xl font-bold text-indigo-600" id="reason-log-count">0</div>
+              <div class="text-xs uppercase text-gray-500">Logs Generated</div>
+            </div>
+          </div>
+
+          <div id="reasoning-list" class="space-y-6 mb-6"></div>
+
+          <div class="toolbar">
+            <h4>Detailed Reasoning JSON</h4>
+            <div class="toolbar-actions">
+              <button class="btn-icon" id="collapse-reason" title="Collapse All">[-]</button>
+              <button class="btn-icon" id="expand-reason" title="Expand All">[+]</button>
+            </div>
+          </div>
+          <div id="json-viewer-reasoning" class="json-viewer-container"></div>
+        </div>
+
         <!-- Export Tab -->
         <div class="tab-panel" id="tab-export">
           <div class="export-actions">
@@ -483,3 +521,4 @@
   <script src="/js/app.js"></script>
 </body>
 </html>
+

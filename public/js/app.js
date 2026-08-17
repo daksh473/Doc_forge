@@ -136,6 +136,9 @@ window.DocForge = {
     document.getElementById('expand-ground')?.addEventListener('click', () => this.viewers?.grounding?.expandAll());
     document.getElementById('collapse-ground')?.addEventListener('click', () => this.viewers?.grounding?.collapseAll());
 
+    document.getElementById('expand-reason')?.addEventListener('click', () => this.viewers?.reasoning?.expandAll());
+    document.getElementById('collapse-reason')?.addEventListener('click', () => this.viewers?.reasoning?.collapseAll());
+
     // ── Export Controls ──
     document.getElementById('btn-download-json')?.addEventListener('click', () => this.downloadExport());
     document.getElementById('btn-copy-json')?.addEventListener('click', () => {
@@ -216,7 +219,7 @@ window.DocForge = {
 
     // Reset all stages to idle
     DocForgeAnimations.initPipelineConnectors();
-    for (let i = 0; i < 11; i++) {
+    for (let i = 0; i < 12; i++) {
       DocForgeAnimations.setStageState(i, 'idle');
       document.getElementById(`duration-${i}`).textContent = '--';
     }
@@ -329,23 +332,31 @@ window.DocForge = {
       document.getElementById('duration-8').textContent = this.formatDuration(stages.ground.duration_ms);
       DocForgeAnimations.animateConnector(8, true);
 
-      // Stage 9: Catalog
+      // Stage 9: Reason
       await this.sleep(400);
       DocForgeAnimations.setStageState(9, 'processing');
       await this.sleep(400);
       DocForgeAnimations.setStageState(9, 'complete');
-      document.getElementById('duration-9').textContent = this.formatDuration(stages.catalog.duration_ms);
+      document.getElementById('duration-9').textContent = this.formatDuration(stages.reason.duration_ms);
       DocForgeAnimations.animateConnector(9, true);
 
-      // Stage 10: Score
+      // Stage 10: Catalog
       await this.sleep(400);
       DocForgeAnimations.setStageState(10, 'processing');
+      await this.sleep(400);
+      DocForgeAnimations.setStageState(10, 'complete');
+      document.getElementById('duration-10').textContent = this.formatDuration(stages.catalog.duration_ms);
+      DocForgeAnimations.animateConnector(10, true);
+
+      // Stage 11: Score
+      await this.sleep(400);
+      DocForgeAnimations.setStageState(11, 'processing');
       await this.sleep(400);
       let scoreStatus = 'complete';
       if (stages.score.result?.final_score?.confidence_color === 'red') scoreStatus = 'error';
       else if (stages.score.result?.final_score?.confidence_color === 'amber') scoreStatus = 'warning';
-      DocForgeAnimations.setStageState(10, scoreStatus);
-      document.getElementById('duration-10').textContent = this.formatDuration(stages.score.duration_ms);
+      DocForgeAnimations.setStageState(11, scoreStatus);
+      document.getElementById('duration-11').textContent = this.formatDuration(stages.score.duration_ms);
 
       // Build a normalized view model from the API response
       const viewModel = this.buildViewModel(result);
@@ -371,7 +382,7 @@ window.DocForge = {
       this.showToast(`Pipeline failed: ${err.message}`, 'error');
 
       // Mark the furthest incomplete stage as error
-      for (let i = 0; i < 11; i++) {
+      for (let i = 0; i < 12; i++) {
         const card = document.getElementById(`stage-${i}`);
         if (card && card.classList.contains('processing')) {
           DocForgeAnimations.setStageState(i, 'error');
@@ -398,6 +409,7 @@ window.DocForge = {
     const enrichment = stages.enrich.result;
     const validation = stages.validate ? stages.validate.result : null;
     const grounding = stages.ground ? stages.ground.result : null;
+    const reasoning = stages.reason ? stages.reason.result : null;
     const cataloging = stages.catalog ? stages.catalog.result : null;
     const scoring = stages.score ? stages.score.result : null;
     
@@ -430,6 +442,7 @@ window.DocForge = {
       enrichment: enrichment,
       validation: validation,
       grounding: grounding,
+      reasoning: reasoning,
       cataloging: cataloging,
       scoring: scoring,
 
@@ -474,6 +487,7 @@ window.DocForge = {
     this.renderEnrichment(data.enrichment);
     if (data.validation) this.renderValidation(data.validation);
     if (data.grounding) this.renderGrounding(data.grounding);
+    if (data.reasoning) this.renderReasoning(data.reasoning);
     if (data.cataloging) this.renderCataloging(data.cataloging);
     if (data.scoring) this.renderScoring(data.scoring);
     this.renderExport(data.exportJson);
@@ -694,6 +708,104 @@ window.DocForge = {
       showLineNumbers: true
     });
     this.viewers.grounding.render();
+  },
+
+  renderReasoning(data) {
+    if (!data) return;
+
+    // Set count
+    const countEl = document.getElementById('reason-log-count');
+    if (countEl) countEl.textContent = data.total_logs_generated || 0;
+
+    // Render list
+    const listEl = document.getElementById('reasoning-list');
+    if (listEl && data.reasoning_logs) {
+      listEl.innerHTML = data.reasoning_logs.map(log => {
+        let riskColor = log.reasoning_chain?.inference_risk === 'BLOCK' ? 'bg-rose-600' :
+                        log.reasoning_chain?.inference_risk === 'HIGH' ? 'bg-rose-500' :
+                        log.reasoning_chain?.inference_risk === 'MEDIUM' ? 'bg-amber-500' : 'bg-emerald-500';
+        
+        let actionColor = log.reviewer_action?.action_tag === 'CHECK_DOCUMENT' ? 'text-amber-700 bg-amber-100 border-amber-300' :
+                          log.reviewer_action?.action_tag === 'CONTACT_SUPPLIER' ? 'text-rose-700 bg-rose-100 border-rose-300' :
+                          log.reviewer_action?.action_tag === 'APPROVE_IF_CORRECT' ? 'text-emerald-700 bg-emerald-100 border-emerald-300' :
+                          'text-gray-700 bg-gray-100 border-gray-300';
+
+        let stepsHtml = '';
+        if (log.reasoning_chain && log.reasoning_chain.steps) {
+          stepsHtml = log.reasoning_chain.steps.map(step => `
+            <div class="flex items-start gap-3 mt-2">
+              <div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-800 flex items-center justify-center text-xs font-bold shrink-0">${step.step_number}</div>
+              <div class="text-sm text-gray-700">
+                ${step.logic}
+                ${step.basis_reference ? `<span class="text-xs text-indigo-500 block">📚 Ref: ${step.basis_reference}</span>` : ''}
+              </div>
+            </div>
+          `).join('');
+        }
+
+        let conflictHtml = '';
+        if (log.conflict_detail && log.conflict_detail.present) {
+          conflictHtml = `
+            <div class="mt-4 p-3 bg-rose-50 border border-rose-200 rounded text-sm">
+              <div class="font-bold text-rose-800 mb-2">⚔️ Conflict Resolution</div>
+              <div class="grid grid-cols-2 gap-4">
+                <div><strong>Source A:</strong> ${log.conflict_detail.source_a?.value} <span class="text-xs text-gray-500">(${log.conflict_detail.source_a?.location})</span></div>
+                <div><strong>Source B:</strong> ${log.conflict_detail.source_b?.value} <span class="text-xs text-gray-500">(${log.conflict_detail.source_b?.location})</span></div>
+              </div>
+              <div class="mt-2 text-rose-700"><strong>Basis:</strong> ${log.conflict_detail.resolution_basis}</div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+            <div class="bg-gray-50 p-4 border-b border-gray-200 flex justify-between items-center">
+              <div>
+                <h4 class="font-bold text-lg text-gray-800">${log.attribute_name} <span class="font-normal text-gray-500">→ ${log.current_value}</span></h4>
+                <div class="text-xs font-bold uppercase text-gray-500 mt-1">${log.log_trigger.replace('_', ' ')}</div>
+              </div>
+              <div class="${riskColor} text-white text-xs font-bold px-3 py-1 rounded-full">
+                RISK: ${log.reasoning_chain?.inference_risk || 'UNKNOWN'}
+              </div>
+            </div>
+            
+            <div class="p-4">
+              <div class="mb-4 text-sm">
+                <strong>Observation:</strong> ${log.reasoning_chain?.observation || 'N/A'}<br>
+                <strong>Gap:</strong> <span class="text-rose-600">${log.reasoning_chain?.gap || 'N/A'}</span>
+              </div>
+              
+              <div class="mb-4">
+                <strong class="text-sm text-gray-700 uppercase tracking-wider">Logic Chain</strong>
+                ${stepsHtml}
+              </div>
+
+              ${conflictHtml}
+
+              <div class="mt-4 p-3 rounded border ${actionColor} flex items-start gap-3">
+                <div class="text-xl">👩‍🔧</div>
+                <div>
+                  <div class="font-bold uppercase text-sm">${log.reviewer_action?.action_tag}</div>
+                  <div class="text-sm">${log.reviewer_action?.action_instruction}</div>
+                  <div class="text-xs opacity-75 mt-1">Est. Time: ${log.reviewer_action?.estimated_review_time}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    const container = document.getElementById('json-viewer-reasoning');
+    if (!container) return;
+    container.innerHTML = '';
+    this.viewers = this.viewers || {};
+    this.viewers.reasoning = new JsonViewer(container, data, {
+      collapsedDepth: 2,
+      highlightInferred: false,
+      showLineNumbers: true
+    });
+    this.viewers.reasoning.render();
   },
 
   renderCataloging(data) {
@@ -938,9 +1050,9 @@ window.DocForge = {
 
     // Show pipeline as all complete
     this.els.pipelineSection.classList.remove('hidden');
-    for (let i = 0; i < 11; i++) {
+    for (let i = 0; i < 12; i++) {
       DocForgeAnimations.setStageState(i, 'complete');
-      if (i < 10) DocForgeAnimations.animateConnector(i, true);
+      if (i < 11) DocForgeAnimations.animateConnector(i, true);
     }
 
     // Render results
