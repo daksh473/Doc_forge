@@ -113,8 +113,11 @@ function build252ColumnMap(job) {
   const classPathStr = catPath.length > 0 ? catPath.join(">") : "";
 
   // Manufacturer / Brand
-  const canonicalMfg = mfg.canonical_mfg || mfg.Unilog_Brand || pId.manufacturer || partManuf || "";
-  const brandName = mfg.canonical_brand || (canonicalMfg ? canonicalMfg + "®" : "");
+  const rawCanonicalMfg = typeof mfg.canonical_mfg === 'string' ? mfg.canonical_mfg : (mfg.canonical_mfg?.normalized || mfg.canonical_mfg?.raw || mfg.Unilog_Brand || pId.manufacturer || partManuf || "");
+  const canonicalMfg = typeof rawCanonicalMfg === 'string' ? rawCanonicalMfg : "";
+
+  const rawBrand = typeof mfg.canonical_brand === 'string' ? mfg.canonical_brand : (mfg.canonical_brand?.normalized || mfg.canonical_brand?.raw || (canonicalMfg ? canonicalMfg + "®" : ""));
+  const brandName = typeof rawBrand === 'string' ? rawBrand : "";
 
   // Product Name & Descriptions
   const productName = pId.raw_title || comm.product_title || partDesc || "";
