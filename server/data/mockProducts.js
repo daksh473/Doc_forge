@@ -1,5 +1,5 @@
 // Mock Data for DocForge
-// Contains full payloads for all stages including Decimal-Fraction Conversion
+// Contains full payloads for all stages including De-duplication Decision Engine
 const products = [
   {
     "keywords": [
@@ -1961,6 +1961,106 @@ const products = [
         "conversion_coverage": "100%",
         "all_buyer_fields_fraction_compliant": true
       }
+    },
+    "dedup": {
+      "pipeline_id": "PL_DEMO_0",
+      "dedup_timestamp": "2026-08-17T10:02:44.218Z",
+      "pair_evaluations": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "identity_tier": "1",
+          "is_duplicate": false,
+          "confidence": 100,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Disqualifying contradiction: Material mismatch ('Stainless Steel 316' vs 'SS316')",
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": true,
+            "mfg_match_score": 100,
+            "mpn_match_score": 100,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "identity_tier": "3",
+          "is_duplicate": false,
+          "confidence": 75,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Variant Suffix Detected: 'SS-810-6-1' vs 'SS-810-6-1-LF' represents distinct variant SKUs.",
+            "variant_suffix_detected": true,
+            "variant_note": "Variant suffix difference detected: '-LF' (e.g. Lead-Free or Thread Standard variation)"
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": true,
+          "review_reason": "VARIANT_SUFFIX"
+        },
+        {
+          "row_index_a": 1,
+          "row_index_b": 3,
+          "identity_tier": "4",
+          "is_duplicate": false,
+          "confidence": 40,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Disqualifying contradiction: Core dimension mismatch ('3/4 IN' vs '1/2 IN')",
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        }
+      ],
+      "dedup_summary": {
+        "total_candidate_pairs_evaluated": 3,
+        "confirmed_duplicates": 0,
+        "auto_merged_count": 0,
+        "review_required_count": 1,
+        "not_duplicate_count": 3,
+        "variant_suffix_pairs_flagged": 1,
+        "estimated_row_reduction": "0 rows merged into golden records",
+        "dedup_confidence_grade": "A"
+      }
     }
   },
   {
@@ -3828,6 +3928,106 @@ const products = [
         "conversion_coverage": "100%",
         "all_buyer_fields_fraction_compliant": true
       }
+    },
+    "dedup": {
+      "pipeline_id": "PL_DEMO_1",
+      "dedup_timestamp": "2026-08-17T10:02:45.430Z",
+      "pair_evaluations": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "identity_tier": "1",
+          "is_duplicate": false,
+          "confidence": 100,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Disqualifying contradiction: Material mismatch ('Stainless Steel 316' vs 'SS316')",
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": true,
+            "mfg_match_score": 100,
+            "mpn_match_score": 100,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "identity_tier": "3",
+          "is_duplicate": false,
+          "confidence": 75,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Variant Suffix Detected: 'SS-810-6-1' vs 'SS-810-6-1-LF' represents distinct variant SKUs.",
+            "variant_suffix_detected": true,
+            "variant_note": "Variant suffix difference detected: '-LF' (e.g. Lead-Free or Thread Standard variation)"
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": true,
+          "review_reason": "VARIANT_SUFFIX"
+        },
+        {
+          "row_index_a": 1,
+          "row_index_b": 3,
+          "identity_tier": "4",
+          "is_duplicate": false,
+          "confidence": 40,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Disqualifying contradiction: Core dimension mismatch ('3/4 IN' vs '1/2 IN')",
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        }
+      ],
+      "dedup_summary": {
+        "total_candidate_pairs_evaluated": 3,
+        "confirmed_duplicates": 0,
+        "auto_merged_count": 0,
+        "review_required_count": 1,
+        "not_duplicate_count": 3,
+        "variant_suffix_pairs_flagged": 1,
+        "estimated_row_reduction": "0 rows merged into golden records",
+        "dedup_confidence_grade": "A"
+      }
     }
   },
   {
@@ -5575,6 +5775,106 @@ const products = [
         "conversion_coverage": "100%",
         "all_buyer_fields_fraction_compliant": true
       }
+    },
+    "dedup": {
+      "pipeline_id": "PL_DEMO_2",
+      "dedup_timestamp": "2026-08-17T10:02:46.639Z",
+      "pair_evaluations": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "identity_tier": "1",
+          "is_duplicate": false,
+          "confidence": 100,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Disqualifying contradiction: Material mismatch ('Stainless Steel 316' vs 'SS316')",
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": true,
+            "mfg_match_score": 100,
+            "mpn_match_score": 100,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "identity_tier": "3",
+          "is_duplicate": false,
+          "confidence": 75,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Variant Suffix Detected: 'SS-810-6-1' vs 'SS-810-6-1-LF' represents distinct variant SKUs.",
+            "variant_suffix_detected": true,
+            "variant_note": "Variant suffix difference detected: '-LF' (e.g. Lead-Free or Thread Standard variation)"
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": true,
+          "review_reason": "VARIANT_SUFFIX"
+        },
+        {
+          "row_index_a": 1,
+          "row_index_b": 3,
+          "identity_tier": "4",
+          "is_duplicate": false,
+          "confidence": 40,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Disqualifying contradiction: Core dimension mismatch ('3/4 IN' vs '1/2 IN')",
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        }
+      ],
+      "dedup_summary": {
+        "total_candidate_pairs_evaluated": 3,
+        "confirmed_duplicates": 0,
+        "auto_merged_count": 0,
+        "review_required_count": 1,
+        "not_duplicate_count": 3,
+        "variant_suffix_pairs_flagged": 1,
+        "estimated_row_reduction": "0 rows merged into golden records",
+        "dedup_confidence_grade": "A"
+      }
     }
   },
   {
@@ -7204,6 +7504,106 @@ const products = [
         "mpn_conflicts_detected": 0,
         "conversion_coverage": "100%",
         "all_buyer_fields_fraction_compliant": true
+      }
+    },
+    "dedup": {
+      "pipeline_id": "PL_DEMO_3",
+      "dedup_timestamp": "2026-08-17T10:02:47.848Z",
+      "pair_evaluations": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "identity_tier": "1",
+          "is_duplicate": false,
+          "confidence": 100,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Disqualifying contradiction: Material mismatch ('Stainless Steel 316' vs 'SS316')",
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": true,
+            "mfg_match_score": 100,
+            "mpn_match_score": 100,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "identity_tier": "3",
+          "is_duplicate": false,
+          "confidence": 75,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Variant Suffix Detected: 'SS-810-6-1' vs 'SS-810-6-1-LF' represents distinct variant SKUs.",
+            "variant_suffix_detected": true,
+            "variant_note": "Variant suffix difference detected: '-LF' (e.g. Lead-Free or Thread Standard variation)"
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": true,
+          "review_reason": "VARIANT_SUFFIX"
+        },
+        {
+          "row_index_a": 1,
+          "row_index_b": 3,
+          "identity_tier": "4",
+          "is_duplicate": false,
+          "confidence": 40,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Disqualifying contradiction: Core dimension mismatch ('3/4 IN' vs '1/2 IN')",
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        }
+      ],
+      "dedup_summary": {
+        "total_candidate_pairs_evaluated": 3,
+        "confirmed_duplicates": 0,
+        "auto_merged_count": 0,
+        "review_required_count": 1,
+        "not_duplicate_count": 3,
+        "variant_suffix_pairs_flagged": 1,
+        "estimated_row_reduction": "0 rows merged into golden records",
+        "dedup_confidence_grade": "A"
       }
     }
   },
@@ -9025,6 +9425,106 @@ const products = [
         "conversion_coverage": "100%",
         "all_buyer_fields_fraction_compliant": true
       }
+    },
+    "dedup": {
+      "pipeline_id": "PL_DEMO_4",
+      "dedup_timestamp": "2026-08-17T10:02:49.058Z",
+      "pair_evaluations": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "identity_tier": "1",
+          "is_duplicate": false,
+          "confidence": 100,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Disqualifying contradiction: Material mismatch ('Stainless Steel 316' vs 'SS316')",
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": true,
+            "mfg_match_score": 100,
+            "mpn_match_score": 100,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "identity_tier": "3",
+          "is_duplicate": false,
+          "confidence": 75,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Variant Suffix Detected: 'SS-810-6-1' vs 'SS-810-6-1-LF' represents distinct variant SKUs.",
+            "variant_suffix_detected": true,
+            "variant_note": "Variant suffix difference detected: '-LF' (e.g. Lead-Free or Thread Standard variation)"
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": true,
+          "review_reason": "VARIANT_SUFFIX"
+        },
+        {
+          "row_index_a": 1,
+          "row_index_b": 3,
+          "identity_tier": "4",
+          "is_duplicate": false,
+          "confidence": 40,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Disqualifying contradiction: Core dimension mismatch ('3/4 IN' vs '1/2 IN')",
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        }
+      ],
+      "dedup_summary": {
+        "total_candidate_pairs_evaluated": 3,
+        "confirmed_duplicates": 0,
+        "auto_merged_count": 0,
+        "review_required_count": 1,
+        "not_duplicate_count": 3,
+        "variant_suffix_pairs_flagged": 1,
+        "estimated_row_reduction": "0 rows merged into golden records",
+        "dedup_confidence_grade": "A"
+      }
     }
   },
   {
@@ -10734,6 +11234,106 @@ const products = [
         "mpn_conflicts_detected": 0,
         "conversion_coverage": "100%",
         "all_buyer_fields_fraction_compliant": true
+      }
+    },
+    "dedup": {
+      "pipeline_id": "PL_DEMO_5",
+      "dedup_timestamp": "2026-08-17T10:02:50.261Z",
+      "pair_evaluations": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "identity_tier": "1",
+          "is_duplicate": false,
+          "confidence": 100,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Disqualifying contradiction: Material mismatch ('Stainless Steel 316' vs 'SS316')",
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": true,
+            "mfg_match_score": 100,
+            "mpn_match_score": 100,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "identity_tier": "3",
+          "is_duplicate": false,
+          "confidence": 75,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Variant Suffix Detected: 'SS-810-6-1' vs 'SS-810-6-1-LF' represents distinct variant SKUs.",
+            "variant_suffix_detected": true,
+            "variant_note": "Variant suffix difference detected: '-LF' (e.g. Lead-Free or Thread Standard variation)"
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": true,
+          "review_reason": "VARIANT_SUFFIX"
+        },
+        {
+          "row_index_a": 1,
+          "row_index_b": 3,
+          "identity_tier": "4",
+          "is_duplicate": false,
+          "confidence": 40,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Disqualifying contradiction: Core dimension mismatch ('3/4 IN' vs '1/2 IN')",
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 45,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        }
+      ],
+      "dedup_summary": {
+        "total_candidate_pairs_evaluated": 3,
+        "confirmed_duplicates": 0,
+        "auto_merged_count": 0,
+        "review_required_count": 1,
+        "not_duplicate_count": 3,
+        "variant_suffix_pairs_flagged": 1,
+        "estimated_row_reduction": "0 rows merged into golden records",
+        "dedup_confidence_grade": "A"
       }
     }
   }
