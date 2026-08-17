@@ -1,5 +1,5 @@
 // Mock Data for DocForge
-// Contains full payloads for 13 stages: extraction, normalization, enrichment, validation, grounding, reasoning, cataloging, scoring, dashboard
+// Contains full payloads for all stages including LOV Verification
 const products = [
   {
     "keywords": [
@@ -1456,6 +1456,142 @@ const products = [
         "confidence_label": "Good",
         "confidence_color": "green"
       }
+    },
+    "lov": {
+      "pipeline_id": "{{UUID}}",
+      "classpath": "valves.ball",
+      "lov_coverage": "full",
+      "matching_timestamp": "2026-08-17T08:07:01.397Z",
+      "lov_matched_attributes": [
+        {
+          "attribute_name": "Body Material",
+          "raw_extracted_value": "SS316",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Body Material",
+          "filterable": true,
+          "match_strategy": "fuzzy",
+          "confidence": 55,
+          "canonical_value": "Stainless Steel 316",
+          "canonical_value_array": [
+            "Stainless Steel 316"
+          ],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": true,
+          "review_flag": "LOW_CONFIDENCE",
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Pressure Rating",
+          "raw_extracted_value": "1000 WOG",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Pressure Rating",
+          "filterable": true,
+          "match_strategy": "partial",
+          "confidence": 70,
+          "canonical_value": "1000 PSI CWP",
+          "canonical_value_array": [
+            "1000 PSI CWP"
+          ],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": true,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Connection Type",
+          "raw_extracted_value": "NPT Threaded",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Connection Type",
+          "filterable": true,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": false,
+          "review_flag": "FILTERABLE_CRITICAL",
+          "severity": "CRITICAL"
+        },
+        {
+          "attribute_name": "Brand",
+          "raw_extracted_value": "-- Unbranded --",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Brand",
+          "filterable": false,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": true,
+          "char_limit": null,
+          "casing_rule": null,
+          "format_rule": null,
+          "lov_matched": false,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Custom Coating",
+          "raw_extracted_value": "Non-standard Titanium Nitride",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Custom Coating",
+          "filterable": false,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": false,
+          "review_flag": "LOV_MISS",
+          "severity": "warning"
+        }
+      ],
+      "unmatched_attributes": [
+        {
+          "attribute_name": "Connection Type",
+          "raw_extracted_value": "NPT Threaded",
+          "reason": "no_lov_value",
+          "severity": "CRITICAL",
+          "remediation": "Value 'NPT Threaded' is not in approved LOV dictionary. Request master data update or approve manual edit."
+        },
+        {
+          "attribute_name": "Brand",
+          "raw_extracted_value": "-- Unbranded --",
+          "reason": "placeholder",
+          "severity": "warning",
+          "remediation": "Placeholder detected — brand or value unassigned in source document."
+        },
+        {
+          "attribute_name": "Custom Coating",
+          "raw_extracted_value": "Non-standard Titanium Nitride",
+          "reason": "no_lov_value",
+          "severity": "warning",
+          "remediation": "Value 'Non-standard Titanium Nitride' is not in approved LOV dictionary. Request master data update or approve manual edit."
+        }
+      ],
+      "lov_match_summary": {
+        "total_attributes": 5,
+        "exact_match_count": 1,
+        "fuzzy_match_count": 1,
+        "no_match_count": 2,
+        "placeholder_count": 1,
+        "filterable_critical_misses": 1,
+        "lov_match_rate": "40%",
+        "lov_match_grade": "F",
+        "grade_basis": "A=95%+, B=85%+, C=70%+, D=50%+, F=<50%"
+      }
     }
   },
   {
@@ -2818,6 +2954,142 @@ const products = [
         "confidence_label": "Good",
         "confidence_color": "green"
       }
+    },
+    "lov": {
+      "pipeline_id": "{{UUID}}",
+      "classpath": "transmitters.pressure",
+      "lov_coverage": "full",
+      "matching_timestamp": "2026-08-17T08:07:02.606Z",
+      "lov_matched_attributes": [
+        {
+          "attribute_name": "Body Material",
+          "raw_extracted_value": "SS316",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Body Material",
+          "filterable": true,
+          "match_strategy": "fuzzy",
+          "confidence": 55,
+          "canonical_value": "Stainless Steel 316",
+          "canonical_value_array": [
+            "Stainless Steel 316"
+          ],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": true,
+          "review_flag": "LOW_CONFIDENCE",
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Pressure Rating",
+          "raw_extracted_value": "1000 WOG",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Pressure Rating",
+          "filterable": true,
+          "match_strategy": "partial",
+          "confidence": 70,
+          "canonical_value": "1000 PSI CWP",
+          "canonical_value_array": [
+            "1000 PSI CWP"
+          ],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": true,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Connection Type",
+          "raw_extracted_value": "NPT Threaded",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Connection Type",
+          "filterable": true,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": false,
+          "review_flag": "FILTERABLE_CRITICAL",
+          "severity": "CRITICAL"
+        },
+        {
+          "attribute_name": "Brand",
+          "raw_extracted_value": "-- Unbranded --",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Brand",
+          "filterable": false,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": true,
+          "char_limit": null,
+          "casing_rule": null,
+          "format_rule": null,
+          "lov_matched": false,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Custom Coating",
+          "raw_extracted_value": "Non-standard Titanium Nitride",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Custom Coating",
+          "filterable": false,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": false,
+          "review_flag": "LOV_MISS",
+          "severity": "warning"
+        }
+      ],
+      "unmatched_attributes": [
+        {
+          "attribute_name": "Connection Type",
+          "raw_extracted_value": "NPT Threaded",
+          "reason": "no_lov_value",
+          "severity": "CRITICAL",
+          "remediation": "Value 'NPT Threaded' is not in approved LOV dictionary. Request master data update or approve manual edit."
+        },
+        {
+          "attribute_name": "Brand",
+          "raw_extracted_value": "-- Unbranded --",
+          "reason": "placeholder",
+          "severity": "warning",
+          "remediation": "Placeholder detected — brand or value unassigned in source document."
+        },
+        {
+          "attribute_name": "Custom Coating",
+          "raw_extracted_value": "Non-standard Titanium Nitride",
+          "reason": "no_lov_value",
+          "severity": "warning",
+          "remediation": "Value 'Non-standard Titanium Nitride' is not in approved LOV dictionary. Request master data update or approve manual edit."
+        }
+      ],
+      "lov_match_summary": {
+        "total_attributes": 5,
+        "exact_match_count": 1,
+        "fuzzy_match_count": 1,
+        "no_match_count": 2,
+        "placeholder_count": 1,
+        "filterable_critical_misses": 1,
+        "lov_match_rate": "40%",
+        "lov_match_grade": "F",
+        "grade_basis": "A=95%+, B=85%+, C=70%+, D=50%+, F=<50%"
+      }
     }
   },
   {
@@ -4060,6 +4332,142 @@ const products = [
         "confidence_label": "Good",
         "confidence_color": "green"
       }
+    },
+    "lov": {
+      "pipeline_id": "{{UUID}}",
+      "classpath": "valves.solenoid",
+      "lov_coverage": "full",
+      "matching_timestamp": "2026-08-17T08:07:03.820Z",
+      "lov_matched_attributes": [
+        {
+          "attribute_name": "Body Material",
+          "raw_extracted_value": "SS316",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Body Material",
+          "filterable": true,
+          "match_strategy": "fuzzy",
+          "confidence": 55,
+          "canonical_value": "Stainless Steel 316",
+          "canonical_value_array": [
+            "Stainless Steel 316"
+          ],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": true,
+          "review_flag": "LOW_CONFIDENCE",
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Pressure Rating",
+          "raw_extracted_value": "1000 WOG",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Pressure Rating",
+          "filterable": true,
+          "match_strategy": "partial",
+          "confidence": 70,
+          "canonical_value": "1000 PSI CWP",
+          "canonical_value_array": [
+            "1000 PSI CWP"
+          ],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": true,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Connection Type",
+          "raw_extracted_value": "NPT Threaded",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Connection Type",
+          "filterable": true,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": false,
+          "review_flag": "FILTERABLE_CRITICAL",
+          "severity": "CRITICAL"
+        },
+        {
+          "attribute_name": "Brand",
+          "raw_extracted_value": "-- Unbranded --",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Brand",
+          "filterable": false,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": true,
+          "char_limit": null,
+          "casing_rule": null,
+          "format_rule": null,
+          "lov_matched": false,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Custom Coating",
+          "raw_extracted_value": "Non-standard Titanium Nitride",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Custom Coating",
+          "filterable": false,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": false,
+          "review_flag": "LOV_MISS",
+          "severity": "warning"
+        }
+      ],
+      "unmatched_attributes": [
+        {
+          "attribute_name": "Connection Type",
+          "raw_extracted_value": "NPT Threaded",
+          "reason": "no_lov_value",
+          "severity": "CRITICAL",
+          "remediation": "Value 'NPT Threaded' is not in approved LOV dictionary. Request master data update or approve manual edit."
+        },
+        {
+          "attribute_name": "Brand",
+          "raw_extracted_value": "-- Unbranded --",
+          "reason": "placeholder",
+          "severity": "warning",
+          "remediation": "Placeholder detected — brand or value unassigned in source document."
+        },
+        {
+          "attribute_name": "Custom Coating",
+          "raw_extracted_value": "Non-standard Titanium Nitride",
+          "reason": "no_lov_value",
+          "severity": "warning",
+          "remediation": "Value 'Non-standard Titanium Nitride' is not in approved LOV dictionary. Request master data update or approve manual edit."
+        }
+      ],
+      "lov_match_summary": {
+        "total_attributes": 5,
+        "exact_match_count": 1,
+        "fuzzy_match_count": 1,
+        "no_match_count": 2,
+        "placeholder_count": 1,
+        "filterable_critical_misses": 1,
+        "lov_match_rate": "40%",
+        "lov_match_grade": "F",
+        "grade_basis": "A=95%+, B=85%+, C=70%+, D=50%+, F=<50%"
+      }
     }
   },
   {
@@ -5184,6 +5592,142 @@ const products = [
         "confidence_score": 85,
         "confidence_label": "Good",
         "confidence_color": "green"
+      }
+    },
+    "lov": {
+      "pipeline_id": "{{UUID}}",
+      "classpath": "fittings.pipe",
+      "lov_coverage": "full",
+      "matching_timestamp": "2026-08-17T08:07:05.023Z",
+      "lov_matched_attributes": [
+        {
+          "attribute_name": "Body Material",
+          "raw_extracted_value": "SS316",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Body Material",
+          "filterable": true,
+          "match_strategy": "fuzzy",
+          "confidence": 55,
+          "canonical_value": "Stainless Steel 316",
+          "canonical_value_array": [
+            "Stainless Steel 316"
+          ],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": true,
+          "review_flag": "LOW_CONFIDENCE",
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Pressure Rating",
+          "raw_extracted_value": "1000 WOG",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Pressure Rating",
+          "filterable": true,
+          "match_strategy": "partial",
+          "confidence": 70,
+          "canonical_value": "1000 PSI CWP",
+          "canonical_value_array": [
+            "1000 PSI CWP"
+          ],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": true,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Connection Type",
+          "raw_extracted_value": "NPT Threaded",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Connection Type",
+          "filterable": true,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": false,
+          "review_flag": "FILTERABLE_CRITICAL",
+          "severity": "CRITICAL"
+        },
+        {
+          "attribute_name": "Brand",
+          "raw_extracted_value": "-- Unbranded --",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Brand",
+          "filterable": false,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": true,
+          "char_limit": null,
+          "casing_rule": null,
+          "format_rule": null,
+          "lov_matched": false,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Custom Coating",
+          "raw_extracted_value": "Non-standard Titanium Nitride",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Custom Coating",
+          "filterable": false,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": false,
+          "review_flag": "LOV_MISS",
+          "severity": "warning"
+        }
+      ],
+      "unmatched_attributes": [
+        {
+          "attribute_name": "Connection Type",
+          "raw_extracted_value": "NPT Threaded",
+          "reason": "no_lov_value",
+          "severity": "CRITICAL",
+          "remediation": "Value 'NPT Threaded' is not in approved LOV dictionary. Request master data update or approve manual edit."
+        },
+        {
+          "attribute_name": "Brand",
+          "raw_extracted_value": "-- Unbranded --",
+          "reason": "placeholder",
+          "severity": "warning",
+          "remediation": "Placeholder detected — brand or value unassigned in source document."
+        },
+        {
+          "attribute_name": "Custom Coating",
+          "raw_extracted_value": "Non-standard Titanium Nitride",
+          "reason": "no_lov_value",
+          "severity": "warning",
+          "remediation": "Value 'Non-standard Titanium Nitride' is not in approved LOV dictionary. Request master data update or approve manual edit."
+        }
+      ],
+      "lov_match_summary": {
+        "total_attributes": 5,
+        "exact_match_count": 1,
+        "fuzzy_match_count": 1,
+        "no_match_count": 2,
+        "placeholder_count": 1,
+        "filterable_critical_misses": 1,
+        "lov_match_rate": "40%",
+        "lov_match_grade": "F",
+        "grade_basis": "A=95%+, B=85%+, C=70%+, D=50%+, F=<50%"
       }
     }
   },
@@ -6500,6 +7044,142 @@ const products = [
         "confidence_label": "Good",
         "confidence_color": "green"
       }
+    },
+    "lov": {
+      "pipeline_id": "{{UUID}}",
+      "classpath": "drives.vfd",
+      "lov_coverage": "full",
+      "matching_timestamp": "2026-08-17T08:07:06.234Z",
+      "lov_matched_attributes": [
+        {
+          "attribute_name": "Body Material",
+          "raw_extracted_value": "SS316",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Body Material",
+          "filterable": true,
+          "match_strategy": "fuzzy",
+          "confidence": 55,
+          "canonical_value": "Stainless Steel 316",
+          "canonical_value_array": [
+            "Stainless Steel 316"
+          ],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": true,
+          "review_flag": "LOW_CONFIDENCE",
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Pressure Rating",
+          "raw_extracted_value": "1000 WOG",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Pressure Rating",
+          "filterable": true,
+          "match_strategy": "partial",
+          "confidence": 70,
+          "canonical_value": "1000 PSI CWP",
+          "canonical_value_array": [
+            "1000 PSI CWP"
+          ],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": true,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Connection Type",
+          "raw_extracted_value": "NPT Threaded",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Connection Type",
+          "filterable": true,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": false,
+          "review_flag": "FILTERABLE_CRITICAL",
+          "severity": "CRITICAL"
+        },
+        {
+          "attribute_name": "Brand",
+          "raw_extracted_value": "-- Unbranded --",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Brand",
+          "filterable": false,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": true,
+          "char_limit": null,
+          "casing_rule": null,
+          "format_rule": null,
+          "lov_matched": false,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Custom Coating",
+          "raw_extracted_value": "Non-standard Titanium Nitride",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Custom Coating",
+          "filterable": false,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": false,
+          "review_flag": "LOV_MISS",
+          "severity": "warning"
+        }
+      ],
+      "unmatched_attributes": [
+        {
+          "attribute_name": "Connection Type",
+          "raw_extracted_value": "NPT Threaded",
+          "reason": "no_lov_value",
+          "severity": "CRITICAL",
+          "remediation": "Value 'NPT Threaded' is not in approved LOV dictionary. Request master data update or approve manual edit."
+        },
+        {
+          "attribute_name": "Brand",
+          "raw_extracted_value": "-- Unbranded --",
+          "reason": "placeholder",
+          "severity": "warning",
+          "remediation": "Placeholder detected — brand or value unassigned in source document."
+        },
+        {
+          "attribute_name": "Custom Coating",
+          "raw_extracted_value": "Non-standard Titanium Nitride",
+          "reason": "no_lov_value",
+          "severity": "warning",
+          "remediation": "Value 'Non-standard Titanium Nitride' is not in approved LOV dictionary. Request master data update or approve manual edit."
+        }
+      ],
+      "lov_match_summary": {
+        "total_attributes": 5,
+        "exact_match_count": 1,
+        "fuzzy_match_count": 1,
+        "no_match_count": 2,
+        "placeholder_count": 1,
+        "filterable_critical_misses": 1,
+        "lov_match_rate": "40%",
+        "lov_match_grade": "F",
+        "grade_basis": "A=95%+, B=85%+, C=70%+, D=50%+, F=<50%"
+      }
     }
   },
   {
@@ -7704,6 +8384,142 @@ const products = [
         "confidence_score": 85,
         "confidence_label": "Good",
         "confidence_color": "green"
+      }
+    },
+    "lov": {
+      "pipeline_id": "{{UUID}}",
+      "classpath": "sensors.rtd",
+      "lov_coverage": "full",
+      "matching_timestamp": "2026-08-17T08:07:07.446Z",
+      "lov_matched_attributes": [
+        {
+          "attribute_name": "Body Material",
+          "raw_extracted_value": "SS316",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Body Material",
+          "filterable": true,
+          "match_strategy": "fuzzy",
+          "confidence": 55,
+          "canonical_value": "Stainless Steel 316",
+          "canonical_value_array": [
+            "Stainless Steel 316"
+          ],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": true,
+          "review_flag": "LOW_CONFIDENCE",
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Pressure Rating",
+          "raw_extracted_value": "1000 WOG",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Pressure Rating",
+          "filterable": true,
+          "match_strategy": "partial",
+          "confidence": 70,
+          "canonical_value": "1000 PSI CWP",
+          "canonical_value_array": [
+            "1000 PSI CWP"
+          ],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": true,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Connection Type",
+          "raw_extracted_value": "NPT Threaded",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Connection Type",
+          "filterable": true,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": false,
+          "review_flag": "FILTERABLE_CRITICAL",
+          "severity": "CRITICAL"
+        },
+        {
+          "attribute_name": "Brand",
+          "raw_extracted_value": "-- Unbranded --",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Brand",
+          "filterable": false,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": true,
+          "char_limit": null,
+          "casing_rule": null,
+          "format_rule": null,
+          "lov_matched": false,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Custom Coating",
+          "raw_extracted_value": "Non-standard Titanium Nitride",
+          "lov_attribute_found": true,
+          "lov_attribute_label": "Custom Coating",
+          "filterable": false,
+          "match_strategy": "no_match",
+          "confidence": 0,
+          "canonical_value": null,
+          "canonical_value_array": [],
+          "is_placeholder": false,
+          "char_limit": 40,
+          "casing_rule": "Title Case",
+          "format_rule": "Standardized Vocabulary",
+          "lov_matched": false,
+          "review_flag": "LOV_MISS",
+          "severity": "warning"
+        }
+      ],
+      "unmatched_attributes": [
+        {
+          "attribute_name": "Connection Type",
+          "raw_extracted_value": "NPT Threaded",
+          "reason": "no_lov_value",
+          "severity": "CRITICAL",
+          "remediation": "Value 'NPT Threaded' is not in approved LOV dictionary. Request master data update or approve manual edit."
+        },
+        {
+          "attribute_name": "Brand",
+          "raw_extracted_value": "-- Unbranded --",
+          "reason": "placeholder",
+          "severity": "warning",
+          "remediation": "Placeholder detected — brand or value unassigned in source document."
+        },
+        {
+          "attribute_name": "Custom Coating",
+          "raw_extracted_value": "Non-standard Titanium Nitride",
+          "reason": "no_lov_value",
+          "severity": "warning",
+          "remediation": "Value 'Non-standard Titanium Nitride' is not in approved LOV dictionary. Request master data update or approve manual edit."
+        }
+      ],
+      "lov_match_summary": {
+        "total_attributes": 5,
+        "exact_match_count": 1,
+        "fuzzy_match_count": 1,
+        "no_match_count": 2,
+        "placeholder_count": 1,
+        "filterable_critical_misses": 1,
+        "lov_match_rate": "40%",
+        "lov_match_grade": "F",
+        "grade_basis": "A=95%+, B=85%+, C=70%+, D=50%+, F=<50%"
       }
     }
   }

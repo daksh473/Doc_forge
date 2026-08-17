@@ -123,6 +123,10 @@ window.DocForge = {
     document.getElementById('collapse-normalize')?.addEventListener('click', () => this.viewers?.normalize?.collapseAll());
     document.getElementById('search-normalize')?.addEventListener('input', (e) => this.viewers?.normalize?.search(e.target.value));
 
+    document.getElementById('expand-lov')?.addEventListener('click', () => this.viewers?.lov?.expandAll());
+    document.getElementById('collapse-lov')?.addEventListener('click', () => this.viewers?.lov?.collapseAll());
+    document.getElementById('search-lov')?.addEventListener('input', (e) => this.viewers?.lov?.search(e.target.value));
+
     document.getElementById('expand-validate')?.addEventListener('click', () => this.viewers?.validate?.expandAll());
     document.getElementById('collapse-validate')?.addEventListener('click', () => this.viewers?.validate?.collapseAll());
     document.getElementById('search-validate')?.addEventListener('input', (e) => this.viewers?.validate?.search(e.target.value));
@@ -430,7 +434,8 @@ window.DocForge = {
     const chunking = stages.chunk.result;
     const extraction = stages.extract.result;
     const normalization = stages.normalize ? stages.normalize.result : null;
-    const enrichment = stages.enrich.result;
+    const lov = stages.lov ? stages.lov.result : null;
+    const enrichment = stages.enrich ? stages.enrich.result : null;
     const validation = stages.validate ? stages.validate.result : null;
     const grounding = stages.ground ? stages.ground.result : null;
     const reasoning = stages.reason ? stages.reason.result : null;
@@ -464,6 +469,7 @@ window.DocForge = {
       chunking: chunking,
       extraction: extraction,
       normalization: normalization,
+      lov: lov,
       enrichment: enrichment,
       validation: validation,
       grounding: grounding,
@@ -508,9 +514,10 @@ window.DocForge = {
     this.renderClassification(data.classification);
     this.renderPreprocess(data.preprocessing);
     this.renderChunking(data.chunking);
-    this.renderExtraction(data.extraction);
+    if (data.extraction) this.renderExtraction(data.extraction);
     if (data.normalization) this.renderNormalization(data.normalization);
-    this.renderEnrichment(data.enrichment);
+    if (data.lov) this.renderLOV(data.lov);
+    if (data.enrichment) this.renderEnrichment(data.enrichment);
     if (data.validation) this.renderValidation(data.validation);
     if (data.grounding) this.renderGrounding(data.grounding);
     if (data.reasoning) this.renderReasoning(data.reasoning);
@@ -604,6 +611,19 @@ window.DocForge = {
       showLineNumbers: true
     });
     this.viewers.normalize.render();
+  },
+
+  renderLOV(data) {
+    const container = document.getElementById('json-viewer-lov');
+    if (!container) return;
+    container.innerHTML = '';
+    this.viewers = this.viewers || {};
+    this.viewers.lov = new JsonViewer(container, data, {
+      collapsedDepth: 2,
+      highlightInferred: false,
+      showLineNumbers: true
+    });
+    this.viewers.lov.render();
   },
 
   renderEnrichment(data) {
@@ -1151,7 +1171,7 @@ window.DocForge = {
     this.state.currentSlide = 0;
     this.slideTitles = [
       'Classification', 'Pre-Processing', 'Chunking', 'Raw Extraction',
-      'Normalization', 'Taxonomy (Enrich)', 'Validation Report', 'Source Grounding',
+      'Normalization', 'LOV Verification', 'Taxonomy (Enrich)', 'Validation Report', 'Source Grounding',
       'AI Reasoning', 'Commercial Content', 'Quality Score', 'Review Dashboard',
       'Final Approval', 'Export'
     ];

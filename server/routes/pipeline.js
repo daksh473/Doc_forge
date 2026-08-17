@@ -16,6 +16,7 @@ const dashboardPrep = require('../services/dashboard');
 const normalizer = require('../services/normalizer');
 const reviewer = require('../services/reviewer');
 const exporter = require('../services/exporter');
+const lovEngine = require('../services/lovEngine');
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/', limits: { fileSize: 20 * 1024 * 1024 } });
@@ -198,6 +199,16 @@ router.post('/export', async (req, res, next) => {
     }
 });
 
+router.post('/lov', async (req, res, next) => {
+    try {
+        const { extraction, classpath } = req.body;
+        const result = await lovEngine.matchLOV(extraction, classpath || "valves.ball");
+        res.json(result);
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
     try {
         const startTime = Date.now();
@@ -235,6 +246,10 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const normalizeStart = Date.now();
         const normalization = await normalizer.normalizeData(extraction, classification);
         const normalizeEnd = Date.now();
+
+        const lovStart = Date.now();
+        const lovMatching = await lovEngine.matchLOV(extraction, "valves.ball");
+        const lovEnd = Date.now();
 
         const enrichStart = Date.now();
         const enrichment = await enricher.enrichData(extraction, classification);
@@ -276,6 +291,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
                 chunk: { result: chunking, duration_ms: chunkEnd - chunkStart },
                 extract: { result: extraction, duration_ms: extractEnd - extractStart },
                 normalize: { result: normalization, duration_ms: normalizeEnd - normalizeStart },
+                lov: { result: lovMatching, duration_ms: lovEnd - lovStart },
                 enrich: { result: enrichment, duration_ms: enrichEnd - enrichStart },
                 validate: { result: validation, duration_ms: validateEnd - validateStart },
                 ground: { result: grounding, duration_ms: groundEnd - groundStart },
