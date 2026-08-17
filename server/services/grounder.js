@@ -2,48 +2,108 @@ const mockProducts = require('../data/mockProducts');
 
 /**
  * Document Grounding Service
- * Generates source citations for extracted attributes.
+ * Generates real source citations directly from extracted attribute source_grounding snippets.
  */
-function groundData(validation, chunking) {
+function groundData(validation, chunking, extraction) {
   return new Promise((resolve) => {
-    // Simulate citation generation
     setTimeout(() => {
-      const products = mockProducts.getProducts();
-      let product = products[0];
-      
-      // Match by title/type
-      if (validation && validation.product_type_detected) {
-        const type = validation.product_type_detected.toLowerCase();
-        if (type.includes('valve')) product = products[0];
-        else if (type.includes('pressure')) product = products[1];
-        else if (type.includes('solenoid')) product = products[2];
-        else if (type.includes('fitting')) product = products[3];
-        else if (type.includes('drive')) product = products[4];
-        else if (type.includes('temperature')) product = products[5];
-      }
+      const attributes = (extraction && Array.isArray(extraction.attributes))
+        ? extraction.attributes
+        : [];
 
-      if (product && product.grounding) {
-        resolve(product.grounding);
-      } else {
-        resolve({
-          pipeline_id: 'pl_' + Date.now(),
-          citation_timestamp: new Date().toISOString(),
-          source_file: "document.pdf",
-          total_attributes_cited: 0,
-          citations: [],
-          citation_coverage_report: {
-            exact_match_count: 0,
-            partial_match_count: 0,
-            contextual_match_count: 0,
-            inferred_only_count: 0,
-            overall_grounding_score: 0,
-            grounding_label: "poorly_grounded",
-            unverifiable_attributes: [],
-            conflict_attributes: []
-          }
+      const citations = [];
+      let exactCount = 0;
+      let partialCount = 0;
+      let contextualCount = 0;
+      let inferredOnlyCount = 0;
+
+      const unverifiable = [];
+      const conflicts = [];
+
+      attributes.forEach(attr => {
+        const grounding = attr.source_grounding || {};
+        const snippet = grounding.source_snippet || attr.raw_value || attr.standardized_value || "";
+        const chunkId = grounding.chunk_id || "chunk_001";
+        const pageNum = grounding.page_number || 1;
+        const secLabel = grounding.section_label || "[DOCUMENT_CONTENT]";
+
+        let citationLevel = "exact_match";
+        let matchType = "verbatim";
+
+        if (attr.inferred) {
+          citationLevel = "inferred_only";
+          matchType = "inference";
+          inferredOnlyCount++;
+          unverifiable.push(attr.attribute_name);
+        } else if ((attr.confidence_score || 85) >= 90) {
+          citationLevel = "exact_match";
+          matchType = "verbatim";
+          exactCount++;
+        } else {
+          citationLevel = "partial_match";
+          matchType = "contextual";
+          partialCount++;
+        }
+
+        if (attr.conflict_detected) {
+          conflicts.push(attr.attribute_name);
+        }
+
+        citations.push({
+          attribute_name: attr.attribute_name,
+          attributed_value: attr.standardized_value || attr.raw_value || "",
+          citation_level: citationLevel,
+          confidence: attr.confidence_score || 85,
+          primary_citation: {
+            chunk_id: chunkId,
+            page_number: pageNum,
+            section_label: secLabel,
+            context_window: snippet,
+            match_type: matchType,
+            matched_fragment: snippet,
+            contextual_reasoning: attr.inference_basis || null,
+            table_reference: {
+              present: secLabel.toLowerCase().includes("table")
+            },
+            human_readable_reference: `Page ${pageNum}, ${secLabel}`
+          },
+          alternate_citations: [],
+          multi_source_conflict: attr.conflict_detected || false,
+          human_verification_required: attr.conflict_detected || (attr.confidence_score < 70),
+          verification_reason: attr.conflict_detected 
+            ? `Conflicting values found in document for ${attr.attribute_name}.`
+            : null
         });
-      }
-    }, 1200 + Math.random() * 500);
+      });
+
+      const totalCited = citations.length;
+      const groundedCount = exactCount + partialCount;
+      const overallGroundingScore = totalCited > 0
+        ? Math.round((groundedCount / totalCited) * 100)
+        : 100;
+
+      let groundingLabel = "mostly_grounded";
+      if (overallGroundingScore >= 95) groundingLabel = "fully_grounded";
+      else if (overallGroundingScore < 70) groundingLabel = "partially_grounded";
+
+      resolve({
+        pipeline_id: extraction?.pipeline_id || 'pl_' + Date.now(),
+        citation_timestamp: new Date().toISOString(),
+        source_file: extraction?.source_file || "document",
+        total_attributes_cited: totalCited,
+        citations: citations,
+        citation_coverage_report: {
+          exact_match_count: exactCount,
+          partial_match_count: partialCount,
+          contextual_match_count: contextualCount,
+          inferred_only_count: inferredOnlyCount,
+          overall_grounding_score: overallGroundingScore,
+          grounding_label: groundingLabel,
+          unverifiable_attributes: unverifiable,
+          conflict_attributes: conflicts
+        }
+      });
+    }, 300);
   });
 }
 

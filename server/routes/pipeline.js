@@ -471,7 +471,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const validateEnd = Date.now();
         
         const groundStart = Date.now();
-        const grounding = await grounder.groundData(validation, chunking);
+        const grounding = await grounder.groundData(validation, chunking, extraction);
         const groundEnd = Date.now();
         
         const reasonStart = Date.now();

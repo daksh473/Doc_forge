@@ -2,57 +2,118 @@ const mockProducts = require('../data/mockProducts');
 
 /**
  * Validation Service
- * Runs comprehensive sanity checks on normalized attributes and taxonomy.
+ * Runs comprehensive sanity checks against real normalized attributes and taxonomy.
  */
 function validateData(normalizationResult, taxonomyResult) {
   return new Promise((resolve) => {
-    // Simulate deep validation matrix delay
     setTimeout(() => {
-      // Find the corresponding mock product
-      const products = mockProducts.getProducts();
-      
-      // Because we don't pass the title directly, we try to match by product_type or just use the first for safety.
-      let product = products[0];
-      if (taxonomyResult && taxonomyResult.taxonomy) {
-        const path = taxonomyResult.taxonomy.category_path || [];
-        const L2 = path[1] || '';
-        if (L2.toLowerCase().includes('valve')) product = products[0];
-        else if (L2.toLowerCase().includes('pressure')) product = products[1];
-        else if (L2.toLowerCase().includes('solenoid')) product = products[2];
-        else if (L2.toLowerCase().includes('fitting')) product = products[3];
-        else if (L2.toLowerCase().includes('drive')) product = products[4];
-        else if (L2.toLowerCase().includes('temperature')) product = products[5];
-      }
+      const attributes = (normalizationResult && Array.isArray(normalizationResult.attributes))
+        ? normalizationResult.attributes
+        : ((normalizationResult && normalizationResult.extraction && Array.isArray(normalizationResult.extraction.attributes))
+          ? normalizationResult.extraction.attributes
+          : []);
 
-      if (product && product.validation) {
-        resolve(product.validation);
-      } else {
-        // Fallback for unknown text
-        resolve({
-          pipeline_id: 'pl_' + Date.now(),
-          validation_timestamp: new Date().toISOString(),
-          product_type_detected: "Unknown",
-          overall_validation_status: "PASS",
-          publish_recommendation: "approved",
-          validation_results: [],
-          completeness_report: {
-            mandatory_fields_present: [],
-            mandatory_fields_missing: [],
-            completeness_score: 100,
-            completeness_label: "complete"
-          },
-          inferred_attributes_review: [],
-          validation_summary: {
-            total_checks_run: 15,
-            critical_count: 0,
-            warning_count: 0,
-            info_count: 0,
-            pass_count: 15,
-            blocking_issues: []
-          }
-        });
-      }
-    }, 1500 + Math.random() * 500);
+      const categoryName = taxonomyResult?.taxonomy?.category_name || taxonomyResult?.category_name || "Industrial Product";
+      const categoryPath = taxonomyResult?.taxonomy?.category_path || taxonomyResult?.category_path || ["Industrial", categoryName];
+
+      const mandatoryExpected = ["Product Name", "Model Number", "Manufacturer", "Body Material", "Pressure Rating", "Size / DN"];
+      const mandatoryPresent = [];
+      const mandatoryMissing = [];
+
+      const validationResults = [];
+      let criticalCount = 0;
+      let warningCount = 0;
+      let infoCount = 0;
+      let passCount = 0;
+
+      mandatoryExpected.forEach(fieldName => {
+        const found = attributes.find(a => 
+          a.attribute_name && a.attribute_name.toLowerCase().includes(fieldName.toLowerCase())
+        );
+        if (found && (found.standardized_value || found.raw_value) && !found.data_missing) {
+          mandatoryPresent.push(fieldName);
+          passCount++;
+        } else {
+          mandatoryMissing.push(fieldName);
+          warningCount++;
+          validationResults.push({
+            rule_id: `MISSING_${fieldName.replace(/[^A-Z0-9]/gi, '_').toUpperCase()}`,
+            rule_description: `Mandatory field check: ${fieldName}`,
+            severity: "WARNING",
+            affected_attributes: [fieldName],
+            detected_issue: `Expected mandatory field '${fieldName}' was not extracted from document text.`,
+            expected_range_or_value: "Non-empty string",
+            actual_value: null,
+            remediation_suggestion: `Verify document source for explicit ${fieldName}.`
+          });
+        }
+      });
+
+      // Check per-attribute anomaly conditions (conflicts, missing values, low confidence)
+      const inferredReview = [];
+      attributes.forEach(attr => {
+        if (attr.conflict_detected) {
+          warningCount++;
+          validationResults.push({
+            rule_id: `CONFLICT_${(attr.attribute_name || 'ATTR').replace(/[^A-Z0-9]/gi, '_').toUpperCase()}`,
+            rule_description: `Conflicting values for ${attr.attribute_name}`,
+            severity: "WARNING",
+            affected_attributes: [attr.attribute_name],
+            detected_issue: `Conflicting values detected for ${attr.attribute_name} across document sections.`,
+            expected_range_or_value: "Single consistent value",
+            actual_value: attr.raw_value || attr.standardized_value,
+            remediation_suggestion: "Human review required to confirm correct attribute value."
+          });
+        }
+
+        if (attr.inferred) {
+          infoCount++;
+          inferredReview.push({
+            attribute_name: attr.attribute_name,
+            inferred_value: attr.standardized_value || attr.raw_value,
+            consistency_with_extracted: attr.confidence_score >= 80 ? "consistent" : "needs_review",
+            review_priority: attr.confidence_score >= 80 ? "low" : "medium"
+          });
+        }
+
+        if (!attr.conflict_detected && !attr.inferred && attr.confidence_score >= 70) {
+          passCount++;
+        }
+      });
+
+      const totalChecks = validationResults.length + passCount;
+      const completenessScore = mandatoryExpected.length > 0 
+        ? Math.round((mandatoryPresent.length / mandatoryExpected.length) * 100)
+        : 100;
+
+      const overallStatus = criticalCount > 0 ? "FAILED" : (warningCount > 0 ? "WARNING" : "PASS");
+      const publishRec = criticalCount > 0 ? "REJECT" : (warningCount > 0 ? "review_required" : "READY_FOR_CATALOG");
+
+      resolve({
+        pipeline_id: normalizationResult?.pipeline_id || 'pl_' + Date.now(),
+        validation_timestamp: new Date().toISOString(),
+        product_type_detected: categoryName,
+        category_path: categoryPath,
+        overall_validation_status: overallStatus,
+        publish_recommendation: publishRec,
+        validation_results: validationResults,
+        completeness_report: {
+          mandatory_fields_present: mandatoryPresent,
+          mandatory_fields_missing: mandatoryMissing,
+          completeness_score: completenessScore,
+          completeness_label: completenessScore >= 90 ? "complete" : (completenessScore >= 70 ? "mostly_complete" : "incomplete")
+        },
+        inferred_attributes_review: inferredReview,
+        validation_summary: {
+          total_checks_run: totalChecks,
+          critical_count: criticalCount,
+          warning_count: warningCount,
+          info_count: infoCount,
+          pass_count: passCount,
+          blocking_issues: validationResults.filter(r => r.severity === "CRITICAL").map(r => r.detected_issue)
+        }
+      });
+    }, 300);
   });
 }
 
