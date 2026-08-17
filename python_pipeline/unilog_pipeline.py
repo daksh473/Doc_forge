@@ -1,3 +1,5 @@
+# Note: Standalone Python reference implementation / CLI benchmarking script. Live production pipeline runs via server/routes/pipeline.js.
+
 #!/usr/bin/env python3
 """
 Unilog B2B Catalog Enrichment Pipeline
@@ -58,6 +60,20 @@ def run_module_0a(raw_batch: List[Dict[str, Any]]) -> Dict[str, Any]:
         if row.get("mfg") and row.get("mpn"):
             keys.append("MFGMPN_" + normalize_str(f"{row['mfg']}_{row['mpn']}"))
         
+        # 4th Key: Attribute Fingerprint (mfg + sorted values of size/material/type/model)
+        if row.get("mfg"):
+            fp_parts = [
+                row.get("mfg"),
+                row.get("size"),
+                row.get("material"),
+                row.get("type"),
+                row.get("model")
+            ]
+            fp_vals = [normalize_str(v) for v in fp_parts if v]
+            if fp_vals:
+                fp_str = "_".join(sorted(fp_vals))
+                keys.append("FP_" + fp_str)
+
         for k in keys:
             blocks.setdefault(k, []).append(idx)
 
@@ -90,6 +106,30 @@ def run_module_0a(raw_batch: List[Dict[str, Any]]) -> Dict[str, Any]:
                             "row_a": row_a,
                             "row_b": row_b,
                             "pre_score": score
+                        })
+
+    # Fuzzy MPN & Variant Suffix candidate generation pass
+    for i in range(len(raw_batch)):
+        for j in range(i + 1, len(raw_batch)):
+            pair_key = f"{i}_{j}"
+            if pair_key not in pairs_set:
+                row_a, row_b = raw_batch[i], raw_batch[j]
+                mpn_a, mpn_b = row_a.get("mpn"), row_b.get("mpn")
+                if mpn_a and mpn_b:
+                    na, nb = normalize_str(mpn_a), normalize_str(mpn_b)
+                    mfg_s = string_sim(row_a.get("mfg"), row_b.get("mfg"))
+                    is_prefix_suffix = (na.startswith(nb) or nb.startswith(na)) and (mfg_s >= 50 or not row_a.get("mfg"))
+                    if is_prefix_suffix or (string_sim(mpn_a, mpn_b) >= 70 and mfg_s >= 50):
+                        pairs_set.add(pair_key)
+                        desc_s = string_sim(row_a.get("title", ""), row_b.get("title", ""))
+                        mpn_s = string_sim(mpn_a, mpn_b)
+                        score = round(mfg_s * 0.3 + mpn_s * 0.4 + desc_s * 0.3)
+                        candidate_pairs.append({
+                            "row_index_a": i,
+                            "row_index_b": j,
+                            "row_a": row_a,
+                            "row_b": row_b,
+                            "pre_score": max(score, 60.0)
                         })
 
     # Stage 2: Duplicate Decision Engine
