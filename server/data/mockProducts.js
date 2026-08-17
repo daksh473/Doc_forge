@@ -1,5 +1,5 @@
 // Mock Data for DocForge
-// Contains full payloads for 8 stages: extraction, normalization, enrichment, validation, cataloging, scoring
+// Contains full payloads for 9 stages: extraction, normalization, enrichment, validation, grounding, cataloging, scoring
 const products = [
   {
     "keywords": [
@@ -1083,6 +1083,106 @@ const products = [
           "High quality commercial content generated."
         ]
       }
+    },
+    "grounding": {
+      "pipeline_id": "pl_ohcrwzkeg",
+      "citation_timestamp": "2026-08-17T06:41:59.638Z",
+      "source_file": "product_document.pdf",
+      "total_attributes_cited": 3,
+      "citations": [
+        {
+          "attribute_name": "Body Material",
+          "attributed_value": "SS316",
+          "citation_level": "exact_match",
+          "confidence": 100,
+          "primary_citation": {
+            "chunk_id": "chk_001",
+            "page_number": 1,
+            "section_label": "Specifications",
+            "context_window": "Body is constructed of → SS316 ← for superior corrosion",
+            "match_type": "verbatim",
+            "matched_fragment": "SS316",
+            "contextual_reasoning": null,
+            "table_reference": {
+              "present": false
+            },
+            "human_readable_reference": "Page 1, Specifications, Paragraph 2"
+          },
+          "alternate_citations": [],
+          "multi_source_conflict": false,
+          "human_verification_required": false,
+          "verification_reason": null
+        },
+        {
+          "attribute_name": "Operating Temperature",
+          "attributed_value": "0-100°C",
+          "citation_level": "partial_match",
+          "confidence": 75,
+          "primary_citation": {
+            "chunk_id": "chk_004",
+            "page_number": 2,
+            "section_label": "Performance Data",
+            "context_window": "Temp range from → 0 to 100 Celsius ← max",
+            "match_type": "synonym_match",
+            "matched_fragment": "0 to 100 Celsius",
+            "contextual_reasoning": null,
+            "table_reference": {
+              "present": true,
+              "column_header": "Temp Limit",
+              "row_label": "Standard",
+              "cell_coordinates": "row:2, col:4"
+            },
+            "human_readable_reference": "Page 2, Performance Data, row:2, col:4"
+          },
+          "alternate_citations": [],
+          "multi_source_conflict": false,
+          "human_verification_required": false,
+          "verification_reason": null
+        },
+        {
+          "attribute_name": "Pressure Rating",
+          "attributed_value": "1000 WOG",
+          "citation_level": "exact_match",
+          "confidence": 100,
+          "primary_citation": {
+            "chunk_id": "chk_002",
+            "page_number": 1,
+            "section_label": "Header Identity",
+            "context_window": "Ball Valve Series 2000, → 1000 WOG ← rating.",
+            "match_type": "verbatim",
+            "matched_fragment": "1000 WOG",
+            "contextual_reasoning": null,
+            "table_reference": {
+              "present": false
+            },
+            "human_readable_reference": "Page 1, Header Identity"
+          },
+          "alternate_citations": [
+            {
+              "chunk_id": "chk_005",
+              "page_number": 3,
+              "context_window": "Max working pressure is → 800 WOG ← per ANSI.",
+              "confidence": 80,
+              "conflict_note": "Differs from primary header. Possible derating in detailed specs."
+            }
+          ],
+          "multi_source_conflict": true,
+          "human_verification_required": true,
+          "verification_reason": "Conflicting values found in document for Pressure Rating."
+        }
+      ],
+      "citation_coverage_report": {
+        "exact_match_count": 2,
+        "partial_match_count": 1,
+        "contextual_match_count": 0,
+        "inferred_only_count": 0,
+        "overall_grounding_score": 92,
+        "grounding_label": "mostly_grounded",
+        "unverifiable_attributes": [],
+        "conflict_attributes": [
+          "Pressure Rating"
+        ]
+      }
     }
   },
   {
@@ -2158,6 +2258,73 @@ const products = [
           "High quality commercial content generated."
         ]
       }
+    },
+    "grounding": {
+      "pipeline_id": "pl_b3e77s1v6",
+      "citation_timestamp": "2026-08-17T06:41:59.639Z",
+      "source_file": "product_document.pdf",
+      "total_attributes_cited": 2,
+      "citations": [
+        {
+          "attribute_name": "Body Material",
+          "attributed_value": "SS316",
+          "citation_level": "exact_match",
+          "confidence": 100,
+          "primary_citation": {
+            "chunk_id": "chk_001",
+            "page_number": 1,
+            "section_label": "Specifications",
+            "context_window": "Body is constructed of → SS316 ← for superior corrosion",
+            "match_type": "verbatim",
+            "matched_fragment": "SS316",
+            "contextual_reasoning": null,
+            "table_reference": {
+              "present": false
+            },
+            "human_readable_reference": "Page 1, Specifications, Paragraph 2"
+          },
+          "alternate_citations": [],
+          "multi_source_conflict": false,
+          "human_verification_required": false,
+          "verification_reason": null
+        },
+        {
+          "attribute_name": "Operating Temperature",
+          "attributed_value": "0-100°C",
+          "citation_level": "partial_match",
+          "confidence": 75,
+          "primary_citation": {
+            "chunk_id": "chk_004",
+            "page_number": 2,
+            "section_label": "Performance Data",
+            "context_window": "Temp range from → 0 to 100 Celsius ← max",
+            "match_type": "synonym_match",
+            "matched_fragment": "0 to 100 Celsius",
+            "contextual_reasoning": null,
+            "table_reference": {
+              "present": true,
+              "column_header": "Temp Limit",
+              "row_label": "Standard",
+              "cell_coordinates": "row:2, col:4"
+            },
+            "human_readable_reference": "Page 2, Performance Data, row:2, col:4"
+          },
+          "alternate_citations": [],
+          "multi_source_conflict": false,
+          "human_verification_required": false,
+          "verification_reason": null
+        }
+      ],
+      "citation_coverage_report": {
+        "exact_match_count": 1,
+        "partial_match_count": 1,
+        "contextual_match_count": 0,
+        "inferred_only_count": 0,
+        "overall_grounding_score": 92,
+        "grounding_label": "mostly_grounded",
+        "unverifiable_attributes": [],
+        "conflict_attributes": []
+      }
     }
   },
   {
@@ -3218,6 +3385,73 @@ const products = [
           "High quality commercial content generated."
         ]
       }
+    },
+    "grounding": {
+      "pipeline_id": "pl_y4qlhvpu9",
+      "citation_timestamp": "2026-08-17T06:41:59.639Z",
+      "source_file": "product_document.pdf",
+      "total_attributes_cited": 2,
+      "citations": [
+        {
+          "attribute_name": "Body Material",
+          "attributed_value": "SS316",
+          "citation_level": "exact_match",
+          "confidence": 100,
+          "primary_citation": {
+            "chunk_id": "chk_001",
+            "page_number": 1,
+            "section_label": "Specifications",
+            "context_window": "Body is constructed of → SS316 ← for superior corrosion",
+            "match_type": "verbatim",
+            "matched_fragment": "SS316",
+            "contextual_reasoning": null,
+            "table_reference": {
+              "present": false
+            },
+            "human_readable_reference": "Page 1, Specifications, Paragraph 2"
+          },
+          "alternate_citations": [],
+          "multi_source_conflict": false,
+          "human_verification_required": false,
+          "verification_reason": null
+        },
+        {
+          "attribute_name": "Operating Temperature",
+          "attributed_value": "0-100°C",
+          "citation_level": "partial_match",
+          "confidence": 75,
+          "primary_citation": {
+            "chunk_id": "chk_004",
+            "page_number": 2,
+            "section_label": "Performance Data",
+            "context_window": "Temp range from → 0 to 100 Celsius ← max",
+            "match_type": "synonym_match",
+            "matched_fragment": "0 to 100 Celsius",
+            "contextual_reasoning": null,
+            "table_reference": {
+              "present": true,
+              "column_header": "Temp Limit",
+              "row_label": "Standard",
+              "cell_coordinates": "row:2, col:4"
+            },
+            "human_readable_reference": "Page 2, Performance Data, row:2, col:4"
+          },
+          "alternate_citations": [],
+          "multi_source_conflict": false,
+          "human_verification_required": false,
+          "verification_reason": null
+        }
+      ],
+      "citation_coverage_report": {
+        "exact_match_count": 1,
+        "partial_match_count": 1,
+        "contextual_match_count": 0,
+        "inferred_only_count": 0,
+        "overall_grounding_score": 92,
+        "grounding_label": "mostly_grounded",
+        "unverifiable_attributes": [],
+        "conflict_attributes": []
+      }
     }
   },
   {
@@ -4160,6 +4394,73 @@ const products = [
           "Accurate taxonomy classification.",
           "High quality commercial content generated."
         ]
+      }
+    },
+    "grounding": {
+      "pipeline_id": "pl_jplxozeap",
+      "citation_timestamp": "2026-08-17T06:41:59.639Z",
+      "source_file": "product_document.pdf",
+      "total_attributes_cited": 2,
+      "citations": [
+        {
+          "attribute_name": "Body Material",
+          "attributed_value": "SS316",
+          "citation_level": "exact_match",
+          "confidence": 100,
+          "primary_citation": {
+            "chunk_id": "chk_001",
+            "page_number": 1,
+            "section_label": "Specifications",
+            "context_window": "Body is constructed of → SS316 ← for superior corrosion",
+            "match_type": "verbatim",
+            "matched_fragment": "SS316",
+            "contextual_reasoning": null,
+            "table_reference": {
+              "present": false
+            },
+            "human_readable_reference": "Page 1, Specifications, Paragraph 2"
+          },
+          "alternate_citations": [],
+          "multi_source_conflict": false,
+          "human_verification_required": false,
+          "verification_reason": null
+        },
+        {
+          "attribute_name": "Operating Temperature",
+          "attributed_value": "0-100°C",
+          "citation_level": "partial_match",
+          "confidence": 75,
+          "primary_citation": {
+            "chunk_id": "chk_004",
+            "page_number": 2,
+            "section_label": "Performance Data",
+            "context_window": "Temp range from → 0 to 100 Celsius ← max",
+            "match_type": "synonym_match",
+            "matched_fragment": "0 to 100 Celsius",
+            "contextual_reasoning": null,
+            "table_reference": {
+              "present": true,
+              "column_header": "Temp Limit",
+              "row_label": "Standard",
+              "cell_coordinates": "row:2, col:4"
+            },
+            "human_readable_reference": "Page 2, Performance Data, row:2, col:4"
+          },
+          "alternate_citations": [],
+          "multi_source_conflict": false,
+          "human_verification_required": false,
+          "verification_reason": null
+        }
+      ],
+      "citation_coverage_report": {
+        "exact_match_count": 1,
+        "partial_match_count": 1,
+        "contextual_match_count": 0,
+        "inferred_only_count": 0,
+        "overall_grounding_score": 92,
+        "grounding_label": "mostly_grounded",
+        "unverifiable_attributes": [],
+        "conflict_attributes": []
       }
     }
   },
@@ -5294,6 +5595,73 @@ const products = [
           "High quality commercial content generated."
         ]
       }
+    },
+    "grounding": {
+      "pipeline_id": "pl_i9h895w82",
+      "citation_timestamp": "2026-08-17T06:41:59.639Z",
+      "source_file": "product_document.pdf",
+      "total_attributes_cited": 2,
+      "citations": [
+        {
+          "attribute_name": "Body Material",
+          "attributed_value": "SS316",
+          "citation_level": "exact_match",
+          "confidence": 100,
+          "primary_citation": {
+            "chunk_id": "chk_001",
+            "page_number": 1,
+            "section_label": "Specifications",
+            "context_window": "Body is constructed of → SS316 ← for superior corrosion",
+            "match_type": "verbatim",
+            "matched_fragment": "SS316",
+            "contextual_reasoning": null,
+            "table_reference": {
+              "present": false
+            },
+            "human_readable_reference": "Page 1, Specifications, Paragraph 2"
+          },
+          "alternate_citations": [],
+          "multi_source_conflict": false,
+          "human_verification_required": false,
+          "verification_reason": null
+        },
+        {
+          "attribute_name": "Operating Temperature",
+          "attributed_value": "0-100°C",
+          "citation_level": "partial_match",
+          "confidence": 75,
+          "primary_citation": {
+            "chunk_id": "chk_004",
+            "page_number": 2,
+            "section_label": "Performance Data",
+            "context_window": "Temp range from → 0 to 100 Celsius ← max",
+            "match_type": "synonym_match",
+            "matched_fragment": "0 to 100 Celsius",
+            "contextual_reasoning": null,
+            "table_reference": {
+              "present": true,
+              "column_header": "Temp Limit",
+              "row_label": "Standard",
+              "cell_coordinates": "row:2, col:4"
+            },
+            "human_readable_reference": "Page 2, Performance Data, row:2, col:4"
+          },
+          "alternate_citations": [],
+          "multi_source_conflict": false,
+          "human_verification_required": false,
+          "verification_reason": null
+        }
+      ],
+      "citation_coverage_report": {
+        "exact_match_count": 1,
+        "partial_match_count": 1,
+        "contextual_match_count": 0,
+        "inferred_only_count": 0,
+        "overall_grounding_score": 92,
+        "grounding_label": "mostly_grounded",
+        "unverifiable_attributes": [],
+        "conflict_attributes": []
+      }
     }
   },
   {
@@ -6316,6 +6684,73 @@ const products = [
           "Accurate taxonomy classification.",
           "High quality commercial content generated."
         ]
+      }
+    },
+    "grounding": {
+      "pipeline_id": "pl_lxr3bftsn",
+      "citation_timestamp": "2026-08-17T06:41:59.639Z",
+      "source_file": "product_document.pdf",
+      "total_attributes_cited": 2,
+      "citations": [
+        {
+          "attribute_name": "Body Material",
+          "attributed_value": "SS316",
+          "citation_level": "exact_match",
+          "confidence": 100,
+          "primary_citation": {
+            "chunk_id": "chk_001",
+            "page_number": 1,
+            "section_label": "Specifications",
+            "context_window": "Body is constructed of → SS316 ← for superior corrosion",
+            "match_type": "verbatim",
+            "matched_fragment": "SS316",
+            "contextual_reasoning": null,
+            "table_reference": {
+              "present": false
+            },
+            "human_readable_reference": "Page 1, Specifications, Paragraph 2"
+          },
+          "alternate_citations": [],
+          "multi_source_conflict": false,
+          "human_verification_required": false,
+          "verification_reason": null
+        },
+        {
+          "attribute_name": "Operating Temperature",
+          "attributed_value": "0-100°C",
+          "citation_level": "partial_match",
+          "confidence": 75,
+          "primary_citation": {
+            "chunk_id": "chk_004",
+            "page_number": 2,
+            "section_label": "Performance Data",
+            "context_window": "Temp range from → 0 to 100 Celsius ← max",
+            "match_type": "synonym_match",
+            "matched_fragment": "0 to 100 Celsius",
+            "contextual_reasoning": null,
+            "table_reference": {
+              "present": true,
+              "column_header": "Temp Limit",
+              "row_label": "Standard",
+              "cell_coordinates": "row:2, col:4"
+            },
+            "human_readable_reference": "Page 2, Performance Data, row:2, col:4"
+          },
+          "alternate_citations": [],
+          "multi_source_conflict": false,
+          "human_verification_required": false,
+          "verification_reason": null
+        }
+      ],
+      "citation_coverage_report": {
+        "exact_match_count": 1,
+        "partial_match_count": 1,
+        "contextual_match_count": 0,
+        "inferred_only_count": 0,
+        "overall_grounding_score": 92,
+        "grounding_label": "mostly_grounded",
+        "unverifiable_attributes": [],
+        "conflict_attributes": []
       }
     }
   }

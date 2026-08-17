@@ -8,6 +8,7 @@ const chunker = require('../services/chunker');
 const extractor = require('../services/extractor');
 const enricher = require('../services/enricher');
 const validator = require('../services/validator');
+const grounder = require('../services/grounder');
 const cataloger = require('../services/cataloger');
 const scorer = require('../services/scorer');
 const normalizer = require('../services/normalizer');
@@ -135,6 +136,17 @@ router.post('/score', async (req, res, next) => {
     }
 });
 
+router.post('/ground', async (req, res, next) => {
+    try {
+        const { validation, chunking } = req.body;
+        if (!validation) return res.status(400).json({ error: 'Validation data required for grounding' });
+        const grounding = await grounder.groundData(validation, chunking);
+        res.json(grounding);
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
     try {
         const startTime = Date.now();
@@ -181,6 +193,10 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const validation = await validator.validateData(normalization, enrichment);
         const validateEnd = Date.now();
         
+        const groundStart = Date.now();
+        const grounding = await grounder.groundData(validation, chunking);
+        const groundEnd = Date.now();
+        
         const catalogStart = Date.now();
         const cataloging = await cataloger.catalogData(extraction, enrichment);
         const catalogEnd = Date.now();
@@ -203,6 +219,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
                 normalize: { result: normalization, duration_ms: normalizeEnd - normalizeStart },
                 enrich: { result: enrichment, duration_ms: enrichEnd - enrichStart },
                 validate: { result: validation, duration_ms: validateEnd - validateStart },
+                ground: { result: grounding, duration_ms: groundEnd - groundStart },
                 catalog: { result: cataloging, duration_ms: catalogEnd - catalogStart },
                 score: { result: scoring, duration_ms: scoreEnd - scoreStart }
             },

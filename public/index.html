@@ -168,9 +168,9 @@
       </div>
 
       <div class="stage-card glass idle" id="stage-8">
-        <div class="stage-icon">📝</div>
+        <div class="stage-icon">🔗</div>
         <div class="stage-info">
-          <h3>Catalog</h3>
+          <h3>Ground</h3>
           <span class="stage-status">Waiting...</span>
         </div>
         <div class="stage-duration" id="duration-8">--</div>
@@ -180,12 +180,24 @@
       </div>
 
       <div class="stage-card glass idle" id="stage-9">
+        <div class="stage-icon">📝</div>
+        <div class="stage-info">
+          <h3>Catalog</h3>
+          <span class="stage-status">Waiting...</span>
+        </div>
+        <div class="stage-duration" id="duration-9">--</div>
+      </div>
+      <div class="connector" id="conn-9">
+        <div class="connector-line"></div>
+      </div>
+
+      <div class="stage-card glass idle" id="stage-10">
         <div class="stage-icon">🎯</div>
         <div class="stage-info">
           <h3>Score</h3>
           <span class="stage-status">Waiting...</span>
         </div>
-        <div class="stage-duration" id="duration-9">--</div>
+        <div class="stage-duration" id="duration-10">--</div>
       </div>
     </section>
 
@@ -199,6 +211,7 @@
         <button class="tab-btn" data-target="tab-normalization">Normalization</button>
         <button class="tab-btn" data-target="tab-enrichment">Taxonomy (Enrich)</button>
         <button class="tab-btn" data-target="tab-validation">Validation Report</button>
+        <button class="tab-btn" data-target="tab-grounding">Source Grounding</button>
         <button class="tab-btn" data-target="tab-cataloging">Commercial Content</button>
         <button class="tab-btn" data-target="tab-scoring">Quality Score</button>
         <button class="tab-btn" data-target="tab-export">Export</button>
@@ -396,6 +409,44 @@
             </div>
           </div>
           <div id="json-viewer-validate" class="json-viewer-container"></div>
+        </div>
+
+        <!-- Grounding Tab -->
+        <div class="tab-panel" id="tab-grounding">
+          <div class="grounding-header bg-white p-4 rounded shadow mb-6 flex justify-between items-center">
+            <div>
+              <h3 class="text-xl font-bold">Citation Coverage</h3>
+              <p class="text-gray-600" id="grounding-label">--</p>
+            </div>
+            <div class="flex gap-4 text-center">
+              <div>
+                <div class="text-2xl font-bold text-emerald-600" id="ground-exact">0</div>
+                <div class="text-xs uppercase text-gray-500">Exact</div>
+              </div>
+              <div>
+                <div class="text-2xl font-bold text-amber-500" id="ground-partial">0</div>
+                <div class="text-xs uppercase text-gray-500">Partial</div>
+              </div>
+              <div>
+                <div class="text-2xl font-bold text-blue-500" id="ground-context">0</div>
+                <div class="text-xs uppercase text-gray-500">Context</div>
+              </div>
+              <div>
+                <div class="text-2xl font-bold text-rose-500" id="ground-none">0</div>
+                <div class="text-xs uppercase text-gray-500">Inferred</div>
+              </div>
+            </div>
+          </div>
+          <div id="grounding-list" class="space-y-4 mb-6"></div>
+
+          <div class="toolbar">
+            <h4>Detailed Grounding JSON</h4>
+            <div class="toolbar-actions">
+              <button class="btn-icon" id="collapse-ground" title="Collapse All">[-]</button>
+              <button class="btn-icon" id="expand-ground" title="Expand All">[+]</button>
+            </div>
+          </div>
+          <div id="json-viewer-grounding" class="json-viewer-container"></div>
         </div>
 
         <!-- Export Tab -->
