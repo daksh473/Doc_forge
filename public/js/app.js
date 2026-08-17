@@ -135,6 +135,10 @@ window.DocForge = {
     document.getElementById('collapse-uom')?.addEventListener('click', () => this.viewers?.uom?.collapseAll());
     document.getElementById('search-uom')?.addEventListener('input', (e) => this.viewers?.uom?.search(e.target.value));
 
+    document.getElementById('expand-fraction')?.addEventListener('click', () => this.viewers?.fraction?.expandAll());
+    document.getElementById('collapse-fraction')?.addEventListener('click', () => this.viewers?.fraction?.collapseAll());
+    document.getElementById('search-fraction')?.addEventListener('input', (e) => this.viewers?.fraction?.search(e.target.value));
+
     document.getElementById('expand-validate')?.addEventListener('click', () => this.viewers?.validate?.expandAll());
     document.getElementById('collapse-validate')?.addEventListener('click', () => this.viewers?.validate?.collapseAll());
     document.getElementById('search-validate')?.addEventListener('input', (e) => this.viewers?.validate?.search(e.target.value));
@@ -445,6 +449,7 @@ window.DocForge = {
     const lov = stages.lov ? stages.lov.result : null;
     const mfg = stages.mfg ? stages.mfg.result : null;
     const uom = stages.uom ? stages.uom.result : null;
+    const fraction = stages.fraction ? stages.fraction.result : null;
     const enrichment = stages.enrich ? stages.enrich.result : null;
     const validation = stages.validate ? stages.validate.result : null;
     const grounding = stages.ground ? stages.ground.result : null;
@@ -482,6 +487,7 @@ window.DocForge = {
       lov: lov,
       mfg: mfg,
       uom: uom,
+      fraction: fraction,
       enrichment: enrichment,
       validation: validation,
       grounding: grounding,
@@ -531,6 +537,7 @@ window.DocForge = {
     if (data.lov) this.renderLOV(data.lov);
     if (data.mfg) this.renderMfg(data.mfg);
     if (data.uom) this.renderUOM(data.uom);
+    if (data.fraction) this.renderFraction(data.fraction);
     if (data.enrichment) this.renderEnrichment(data.enrichment);
     if (data.validation) this.renderValidation(data.validation);
     if (data.grounding) this.renderGrounding(data.grounding);
@@ -664,6 +671,19 @@ window.DocForge = {
       showLineNumbers: true
     });
     this.viewers.uom.render();
+  },
+
+  renderFraction(data) {
+    const container = document.getElementById('json-viewer-fraction');
+    if (!container) return;
+    container.innerHTML = '';
+    this.viewers = this.viewers || {};
+    this.viewers.fraction = new JsonViewer(container, data, {
+      collapsedDepth: 2,
+      highlightInferred: false,
+      showLineNumbers: true
+    });
+    this.viewers.fraction.render();
   },
 
   renderEnrichment(data) {
@@ -1211,7 +1231,7 @@ window.DocForge = {
     this.state.currentSlide = 0;
     this.slideTitles = [
       'Classification', 'Pre-Processing', 'Chunking', 'Raw Extraction',
-      'Normalization', 'LOV Verification', 'Mfg & Brand', 'UOM Validation', 'Taxonomy (Enrich)', 'Validation Report', 'Source Grounding',
+      'Normalization', 'LOV Verification', 'Mfg & Brand', 'UOM Validation', 'Fraction Conversion', 'Taxonomy (Enrich)', 'Validation Report', 'Source Grounding',
       'AI Reasoning', 'Commercial Content', 'Quality Score', 'Review Dashboard',
       'Final Approval', 'Export'
     ];

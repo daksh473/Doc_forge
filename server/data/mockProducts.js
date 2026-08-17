@@ -1,5 +1,5 @@
 // Mock Data for DocForge
-// Contains full payloads for all stages including UOM Validation
+// Contains full payloads for all stages including Decimal-Fraction Conversion
 const products = [
   {
     "keywords": [
@@ -1782,6 +1782,185 @@ const products = [
         "critical_issues": [],
         "all_units_compliant": false
       }
+    },
+    "fraction": {
+      "pipeline_id": "pl_z7qwk2f7s",
+      "conversion_timestamp": "2026-08-17T08:28:41.766Z",
+      "converted_attributes": [
+        {
+          "attribute_name": "Size",
+          "requires_conversion": true,
+          "value_type": "A",
+          "skip_reason": null,
+          "original_value": "0.5",
+          "original_unit": "IN",
+          "conversion": {
+            "whole_part": 0,
+            "decimal_part": 0.5,
+            "fraction_part": "1/2",
+            "lookup_method": "exact",
+            "lookup_confidence": 100,
+            "nearest_match_delta": 0,
+            "fraction_not_available": false
+          },
+          "converted_value": "1/2",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "1/2 IN",
+            "mobile_desc": "1/2 IN",
+            "product_title": "1/2 IN",
+            "attribute_field": "1/2",
+            "long_desc": "1/2 IN (0.5 IN)"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": true,
+            "mpn_encoded_value": "1/2",
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Length",
+          "requires_conversion": true,
+          "value_type": "B",
+          "skip_reason": null,
+          "original_value": "50.25",
+          "original_unit": "IN",
+          "conversion": {
+            "whole_part": 50,
+            "decimal_part": 0.25,
+            "fraction_part": "1/4",
+            "lookup_method": "exact",
+            "lookup_confidence": 100,
+            "nearest_match_delta": 0,
+            "fraction_not_available": false
+          },
+          "converted_value": "50-1/4",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "50-1/4 IN",
+            "mobile_desc": "50-1/4 IN",
+            "product_title": "50-1/4 IN",
+            "attribute_field": "50-1/4",
+            "long_desc": "50-1/4 IN (50.25 IN)"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Dimensions",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "12.5 x 6.25 x 3.125",
+          "original_unit": "IN",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "12.5 x 6.25 x 3.125",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "12.5 x 6.25 x 3.125 IN",
+            "mobile_desc": "12.5 x 6.25 x 3.125 IN",
+            "product_title": "12.5 x 6.25 x 3.125 IN",
+            "attribute_field": "12.5 x 6.25 x 3.125",
+            "long_desc": "12.5 x 6.25 x 3.125 IN"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Operating Pressure",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "150.5",
+          "original_unit": "PSI",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "150.5",
+          "converted_unit": "PSI",
+          "field_formats": {
+            "invoice_desc": "150.5 PSI",
+            "mobile_desc": "150.5 PSI",
+            "product_title": "150.5 PSI",
+            "attribute_field": "150.5",
+            "long_desc": "150.5 PSI"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Temperature Limit",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "200.0",
+          "original_unit": "DEG F",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "200.0",
+          "converted_unit": "DEG F",
+          "field_formats": {
+            "invoice_desc": "200.0 DEG F",
+            "mobile_desc": "200.0 DEG F",
+            "product_title": "200.0 DEG F",
+            "attribute_field": "200.0",
+            "long_desc": "200.0 DEG F"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        }
+      ],
+      "conversion_summary": {
+        "total_dimensional_attributes": 2,
+        "converted_count": 2,
+        "already_fraction_count": 0,
+        "integer_count": 0,
+        "skipped_non_dimensional": 3,
+        "exact_lookup_count": 2,
+        "nearest_match_count": 0,
+        "no_match_count": 0,
+        "mpn_conflicts_detected": 0,
+        "conversion_coverage": "100%",
+        "all_buyer_fields_fraction_compliant": true
+      }
     }
   },
   {
@@ -3470,6 +3649,185 @@ const products = [
         "critical_issues": [],
         "all_units_compliant": false
       }
+    },
+    "fraction": {
+      "pipeline_id": "pl_pc9rhn2ma",
+      "conversion_timestamp": "2026-08-17T08:28:42.982Z",
+      "converted_attributes": [
+        {
+          "attribute_name": "Size",
+          "requires_conversion": true,
+          "value_type": "A",
+          "skip_reason": null,
+          "original_value": "0.5",
+          "original_unit": "IN",
+          "conversion": {
+            "whole_part": 0,
+            "decimal_part": 0.5,
+            "fraction_part": "1/2",
+            "lookup_method": "exact",
+            "lookup_confidence": 100,
+            "nearest_match_delta": 0,
+            "fraction_not_available": false
+          },
+          "converted_value": "1/2",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "1/2 IN",
+            "mobile_desc": "1/2 IN",
+            "product_title": "1/2 IN",
+            "attribute_field": "1/2",
+            "long_desc": "1/2 IN (0.5 IN)"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": true,
+            "mpn_encoded_value": "1/2",
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Length",
+          "requires_conversion": true,
+          "value_type": "B",
+          "skip_reason": null,
+          "original_value": "50.25",
+          "original_unit": "IN",
+          "conversion": {
+            "whole_part": 50,
+            "decimal_part": 0.25,
+            "fraction_part": "1/4",
+            "lookup_method": "exact",
+            "lookup_confidence": 100,
+            "nearest_match_delta": 0,
+            "fraction_not_available": false
+          },
+          "converted_value": "50-1/4",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "50-1/4 IN",
+            "mobile_desc": "50-1/4 IN",
+            "product_title": "50-1/4 IN",
+            "attribute_field": "50-1/4",
+            "long_desc": "50-1/4 IN (50.25 IN)"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Dimensions",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "12.5 x 6.25 x 3.125",
+          "original_unit": "IN",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "12.5 x 6.25 x 3.125",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "12.5 x 6.25 x 3.125 IN",
+            "mobile_desc": "12.5 x 6.25 x 3.125 IN",
+            "product_title": "12.5 x 6.25 x 3.125 IN",
+            "attribute_field": "12.5 x 6.25 x 3.125",
+            "long_desc": "12.5 x 6.25 x 3.125 IN"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Operating Pressure",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "150.5",
+          "original_unit": "PSI",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "150.5",
+          "converted_unit": "PSI",
+          "field_formats": {
+            "invoice_desc": "150.5 PSI",
+            "mobile_desc": "150.5 PSI",
+            "product_title": "150.5 PSI",
+            "attribute_field": "150.5",
+            "long_desc": "150.5 PSI"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Temperature Limit",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "200.0",
+          "original_unit": "DEG F",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "200.0",
+          "converted_unit": "DEG F",
+          "field_formats": {
+            "invoice_desc": "200.0 DEG F",
+            "mobile_desc": "200.0 DEG F",
+            "product_title": "200.0 DEG F",
+            "attribute_field": "200.0",
+            "long_desc": "200.0 DEG F"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        }
+      ],
+      "conversion_summary": {
+        "total_dimensional_attributes": 2,
+        "converted_count": 2,
+        "already_fraction_count": 0,
+        "integer_count": 0,
+        "skipped_non_dimensional": 3,
+        "exact_lookup_count": 2,
+        "nearest_match_count": 0,
+        "no_match_count": 0,
+        "mpn_conflicts_detected": 0,
+        "conversion_coverage": "100%",
+        "all_buyer_fields_fraction_compliant": true
+      }
     }
   },
   {
@@ -5038,6 +5396,185 @@ const products = [
         "critical_issues": [],
         "all_units_compliant": false
       }
+    },
+    "fraction": {
+      "pipeline_id": "pl_0n8ktr60u",
+      "conversion_timestamp": "2026-08-17T08:28:44.186Z",
+      "converted_attributes": [
+        {
+          "attribute_name": "Size",
+          "requires_conversion": true,
+          "value_type": "A",
+          "skip_reason": null,
+          "original_value": "0.5",
+          "original_unit": "IN",
+          "conversion": {
+            "whole_part": 0,
+            "decimal_part": 0.5,
+            "fraction_part": "1/2",
+            "lookup_method": "exact",
+            "lookup_confidence": 100,
+            "nearest_match_delta": 0,
+            "fraction_not_available": false
+          },
+          "converted_value": "1/2",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "1/2 IN",
+            "mobile_desc": "1/2 IN",
+            "product_title": "1/2 IN",
+            "attribute_field": "1/2",
+            "long_desc": "1/2 IN (0.5 IN)"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": true,
+            "mpn_encoded_value": "1/2",
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Length",
+          "requires_conversion": true,
+          "value_type": "B",
+          "skip_reason": null,
+          "original_value": "50.25",
+          "original_unit": "IN",
+          "conversion": {
+            "whole_part": 50,
+            "decimal_part": 0.25,
+            "fraction_part": "1/4",
+            "lookup_method": "exact",
+            "lookup_confidence": 100,
+            "nearest_match_delta": 0,
+            "fraction_not_available": false
+          },
+          "converted_value": "50-1/4",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "50-1/4 IN",
+            "mobile_desc": "50-1/4 IN",
+            "product_title": "50-1/4 IN",
+            "attribute_field": "50-1/4",
+            "long_desc": "50-1/4 IN (50.25 IN)"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Dimensions",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "12.5 x 6.25 x 3.125",
+          "original_unit": "IN",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "12.5 x 6.25 x 3.125",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "12.5 x 6.25 x 3.125 IN",
+            "mobile_desc": "12.5 x 6.25 x 3.125 IN",
+            "product_title": "12.5 x 6.25 x 3.125 IN",
+            "attribute_field": "12.5 x 6.25 x 3.125",
+            "long_desc": "12.5 x 6.25 x 3.125 IN"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Operating Pressure",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "150.5",
+          "original_unit": "PSI",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "150.5",
+          "converted_unit": "PSI",
+          "field_formats": {
+            "invoice_desc": "150.5 PSI",
+            "mobile_desc": "150.5 PSI",
+            "product_title": "150.5 PSI",
+            "attribute_field": "150.5",
+            "long_desc": "150.5 PSI"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Temperature Limit",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "200.0",
+          "original_unit": "DEG F",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "200.0",
+          "converted_unit": "DEG F",
+          "field_formats": {
+            "invoice_desc": "200.0 DEG F",
+            "mobile_desc": "200.0 DEG F",
+            "product_title": "200.0 DEG F",
+            "attribute_field": "200.0",
+            "long_desc": "200.0 DEG F"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        }
+      ],
+      "conversion_summary": {
+        "total_dimensional_attributes": 2,
+        "converted_count": 2,
+        "already_fraction_count": 0,
+        "integer_count": 0,
+        "skipped_non_dimensional": 3,
+        "exact_lookup_count": 2,
+        "nearest_match_count": 0,
+        "no_match_count": 0,
+        "mpn_conflicts_detected": 0,
+        "conversion_coverage": "100%",
+        "all_buyer_fields_fraction_compliant": true
+      }
     }
   },
   {
@@ -6488,6 +7025,185 @@ const products = [
         "uom_compliance_grade": "C",
         "critical_issues": [],
         "all_units_compliant": false
+      }
+    },
+    "fraction": {
+      "pipeline_id": "pl_ihlxzb973",
+      "conversion_timestamp": "2026-08-17T08:28:45.388Z",
+      "converted_attributes": [
+        {
+          "attribute_name": "Size",
+          "requires_conversion": true,
+          "value_type": "A",
+          "skip_reason": null,
+          "original_value": "0.5",
+          "original_unit": "IN",
+          "conversion": {
+            "whole_part": 0,
+            "decimal_part": 0.5,
+            "fraction_part": "1/2",
+            "lookup_method": "exact",
+            "lookup_confidence": 100,
+            "nearest_match_delta": 0,
+            "fraction_not_available": false
+          },
+          "converted_value": "1/2",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "1/2 IN",
+            "mobile_desc": "1/2 IN",
+            "product_title": "1/2 IN",
+            "attribute_field": "1/2",
+            "long_desc": "1/2 IN (0.5 IN)"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": true,
+            "mpn_encoded_value": "1/2",
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Length",
+          "requires_conversion": true,
+          "value_type": "B",
+          "skip_reason": null,
+          "original_value": "50.25",
+          "original_unit": "IN",
+          "conversion": {
+            "whole_part": 50,
+            "decimal_part": 0.25,
+            "fraction_part": "1/4",
+            "lookup_method": "exact",
+            "lookup_confidence": 100,
+            "nearest_match_delta": 0,
+            "fraction_not_available": false
+          },
+          "converted_value": "50-1/4",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "50-1/4 IN",
+            "mobile_desc": "50-1/4 IN",
+            "product_title": "50-1/4 IN",
+            "attribute_field": "50-1/4",
+            "long_desc": "50-1/4 IN (50.25 IN)"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Dimensions",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "12.5 x 6.25 x 3.125",
+          "original_unit": "IN",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "12.5 x 6.25 x 3.125",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "12.5 x 6.25 x 3.125 IN",
+            "mobile_desc": "12.5 x 6.25 x 3.125 IN",
+            "product_title": "12.5 x 6.25 x 3.125 IN",
+            "attribute_field": "12.5 x 6.25 x 3.125",
+            "long_desc": "12.5 x 6.25 x 3.125 IN"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Operating Pressure",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "150.5",
+          "original_unit": "PSI",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "150.5",
+          "converted_unit": "PSI",
+          "field_formats": {
+            "invoice_desc": "150.5 PSI",
+            "mobile_desc": "150.5 PSI",
+            "product_title": "150.5 PSI",
+            "attribute_field": "150.5",
+            "long_desc": "150.5 PSI"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Temperature Limit",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "200.0",
+          "original_unit": "DEG F",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "200.0",
+          "converted_unit": "DEG F",
+          "field_formats": {
+            "invoice_desc": "200.0 DEG F",
+            "mobile_desc": "200.0 DEG F",
+            "product_title": "200.0 DEG F",
+            "attribute_field": "200.0",
+            "long_desc": "200.0 DEG F"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        }
+      ],
+      "conversion_summary": {
+        "total_dimensional_attributes": 2,
+        "converted_count": 2,
+        "already_fraction_count": 0,
+        "integer_count": 0,
+        "skipped_non_dimensional": 3,
+        "exact_lookup_count": 2,
+        "nearest_match_count": 0,
+        "no_match_count": 0,
+        "mpn_conflicts_detected": 0,
+        "conversion_coverage": "100%",
+        "all_buyer_fields_fraction_compliant": true
       }
     }
   },
@@ -8130,6 +8846,185 @@ const products = [
         "critical_issues": [],
         "all_units_compliant": false
       }
+    },
+    "fraction": {
+      "pipeline_id": "pl_vss51f239",
+      "conversion_timestamp": "2026-08-17T08:28:46.593Z",
+      "converted_attributes": [
+        {
+          "attribute_name": "Size",
+          "requires_conversion": true,
+          "value_type": "A",
+          "skip_reason": null,
+          "original_value": "0.5",
+          "original_unit": "IN",
+          "conversion": {
+            "whole_part": 0,
+            "decimal_part": 0.5,
+            "fraction_part": "1/2",
+            "lookup_method": "exact",
+            "lookup_confidence": 100,
+            "nearest_match_delta": 0,
+            "fraction_not_available": false
+          },
+          "converted_value": "1/2",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "1/2 IN",
+            "mobile_desc": "1/2 IN",
+            "product_title": "1/2 IN",
+            "attribute_field": "1/2",
+            "long_desc": "1/2 IN (0.5 IN)"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": true,
+            "mpn_encoded_value": "1/2",
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Length",
+          "requires_conversion": true,
+          "value_type": "B",
+          "skip_reason": null,
+          "original_value": "50.25",
+          "original_unit": "IN",
+          "conversion": {
+            "whole_part": 50,
+            "decimal_part": 0.25,
+            "fraction_part": "1/4",
+            "lookup_method": "exact",
+            "lookup_confidence": 100,
+            "nearest_match_delta": 0,
+            "fraction_not_available": false
+          },
+          "converted_value": "50-1/4",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "50-1/4 IN",
+            "mobile_desc": "50-1/4 IN",
+            "product_title": "50-1/4 IN",
+            "attribute_field": "50-1/4",
+            "long_desc": "50-1/4 IN (50.25 IN)"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Dimensions",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "12.5 x 6.25 x 3.125",
+          "original_unit": "IN",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "12.5 x 6.25 x 3.125",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "12.5 x 6.25 x 3.125 IN",
+            "mobile_desc": "12.5 x 6.25 x 3.125 IN",
+            "product_title": "12.5 x 6.25 x 3.125 IN",
+            "attribute_field": "12.5 x 6.25 x 3.125",
+            "long_desc": "12.5 x 6.25 x 3.125 IN"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Operating Pressure",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "150.5",
+          "original_unit": "PSI",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "150.5",
+          "converted_unit": "PSI",
+          "field_formats": {
+            "invoice_desc": "150.5 PSI",
+            "mobile_desc": "150.5 PSI",
+            "product_title": "150.5 PSI",
+            "attribute_field": "150.5",
+            "long_desc": "150.5 PSI"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Temperature Limit",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "200.0",
+          "original_unit": "DEG F",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "200.0",
+          "converted_unit": "DEG F",
+          "field_formats": {
+            "invoice_desc": "200.0 DEG F",
+            "mobile_desc": "200.0 DEG F",
+            "product_title": "200.0 DEG F",
+            "attribute_field": "200.0",
+            "long_desc": "200.0 DEG F"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        }
+      ],
+      "conversion_summary": {
+        "total_dimensional_attributes": 2,
+        "converted_count": 2,
+        "already_fraction_count": 0,
+        "integer_count": 0,
+        "skipped_non_dimensional": 3,
+        "exact_lookup_count": 2,
+        "nearest_match_count": 0,
+        "no_match_count": 0,
+        "mpn_conflicts_detected": 0,
+        "conversion_coverage": "100%",
+        "all_buyer_fields_fraction_compliant": true
+      }
     }
   },
   {
@@ -9660,6 +10555,185 @@ const products = [
         "uom_compliance_grade": "C",
         "critical_issues": [],
         "all_units_compliant": false
+      }
+    },
+    "fraction": {
+      "pipeline_id": "pl_a95q8qvss",
+      "conversion_timestamp": "2026-08-17T08:28:47.797Z",
+      "converted_attributes": [
+        {
+          "attribute_name": "Size",
+          "requires_conversion": true,
+          "value_type": "A",
+          "skip_reason": null,
+          "original_value": "0.5",
+          "original_unit": "IN",
+          "conversion": {
+            "whole_part": 0,
+            "decimal_part": 0.5,
+            "fraction_part": "1/2",
+            "lookup_method": "exact",
+            "lookup_confidence": 100,
+            "nearest_match_delta": 0,
+            "fraction_not_available": false
+          },
+          "converted_value": "1/2",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "1/2 IN",
+            "mobile_desc": "1/2 IN",
+            "product_title": "1/2 IN",
+            "attribute_field": "1/2",
+            "long_desc": "1/2 IN (0.5 IN)"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": true,
+            "mpn_encoded_value": "1/2",
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Length",
+          "requires_conversion": true,
+          "value_type": "B",
+          "skip_reason": null,
+          "original_value": "50.25",
+          "original_unit": "IN",
+          "conversion": {
+            "whole_part": 50,
+            "decimal_part": 0.25,
+            "fraction_part": "1/4",
+            "lookup_method": "exact",
+            "lookup_confidence": 100,
+            "nearest_match_delta": 0,
+            "fraction_not_available": false
+          },
+          "converted_value": "50-1/4",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "50-1/4 IN",
+            "mobile_desc": "50-1/4 IN",
+            "product_title": "50-1/4 IN",
+            "attribute_field": "50-1/4",
+            "long_desc": "50-1/4 IN (50.25 IN)"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Dimensions",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "12.5 x 6.25 x 3.125",
+          "original_unit": "IN",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "12.5 x 6.25 x 3.125",
+          "converted_unit": "IN",
+          "field_formats": {
+            "invoice_desc": "12.5 x 6.25 x 3.125 IN",
+            "mobile_desc": "12.5 x 6.25 x 3.125 IN",
+            "product_title": "12.5 x 6.25 x 3.125 IN",
+            "attribute_field": "12.5 x 6.25 x 3.125",
+            "long_desc": "12.5 x 6.25 x 3.125 IN"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Operating Pressure",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "150.5",
+          "original_unit": "PSI",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "150.5",
+          "converted_unit": "PSI",
+          "field_formats": {
+            "invoice_desc": "150.5 PSI",
+            "mobile_desc": "150.5 PSI",
+            "product_title": "150.5 PSI",
+            "attribute_field": "150.5",
+            "long_desc": "150.5 PSI"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        },
+        {
+          "attribute_name": "Temperature Limit",
+          "requires_conversion": false,
+          "value_type": null,
+          "skip_reason": "non_dimensional",
+          "original_value": "200.0",
+          "original_unit": "DEG F",
+          "conversion": {
+            "lookup_method": "not_required",
+            "lookup_confidence": 100
+          },
+          "converted_value": "200.0",
+          "converted_unit": "DEG F",
+          "field_formats": {
+            "invoice_desc": "200.0 DEG F",
+            "mobile_desc": "200.0 DEG F",
+            "product_title": "200.0 DEG F",
+            "attribute_field": "200.0",
+            "long_desc": "200.0 DEG F"
+          },
+          "mpn_cross_validation": {
+            "mpn_size_detected": false,
+            "mpn_encoded_value": null,
+            "mpn_size_conflict": false,
+            "conflict_note": null
+          },
+          "confidence": 100,
+          "review_flag": null,
+          "severity": "ok"
+        }
+      ],
+      "conversion_summary": {
+        "total_dimensional_attributes": 2,
+        "converted_count": 2,
+        "already_fraction_count": 0,
+        "integer_count": 0,
+        "skipped_non_dimensional": 3,
+        "exact_lookup_count": 2,
+        "nearest_match_count": 0,
+        "no_match_count": 0,
+        "mpn_conflicts_detected": 0,
+        "conversion_coverage": "100%",
+        "all_buyer_fields_fraction_compliant": true
       }
     }
   }

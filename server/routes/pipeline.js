@@ -19,6 +19,7 @@ const exporter = require('../services/exporter');
 const lovEngine = require('../services/lovEngine');
 const mfgNormalizer = require('../services/mfgNormalizer');
 const uomValidator = require('../services/uomValidator');
+const fractionConverter = require('../services/fractionConverter');
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/', limits: { fileSize: 20 * 1024 * 1024 } });
@@ -231,6 +232,16 @@ router.post('/uom', async (req, res, next) => {
     }
 });
 
+router.post('/fraction', async (req, res, next) => {
+    try {
+        const { normalizedData } = req.body;
+        const result = await fractionConverter.convertFractions(normalizedData);
+        res.json(result);
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
     try {
         const startTime = Date.now();
@@ -286,6 +297,10 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const uomValid = await uomValidator.validateUOM(normalization || extraction);
         const uomEnd = Date.now();
 
+        const fractionStart = Date.now();
+        const fractionConverted = await fractionConverter.convertFractions(normalization || extraction);
+        const fractionEnd = Date.now();
+
         const enrichStart = Date.now();
         const enrichment = await enricher.enrichData(extraction, classification);
         const enrichEnd = Date.now();
@@ -329,6 +344,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
                 lov: { result: lovMatching, duration_ms: lovEnd - lovStart },
                 mfg: { result: mfgNormal, duration_ms: mfgEnd - mfgStart },
                 uom: { result: uomValid, duration_ms: uomEnd - uomStart },
+                fraction: { result: fractionConverted, duration_ms: fractionEnd - fractionStart },
                 enrich: { result: enrichment, duration_ms: enrichEnd - enrichStart },
                 validate: { result: validation, duration_ms: validateEnd - validateStart },
                 ground: { result: grounding, duration_ms: groundEnd - groundStart },
