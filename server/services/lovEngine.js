@@ -22,14 +22,45 @@ const ABBREVIATIONS = {
 function matchLOV(extractedData, classpath = "valves.ball") {
   return new Promise((resolve) => {
     setTimeout(() => {
+      let rawAttrs = null;
+      let isStandaloneTest = false;
+
+      if (!extractedData) {
+        isStandaloneTest = true;
+        rawAttrs = [
+          { attribute_name: "Body Material", raw_value: "SS316" },
+          { attribute_name: "Pressure Rating", raw_value: "1000 WOG" },
+          { attribute_name: "Connection Type", raw_value: "NPT Threaded" },
+          { attribute_name: "Brand", raw_value: "-- Unbranded --" },
+          { attribute_name: "Custom Coating", raw_value: "Non-standard Titanium Nitride" }
+        ];
+      } else {
+        rawAttrs = extractedData.attributes || extractedData.raw_specifications;
+      }
+
       const pipelineId = extractedData?.pipeline_id || "PL_" + Date.now();
-      const rawAttrs = extractedData?.raw_specifications || [
-        { attribute_name: "Body Material", raw_value: "SS316" },
-        { attribute_name: "Pressure Rating", raw_value: "1000 WOG" },
-        { attribute_name: "Connection Type", raw_value: "NPT Threaded" },
-        { attribute_name: "Brand", raw_value: "-- Unbranded --" },
-        { attribute_name: "Custom Coating", raw_value: "Non-standard Titanium Nitride" }
-      ];
+
+      if (!isStandaloneTest && (!rawAttrs || !Array.isArray(rawAttrs) || rawAttrs.length === 0)) {
+        resolve({
+          pipeline_id: pipelineId,
+          timestamp: new Date().toISOString(),
+          data_missing: true,
+          classpath: classpath,
+          lov_coverage: "no_data",
+          attributes: [],
+          matched_attributes: [],
+          unmatched_attributes: [],
+          summary: {
+            total_attributes: 0,
+            exact_match_count: 0,
+            fuzzy_match_count: 0,
+            no_match_count: 0,
+            placeholder_count: 0,
+            overall_lov_compliance_pct: 0
+          }
+        });
+        return;
+      }
 
       // Step 1: Classpath Verification
       const validClasspaths = ["valves.ball", "transmitters.pressure", "valves.solenoid", "fittings.pipe", "drives.vfd", "sensors.rtd"];
@@ -46,8 +77,8 @@ function matchLOV(extractedData, classpath = "valves.ball") {
       let filterableCriticalMisses = 0;
 
       rawAttrs.forEach(attr => {
-        const name = attr.attribute_name;
-        const rawVal = attr.raw_value;
+        const name = attr.attribute_name || attr.attribute || attr.label || "";
+        const rawVal = (attr.raw_value ?? attr.standardized_value ?? attr.value ?? "").toString();
 
         // Step 0 / Special Unilog Rules: Placeholder Detection
         if (rawVal && (rawVal.startsWith("--") && rawVal.endsWith("--"))) {
@@ -189,6 +220,7 @@ function matchLOV(extractedData, classpath = "valves.ball") {
         classpath: classpath,
         lov_coverage: lovCoverage,
         matching_timestamp: new Date().toISOString(),
+        attributes: matchedAttributes,
         lov_matched_attributes: matchedAttributes,
         unmatched_attributes: unmatchedAttributes,
         lov_match_summary: {

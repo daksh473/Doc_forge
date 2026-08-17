@@ -351,12 +351,16 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const normalization = await normalizer.normalizeData(extraction, classification);
         const normalizeEnd = Date.now();
 
+        const currentAttrSource = (normalization && Array.isArray(normalization.attributes) && normalization.attributes.length > 0)
+            ? normalization 
+            : extraction;
+
         const mod0aStart = Date.now();
         const mod0aResult = await module0A_dedup.runModule0A();
         const mod0aEnd = Date.now();
 
         const lovStart = Date.now();
-        const lovMatching = await lovEngine.matchLOV(extraction, "valves.ball");
+        const lovMatching = await lovEngine.matchLOV(currentAttrSource, "valves.ball");
         const lovEnd = Date.now();
 
         const mfgStart = Date.now();
@@ -369,11 +373,11 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const mfgEnd = Date.now();
 
         const uomStart = Date.now();
-        const uomValid = await uomValidator.validateUOM(normalization || extraction);
+        const uomValid = await uomValidator.validateUOM(currentAttrSource);
         const uomEnd = Date.now();
 
         const fractionStart = Date.now();
-        const fractionConverted = await fractionConverter.convertFractions(normalization || extraction);
+        const fractionConverted = await fractionConverter.convertFractions(currentAttrSource);
         const fractionEnd = Date.now();
 
         const dedupStart = Date.now();

@@ -133,17 +133,50 @@ function convertValue(valStr) {
   };
 }
 
-function convertFractions(normalizedData = {}) {
+function convertFractions(normalizedData) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const pipelineId = normalizedData.pipeline_id || "PL_" + Date.now();
-      const rawSpecs = normalizedData.raw_specifications || [
-        { attribute_name: "Size", raw_value: "0.5", raw_unit: "IN" },
-        { attribute_name: "Length", raw_value: "50.25", raw_unit: "IN" },
-        { attribute_name: "Dimensions", raw_value: "12.5 x 6.25 x 3.125", raw_unit: "IN" },
-        { attribute_name: "Operating Pressure", raw_value: "150.5", raw_unit: "PSI" },
-        { attribute_name: "Temperature Limit", raw_value: "200.0", raw_unit: "DEG F" }
-      ];
+      let rawSpecs = null;
+      let isStandaloneTest = false;
+
+      if (!normalizedData) {
+        isStandaloneTest = true;
+        rawSpecs = [
+          { attribute_name: "Size", raw_value: "0.5", raw_unit: "IN" },
+          { attribute_name: "Length", raw_value: "50.25", raw_unit: "IN" },
+          { attribute_name: "Dimensions", raw_value: "12.5 x 6.25 x 3.125", raw_unit: "IN" },
+          { attribute_name: "Operating Pressure", raw_value: "150.5", raw_unit: "PSI" },
+          { attribute_name: "Temperature Limit", raw_value: "200.0", raw_unit: "DEG F" }
+        ];
+      } else {
+        rawSpecs = normalizedData.attributes || normalizedData.raw_specifications;
+      }
+
+      const pipelineId = normalizedData?.pipeline_id || "PL_" + Date.now();
+
+      if (!isStandaloneTest && (!rawSpecs || !Array.isArray(rawSpecs) || rawSpecs.length === 0)) {
+        resolve({
+          pipeline_id: pipelineId,
+          conversion_timestamp: new Date().toISOString(),
+          data_missing: true,
+          attributes: [],
+          converted_attributes: [],
+          conversion_summary: {
+            total_dimensional_attributes: 0,
+            converted_count: 0,
+            already_fraction_count: 0,
+            integer_count: 0,
+            skipped_non_dimensional: 0,
+            exact_lookup_count: 0,
+            nearest_match_count: 0,
+            no_match_count: 0,
+            mpn_conflicts_detected: 0,
+            conversion_coverage: "0%",
+            all_buyer_fields_fraction_compliant: false
+          }
+        });
+        return;
+      }
 
       const convertedAttrs = [];
       let convertedCount = 0;
@@ -156,9 +189,9 @@ function convertFractions(normalizedData = {}) {
       let mpnConflicts = 0;
 
       rawSpecs.forEach(spec => {
-        const name = spec.attribute_name;
-        const val = spec.raw_value;
-        const unit = spec.raw_unit || "";
+        const name = spec.attribute_name || spec.attribute || spec.label || "";
+        const val = (spec.raw_value ?? spec.standardized_value ?? spec.value ?? "").toString();
+        const unit = (spec.raw_unit ?? spec.standardized_unit ?? spec.unit ?? "").toString();
 
         const nameLower = name.toLowerCase();
         const isDimensional = DIMENSIONAL_ATTRIBUTES.some(da => nameLower.includes(da));
@@ -213,6 +246,10 @@ function convertFractions(normalizedData = {}) {
 
         convertedAttrs.push({
           attribute_name: name,
+          raw_value: val,
+          raw_unit: unit,
+          standardized_value: convVal,
+          standardized_unit: unit,
           requires_conversion: true,
           value_type: res.type,
           skip_reason: res.type === 'C' ? "already_fraction" : (res.type === 'D' ? "integer" : null),
@@ -246,6 +283,7 @@ function convertFractions(normalizedData = {}) {
       resolve({
         pipeline_id: pipelineId,
         conversion_timestamp: new Date().toISOString(),
+        attributes: convertedAttrs,
         converted_attributes: convertedAttrs,
         conversion_summary: {
           total_dimensional_attributes: totalDim,

@@ -65,17 +65,50 @@ function parseNumericAndUnit(rawStr) {
   return { numberStr: null, unitStr: str, rawSpacing: 'unknown' };
 }
 
-function validateUOM(normalizedData = {}) {
+function validateUOM(normalizedData) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const pipelineId = normalizedData.pipeline_id || "PL_" + Date.now();
-      const rawSpecs = normalizedData.raw_specifications || [
-        { attribute_name: "Size", raw_value: "1/2", raw_unit: "inch" },
-        { attribute_name: "Pressure Rating", raw_value: "1000", raw_unit: "psi" },
-        { attribute_name: "Temperature Limit", raw_value: "0-200", raw_unit: "°F" },
-        { attribute_name: "Weight", raw_value: "3.5", raw_unit: "lbs" },
-        { attribute_name: "Custom Resistance", raw_value: "50", raw_unit: "custom_ohms" }
-      ];
+      let rawSpecs = null;
+      let isStandaloneTest = false;
+
+      if (!normalizedData) {
+        isStandaloneTest = true;
+        rawSpecs = [
+          { attribute_name: "Size", raw_value: "1/2", raw_unit: "inch" },
+          { attribute_name: "Pressure Rating", raw_value: "1000", raw_unit: "psi" },
+          { attribute_name: "Temperature Limit", raw_value: "0-200", raw_unit: "°F" },
+          { attribute_name: "Weight", raw_value: "3.5", raw_unit: "lbs" },
+          { attribute_name: "Custom Resistance", raw_value: "50", raw_unit: "custom_ohms" }
+        ];
+      } else {
+        rawSpecs = normalizedData.attributes || normalizedData.raw_specifications;
+      }
+
+      const pipelineId = normalizedData?.pipeline_id || "PL_" + Date.now();
+
+      if (!isStandaloneTest && (!rawSpecs || !Array.isArray(rawSpecs) || rawSpecs.length === 0)) {
+        resolve({
+          pipeline_id: pipelineId,
+          validation_timestamp: new Date().toISOString(),
+          data_missing: true,
+          attributes: [],
+          validated_units: [],
+          uom_validation_summary: {
+            total_units_validated: 0,
+            exact_match_count: 0,
+            auto_corrected_count: 0,
+            review_required_count: 0,
+            no_approved_form_count: 0,
+            spacing_corrections_count: 0,
+            house_style_corrections_count: 0,
+            uom_compliance_rate: "0%",
+            uom_compliance_grade: "F",
+            critical_issues: [],
+            all_units_compliant: false
+          }
+        });
+        return;
+      }
 
       const validatedUnits = [];
       let exactCount = 0;
@@ -87,9 +120,9 @@ function validateUOM(normalizedData = {}) {
       const criticalIssues = [];
 
       rawSpecs.forEach(spec => {
-        const attrName = spec.attribute_name;
-        const rawVal = spec.raw_value || "";
-        const rawUnit = spec.raw_unit || "";
+        const attrName = spec.attribute_name || spec.attribute || spec.label || "";
+        const rawVal = (spec.raw_value ?? spec.standardized_value ?? spec.value ?? "").toString();
+        const rawUnit = (spec.raw_unit ?? spec.standardized_unit ?? spec.unit ?? "").toString();
         const combined = `${rawVal}${rawUnit ? ' ' + rawUnit : ''}`.trim();
 
         const { numberStr, unitStr } = parseNumericAndUnit(rawUnit || combined);
@@ -180,6 +213,10 @@ function validateUOM(normalizedData = {}) {
 
         validatedUnits.push({
           attribute_name: attrName,
+          raw_value: rawVal,
+          raw_unit: rawUnit,
+          standardized_value: numVal,
+          standardized_unit: approvedAbbrev || rawUnit,
           raw_unit_string: actualUnit,
           numeric_value: numVal,
           measurement_type: mType,
@@ -217,6 +254,7 @@ function validateUOM(normalizedData = {}) {
       resolve({
         pipeline_id: pipelineId,
         uom_validation_timestamp: new Date().toISOString(),
+        attributes: validatedUnits,
         validated_units: validatedUnits,
         uom_validation_summary: {
           total_units_validated: totalValidated,
