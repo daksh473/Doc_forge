@@ -240,6 +240,7 @@
         <button class="tab-btn" data-target="tab-cataloging">Commercial Content</button>
         <button class="tab-btn" data-target="tab-scoring">Quality Score</button>
         <button class="tab-btn" data-target="tab-dashboard">Review Dashboard</button>
+        <button class="tab-btn" data-target="tab-approval" id="tab-btn-approval" style="display: none; border: 1px solid var(--accent-emerald); color: var(--accent-emerald);">Final Approval</button>
         <button class="tab-btn" data-target="tab-export">Export</button>
         <div class="tab-indicator"></div>
       </div>
@@ -500,6 +501,22 @@
           <div id="json-viewer-reasoning" class="json-viewer-container"></div>
         </div>
 
+        <!-- Final Approval Tab -->
+        <div class="tab-panel" id="tab-approval">
+          <div class="bg-emerald-50 border border-emerald-200 p-4 rounded mb-6 text-emerald-800">
+            <h3 class="text-xl font-bold">? Human Review Completed</h3>
+            <p>The edits have been processed, confidence scores updated to 100%, and cascade impacts evaluated.</p>
+          </div>
+          <div class="toolbar">
+            <h4>Processed Edits & Final Output JSON</h4>
+            <div class="toolbar-actions">
+              <button class="btn-icon" id="collapse-approval" title="Collapse All">[-]</button>
+              <button class="btn-icon" id="expand-approval" title="Expand All">[+]</button>
+            </div>
+          </div>
+          <div id="json-viewer-approval" class="json-viewer-container"></div>
+        </div>
+
         <!-- Dashboard Tab -->
         <div class="tab-panel" id="tab-dashboard">
           <div class="toolbar">
@@ -508,6 +525,12 @@
               <button class="btn-icon" id="collapse-dashboard" title="Collapse All">[-]</button>
               <button class="btn-icon" id="expand-dashboard" title="Expand All">[+]</button>
             </div>
+          </div>
+          <div class="mt-6 mb-6 text-center">
+            <button id="btn-simulate-review" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded shadow-lg transition-colors">
+              ????? Simulate Human Review Submission
+            </button>
+            <p class="text-xs text-gray-500 mt-2">Submits mock edits to POST /api/review to resolve the Pressure & Enclosure fields.</p>
           </div>
           <div id="json-viewer-dashboard" class="json-viewer-container"></div>
         </div>
@@ -546,5 +569,6 @@
   <script src="/js/app.js"></script>
 </body>
 </html>
+
 
 

@@ -14,6 +14,7 @@ const cataloger = require('../services/cataloger');
 const scorer = require('../services/scorer');
 const dashboardPrep = require('../services/dashboard');
 const normalizer = require('../services/normalizer');
+const reviewer = require('../services/reviewer');
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/', limits: { fileSize: 20 * 1024 * 1024 } });
@@ -166,6 +167,17 @@ router.post('/dashboard', async (req, res, next) => {
         if (!cataloging) return res.status(400).json({ error: 'Catalog data required for dashboard' });
         const dashboard = await dashboardPrep.prepareDashboard(chunking, cataloging, scoring, reasoning);
         res.json(dashboard);
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.post('/review', async (req, res, next) => {
+    try {
+        const { dashboard, humanEdits } = req.body;
+        if (!dashboard || !humanEdits) return res.status(400).json({ error: 'Dashboard and humanEdits required' });
+        const reviewResult = await reviewer.processReview(dashboard, humanEdits);
+        res.json(reviewResult);
     } catch (err) {
         next(err);
     }

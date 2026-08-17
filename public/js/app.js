@@ -142,6 +142,11 @@ window.DocForge = {
     document.getElementById('expand-dashboard')?.addEventListener('click', () => this.viewers?.dashboard?.expandAll());
     document.getElementById('collapse-dashboard')?.addEventListener('click', () => this.viewers?.dashboard?.collapseAll());
 
+    document.getElementById('expand-approval')?.addEventListener('click', () => this.viewers?.approval?.expandAll());
+    document.getElementById('collapse-approval')?.addEventListener('click', () => this.viewers?.approval?.collapseAll());
+
+    document.getElementById('btn-simulate-review')?.addEventListener('click', () => this.submitHumanReview());
+
     // ── Export Controls ──
     document.getElementById('btn-download-json')?.addEventListener('click', () => this.downloadExport());
     document.getElementById('btn-copy-json')?.addEventListener('click', () => {
@@ -504,6 +509,7 @@ window.DocForge = {
     if (data.cataloging) this.renderCataloging(data.cataloging);
     if (data.scoring) this.renderScoring(data.scoring);
     if (data.dashboard) this.renderDashboard(data.dashboard);
+    this.currentPipelineResult = data;
     this.renderExport(data.exportJson);
   },
 
@@ -906,6 +912,79 @@ window.DocForge = {
       showLineNumbers: true
     });
     this.viewers.dashboard.render();
+  },
+
+  async submitHumanReview() {
+    if (!this.currentPipelineResult || !this.currentPipelineResult.dashboard) return;
+    
+    const btn = document.getElementById('btn-simulate-review');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '⏳ Submitting...';
+    btn.disabled = true;
+
+    try {
+      const mockEdits = [
+        {
+          field_id: "f_002",
+          attribute_name: "Pressure Rating",
+          original_value: "1000 WOG",
+          corrected_value: "1000 WOG", // They approved the AI's choice over the conflict
+          reviewer_note: "Confirmed 1000 WOG is the correct nominal rating. 800 WOG is a derated edge case.",
+          action: "approved"
+        },
+        {
+          field_id: "f_003",
+          attribute_name: "Enclosure Rating",
+          original_value: "IP65 (Downgraded for safety)",
+          corrected_value: "NEMA 4X",
+          reviewer_note: "Contacted supplier. Confirmed NEMA 4X washdown certification.",
+          action: "corrected"
+        }
+      ];
+
+      const res = await fetch('/api/review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          dashboard: this.currentPipelineResult.dashboard,
+          humanEdits: mockEdits
+        })
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const reviewResult = await res.json();
+
+      this.renderApproval(reviewResult);
+
+      // Show and switch to the approval tab
+      const approvalBtn = document.getElementById('tab-btn-approval');
+      if (approvalBtn) {
+        approvalBtn.style.display = 'inline-block';
+        approvalBtn.click();
+      }
+
+      this.showToast('Human review processed successfully', 'success');
+
+    } catch (err) {
+      console.error(err);
+      this.showToast(`Review failed: ${err.message}`, 'error');
+    } finally {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
+  },
+
+  renderApproval(data) {
+    const container = document.getElementById('json-viewer-approval');
+    if (!container) return;
+    container.innerHTML = '';
+    this.viewers = this.viewers || {};
+    this.viewers.approval = new JsonViewer(container, data, {
+      collapsedDepth: 3,
+      highlightInferred: false,
+      showLineNumbers: true
+    });
+    this.viewers.approval.render();
   },
 
   renderDataQuality(data) {
