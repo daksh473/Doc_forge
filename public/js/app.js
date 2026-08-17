@@ -147,6 +147,10 @@ window.DocForge = {
     document.getElementById('collapse-module0a')?.addEventListener('click', () => this.viewers?.module0a?.collapseAll());
     document.getElementById('search-module0a')?.addEventListener('input', (e) => this.viewers?.module0a?.search(e.target.value));
 
+    document.getElementById('expand-web-enrich')?.addEventListener('click', () => this.viewers?.webEnrich?.expandAll());
+    document.getElementById('collapse-web-enrich')?.addEventListener('click', () => this.viewers?.webEnrich?.collapseAll());
+    document.getElementById('search-web-enrich')?.addEventListener('input', (e) => this.viewers?.webEnrich?.search(e.target.value));
+
     document.getElementById('expand-validate')?.addEventListener('click', () => this.viewers?.validate?.expandAll());
     document.getElementById('collapse-validate')?.addEventListener('click', () => this.viewers?.validate?.collapseAll());
     document.getElementById('search-validate')?.addEventListener('input', (e) => this.viewers?.validate?.search(e.target.value));
@@ -460,6 +464,7 @@ window.DocForge = {
     const fraction = stages.fraction ? stages.fraction.result : null;
     const dedup = stages.dedup ? stages.dedup.result : null;
     const module0a = stages.module0a ? stages.module0a.result : null;
+    const webEnrichment = stages.webEnrichment ? stages.webEnrichment.result : null;
     const enrichment = stages.enrich ? stages.enrich.result : null;
     const validation = stages.validate ? stages.validate.result : null;
     const grounding = stages.ground ? stages.ground.result : null;
@@ -500,6 +505,7 @@ window.DocForge = {
       fraction: fraction,
       dedup: dedup,
       module0a: module0a,
+      webEnrichment: webEnrichment,
       enrichment: enrichment,
       validation: validation,
       grounding: grounding,
@@ -552,6 +558,7 @@ window.DocForge = {
     if (data.fraction) this.renderFraction(data.fraction);
     if (data.dedup) this.renderDedup(data.dedup);
     if (data.module0a) this.renderModule0A(data.module0a);
+    if (data.webEnrichment) this.renderWebEnrichment(data.webEnrichment);
     if (data.enrichment) this.renderEnrichment(data.enrichment);
     if (data.validation) this.renderValidation(data.validation);
     if (data.grounding) this.renderGrounding(data.grounding);
@@ -724,6 +731,19 @@ window.DocForge = {
       showLineNumbers: true
     });
     this.viewers.module0a.render();
+  },
+
+  renderWebEnrichment(data) {
+    const container = document.getElementById('json-viewer-web-enrich');
+    if (!container) return;
+    container.innerHTML = '';
+    this.viewers = this.viewers || {};
+    this.viewers.webEnrich = new JsonViewer(container, data, {
+      collapsedDepth: 2,
+      highlightInferred: false,
+      showLineNumbers: true
+    });
+    this.viewers.webEnrich.render();
   },
 
   renderEnrichment(data) {
@@ -1271,7 +1291,7 @@ window.DocForge = {
     this.state.currentSlide = 0;
     this.slideTitles = [
       'Classification', 'Pre-Processing', 'Chunking', 'Raw Extraction',
-      'Normalization', 'LOV Verification', 'Mfg & Brand', 'UOM Validation', 'Fraction Conversion', 'De-duplication', 'Module 0A Pre-Dedup', 'Taxonomy (Enrich)', 'Validation Report', 'Source Grounding',
+      'Normalization', 'LOV Verification', 'Mfg & Brand', 'UOM Validation', 'Fraction Conversion', 'De-duplication', 'Module 0A Pre-Dedup', 'Mfg Web Enrichment', 'Taxonomy (Enrich)', 'Validation Report', 'Source Grounding',
       'AI Reasoning', 'Commercial Content', 'Quality Score', 'Review Dashboard',
       'Final Approval', 'Export'
     ];

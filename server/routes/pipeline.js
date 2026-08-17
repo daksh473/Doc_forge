@@ -22,6 +22,7 @@ const uomValidator = require('../services/uomValidator');
 const fractionConverter = require('../services/fractionConverter');
 const dedupEngine = require('../services/dedupEngine');
 const module0A_dedup = require('../services/module0A_dedup');
+const mfgWebEnricher = require('../services/mfgWebEnricher');
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/', limits: { fileSize: 20 * 1024 * 1024 } });
@@ -280,6 +281,16 @@ router.post('/python_pipeline', async (req, res, next) => {
     }
 });
 
+router.post('/web-enrich', async (req, res, next) => {
+    try {
+        const { productData } = req.body;
+        const result = await mfgWebEnricher.enrichFromManufacturerWeb(productData);
+        res.json(result);
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
     try {
         const startTime = Date.now();
@@ -368,11 +379,15 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const catalogEnd = Date.now();
         
         const scoreStart = Date.now();
-        const scoring = await scorer.scoreData(extraction, enrichment, normalization, validation, cataloging);
+        const score = await scoreCalculator.calculateScore(enrichment, validation);
         const scoreEnd = Date.now();
+
+        const webEnrichStart = Date.now();
+        const webEnrichment = await mfgWebEnricher.enrichFromManufacturerWeb(extraction);
+        const webEnrichEnd = Date.now();
         
         const dashboardStart = Date.now();
-        const dashboard = await dashboardPrep.prepareDashboard(chunking, cataloging, scoring, reasoning);
+        const dashboard = await dashboardPrep.prepareDashboard(chunking, cataloging, score, reasoning);
         const dashboardEnd = Date.now();
         
         const totalEnd = Date.now();
@@ -398,7 +413,8 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
                 ground: { result: grounding, duration_ms: groundEnd - groundStart },
                 reason: { result: reasoning, duration_ms: reasonEnd - reasonStart },
                 catalog: { result: cataloging, duration_ms: catalogEnd - catalogStart },
-                score: { result: scoring, duration_ms: scoreEnd - scoreStart },
+                score: { result: score, duration_ms: scoreEnd - scoreStart },
+                webEnrichment: { result: webEnrichment, duration_ms: webEnrichEnd - webEnrichStart },
                 dashboard: { result: dashboard, duration_ms: dashboardEnd - dashboardStart }
             },
             total_duration_ms: totalEnd - startTime,
