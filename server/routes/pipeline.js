@@ -39,6 +39,32 @@ function addJobToHistory(job) {
     }
 }
 
+function extractRowSummary(jobId, extraction) {
+    if (!extraction) return null;
+    const pId = extraction.product_identification || {};
+    const attrs = extraction.attributes || extraction.raw_specifications || [];
+
+    const sizeAttr = attrs.find(a => {
+        const name = (a.attribute_name || a.attribute || a.label || "").toLowerCase();
+        return name.includes("size") || name.includes("dimension");
+    });
+    const materialAttr = attrs.find(a => {
+        const name = (a.attribute_name || a.attribute || a.label || "").toLowerCase();
+        return name.includes("material");
+    });
+
+    return {
+        jobId: jobId,
+        gtin: pId.gtin || extraction.gtin || null,
+        mfg: pId.manufacturer || extraction.mfg || extraction.manufacturer || "",
+        mpn: pId.part_number || pId.model_number || extraction.mpn || extraction.model_number || "",
+        title: pId.raw_title || extraction.title || extraction.product_title?.standardized || "",
+        material: materialAttr ? (materialAttr.raw_value || materialAttr.standardized_value) : "",
+        size: sizeAttr ? (sizeAttr.raw_value || sizeAttr.standardized_value) : "",
+        source_type: "pipeline_history"
+    };
+}
+
 router.post('/upload', upload.single('file'), async (req, res, next) => {
     try {
         if (!req.file) return res.status(400).json({ error: 'No file provided' });
@@ -347,6 +373,62 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const extraction = await extractor.extractData(chunking);
         const extractEnd = Date.now();
 
+        // ── MODULE 0A: DE-DUPLICATION & MERGE (runs after extraction with real attributes) ──
+        const mod0aStart = Date.now();
+        let mod0aResult;
+
+        const currentSummary = extractRowSummary(jobId, extraction);
+        const historySummaries = jobsHistory.map(job => {
+            const histExtraction = job.stages?.extract?.result;
+            return extractRowSummary(job.jobId, histExtraction);
+        }).filter(Boolean);
+
+        if (historySummaries.length === 0) {
+            // First product ever processed in session — nothing to compare against
+            mod0aResult = {
+                status: "NO_COMPARISON_DATA",
+                no_comparison_data_available: true,
+                message: "First product processed in session. No historical jobs available for de-duplication comparison.",
+                pipeline_id: jobId,
+                possible_duplicate_of: null,
+                module0a_summary: {
+                    total_batch_rows_input: 1,
+                    candidate_pairs_prefiltered: 0,
+                    confirmed_duplicates: 0,
+                    auto_merged_count: 0,
+                    review_queue_count: 0,
+                    final_deduplicated_rows_count: 1,
+                    row_reduction_count: 0,
+                    reduction_percentage: "0%"
+                }
+            };
+        } else {
+            const comparisonBatch = [currentSummary, ...historySummaries];
+            mod0aResult = await module0A_dedup.runModule0A(comparisonBatch);
+
+            // Check if current upload (index 0) was grouped / matched with any historical row
+            const dupEval = mod0aResult.stage2_evaluations?.find(e => 
+                (e.row_index_a === 0 || e.row_index_b === 0) && e.is_duplicate
+            );
+
+            if (dupEval) {
+                const matchIndex = dupEval.row_index_a === 0 ? dupEval.row_index_b : dupEval.row_index_a;
+                const matchedJob = comparisonBatch[matchIndex];
+                mod0aResult.possible_duplicate_of = matchedJob.jobId;
+                mod0aResult.duplicate_match_details = {
+                    matched_job_id: matchedJob.jobId,
+                    matched_mpn: matchedJob.mpn,
+                    matched_mfg: matchedJob.mfg,
+                    matched_title: matchedJob.title,
+                    match_score: dupEval.composite_score,
+                    recommendation: "Flagged for human review — potential duplicate of previously cataloged job " + matchedJob.jobId
+                };
+            } else {
+                mod0aResult.possible_duplicate_of = null;
+            }
+        }
+        const mod0aEnd = Date.now();
+
         const normalizeStart = Date.now();
         const normalization = await normalizer.normalizeData(extraction, classification);
         const normalizeEnd = Date.now();
@@ -354,10 +436,6 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const currentAttrSource = (normalization && Array.isArray(normalization.attributes) && normalization.attributes.length > 0)
             ? normalization 
             : extraction;
-
-        const mod0aStart = Date.now();
-        const mod0aResult = await module0A_dedup.runModule0A();
-        const mod0aEnd = Date.now();
 
         const lovStart = Date.now();
         const lovMatching = await lovEngine.matchLOV(currentAttrSource, "valves.ball");
@@ -381,6 +459,8 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const fractionEnd = Date.now();
 
         const dedupStart = Date.now();
+        // TODO: Currently evaluated with only { pipeline_id: jobId }, which triggers internal fallback.
+        // Will be updated in a future item to compare against jobsHistory using the same pattern as Module 0A.
         const dedupEvaluated = await dedupEngine.evaluateDeDuplication({ pipeline_id: jobId });
         const dedupEnd = Date.now();
 
