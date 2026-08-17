@@ -17,6 +17,7 @@ const normalizer = require('../services/normalizer');
 const reviewer = require('../services/reviewer');
 const exporter = require('../services/exporter');
 const lovEngine = require('../services/lovEngine');
+const mfgNormalizer = require('../services/mfgNormalizer');
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/', limits: { fileSize: 20 * 1024 * 1024 } });
@@ -209,6 +210,16 @@ router.post('/lov', async (req, res, next) => {
     }
 });
 
+router.post('/mfg', async (req, res, next) => {
+    try {
+        const { inputSignals } = req.body;
+        const result = await mfgNormalizer.normalizeMfgBrand(inputSignals);
+        res.json(result);
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
     try {
         const startTime = Date.now();
@@ -251,6 +262,15 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const lovMatching = await lovEngine.matchLOV(extraction, "valves.ball");
         const lovEnd = Date.now();
 
+        const mfgStart = Date.now();
+        const mfgNormal = await mfgNormalizer.normalizeMfgBrand({
+            Mfg_Part_Num: extraction?.product_identification?.part_number || "PDSH4816AF",
+            E1_Brand: "-- No E1 Brand --",
+            Unilog_Brand: "-- Unbranded --",
+            Part_Manuf: extraction?.product_identification?.manufacturer || "Emerson"
+        });
+        const mfgEnd = Date.now();
+
         const enrichStart = Date.now();
         const enrichment = await enricher.enrichData(extraction, classification);
         const enrichEnd = Date.now();
@@ -292,6 +312,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
                 extract: { result: extraction, duration_ms: extractEnd - extractStart },
                 normalize: { result: normalization, duration_ms: normalizeEnd - normalizeStart },
                 lov: { result: lovMatching, duration_ms: lovEnd - lovStart },
+                mfg: { result: mfgNormal, duration_ms: mfgEnd - mfgStart },
                 enrich: { result: enrichment, duration_ms: enrichEnd - enrichStart },
                 validate: { result: validation, duration_ms: validateEnd - validateStart },
                 ground: { result: grounding, duration_ms: groundEnd - groundStart },

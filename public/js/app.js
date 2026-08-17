@@ -127,6 +127,10 @@ window.DocForge = {
     document.getElementById('collapse-lov')?.addEventListener('click', () => this.viewers?.lov?.collapseAll());
     document.getElementById('search-lov')?.addEventListener('input', (e) => this.viewers?.lov?.search(e.target.value));
 
+    document.getElementById('expand-mfg')?.addEventListener('click', () => this.viewers?.mfg?.expandAll());
+    document.getElementById('collapse-mfg')?.addEventListener('click', () => this.viewers?.mfg?.collapseAll());
+    document.getElementById('search-mfg')?.addEventListener('input', (e) => this.viewers?.mfg?.search(e.target.value));
+
     document.getElementById('expand-validate')?.addEventListener('click', () => this.viewers?.validate?.expandAll());
     document.getElementById('collapse-validate')?.addEventListener('click', () => this.viewers?.validate?.collapseAll());
     document.getElementById('search-validate')?.addEventListener('input', (e) => this.viewers?.validate?.search(e.target.value));
@@ -435,6 +439,7 @@ window.DocForge = {
     const extraction = stages.extract.result;
     const normalization = stages.normalize ? stages.normalize.result : null;
     const lov = stages.lov ? stages.lov.result : null;
+    const mfg = stages.mfg ? stages.mfg.result : null;
     const enrichment = stages.enrich ? stages.enrich.result : null;
     const validation = stages.validate ? stages.validate.result : null;
     const grounding = stages.ground ? stages.ground.result : null;
@@ -470,6 +475,7 @@ window.DocForge = {
       extraction: extraction,
       normalization: normalization,
       lov: lov,
+      mfg: mfg,
       enrichment: enrichment,
       validation: validation,
       grounding: grounding,
@@ -517,6 +523,7 @@ window.DocForge = {
     if (data.extraction) this.renderExtraction(data.extraction);
     if (data.normalization) this.renderNormalization(data.normalization);
     if (data.lov) this.renderLOV(data.lov);
+    if (data.mfg) this.renderMfg(data.mfg);
     if (data.enrichment) this.renderEnrichment(data.enrichment);
     if (data.validation) this.renderValidation(data.validation);
     if (data.grounding) this.renderGrounding(data.grounding);
@@ -624,6 +631,19 @@ window.DocForge = {
       showLineNumbers: true
     });
     this.viewers.lov.render();
+  },
+
+  renderMfg(data) {
+    const container = document.getElementById('json-viewer-mfg');
+    if (!container) return;
+    container.innerHTML = '';
+    this.viewers = this.viewers || {};
+    this.viewers.mfg = new JsonViewer(container, data, {
+      collapsedDepth: 2,
+      highlightInferred: false,
+      showLineNumbers: true
+    });
+    this.viewers.mfg.render();
   },
 
   renderEnrichment(data) {
@@ -1171,7 +1191,7 @@ window.DocForge = {
     this.state.currentSlide = 0;
     this.slideTitles = [
       'Classification', 'Pre-Processing', 'Chunking', 'Raw Extraction',
-      'Normalization', 'LOV Verification', 'Taxonomy (Enrich)', 'Validation Report', 'Source Grounding',
+      'Normalization', 'LOV Verification', 'Mfg & Brand', 'Taxonomy (Enrich)', 'Validation Report', 'Source Grounding',
       'AI Reasoning', 'Commercial Content', 'Quality Score', 'Review Dashboard',
       'Final Approval', 'Export'
     ];

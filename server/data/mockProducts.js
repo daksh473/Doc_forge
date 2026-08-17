@@ -1,5 +1,5 @@
 // Mock Data for DocForge
-// Contains full payloads for all stages including LOV Verification
+// Contains full payloads for all stages including Manufacturer & Brand Normalisation
 const products = [
   {
     "keywords": [
@@ -1592,6 +1592,52 @@ const products = [
         "lov_match_grade": "F",
         "grade_basis": "A=95%+, B=85%+, C=70%+, D=50%+, F=<50%"
       }
+    },
+    "mfg": {
+      "pipeline_id": "PL_DEMO_0",
+      "normalisation_timestamp": "2026-08-17T08:14:45.992Z",
+      "raw_input_signals": {
+        "Mfg_Part_Num": "BV1000-050-SS316-NPT",
+        "E1_Brand": null,
+        "Unilog_Brand": null,
+        "DIB_Brand": null,
+        "Part_Manuf": "Valco Industries"
+      },
+      "placeholder_detected": {
+        "E1_Brand": true,
+        "Unilog_Brand": true,
+        "DIB_Brand": true,
+        "all_brands_placeholder": true
+      },
+      "canonical_manufacturer": {
+        "resolved": false,
+        "MANUFACTURER_NAME": null,
+        "MANUFACTURER_CODE": null,
+        "match_strategy": "no_match",
+        "match_confidence": 0,
+        "inferred_from_mpn": false,
+        "matched_input_signal": "Part_Manuf",
+        "manufacturer_conflict": false,
+        "conflict_signals": []
+      },
+      "canonical_brand": {
+        "resolved": true,
+        "BRAND_NAME": "Valco Industries",
+        "BRAND_CODE": "BRD_FALLBACK",
+        "brand_source": "manufacturer_fallback",
+        "brand_ambiguous": false,
+        "brand_candidates": [],
+        "casing_verified": false
+      },
+      "normalisation_summary": {
+        "overall_confidence": 0,
+        "confidence_label": "unresolved",
+        "review_flag": "MFG_UNRESOLVED",
+        "review_priority": "critical",
+        "reviewer_action": "CONTACT_SUPPLIER",
+        "needs_supplier_contact": true,
+        "ready_for_pipeline": false
+      }
     }
   },
   {
@@ -3090,6 +3136,52 @@ const products = [
         "lov_match_grade": "F",
         "grade_basis": "A=95%+, B=85%+, C=70%+, D=50%+, F=<50%"
       }
+    },
+    "mfg": {
+      "pipeline_id": "PL_DEMO_1",
+      "normalisation_timestamp": "2026-08-17T08:14:47.195Z",
+      "raw_input_signals": {
+        "Mfg_Part_Num": "PT100-14NPT-420MA",
+        "E1_Brand": null,
+        "Unilog_Brand": null,
+        "DIB_Brand": null,
+        "Part_Manuf": "SensTech Instruments"
+      },
+      "placeholder_detected": {
+        "E1_Brand": true,
+        "Unilog_Brand": true,
+        "DIB_Brand": true,
+        "all_brands_placeholder": true
+      },
+      "canonical_manufacturer": {
+        "resolved": false,
+        "MANUFACTURER_NAME": null,
+        "MANUFACTURER_CODE": null,
+        "match_strategy": "no_match",
+        "match_confidence": 0,
+        "inferred_from_mpn": false,
+        "matched_input_signal": "Part_Manuf",
+        "manufacturer_conflict": false,
+        "conflict_signals": []
+      },
+      "canonical_brand": {
+        "resolved": true,
+        "BRAND_NAME": "SensTech Instruments",
+        "BRAND_CODE": "BRD_FALLBACK",
+        "brand_source": "manufacturer_fallback",
+        "brand_ambiguous": false,
+        "brand_candidates": [],
+        "casing_verified": false
+      },
+      "normalisation_summary": {
+        "overall_confidence": 0,
+        "confidence_label": "unresolved",
+        "review_flag": "MFG_UNRESOLVED",
+        "review_priority": "critical",
+        "reviewer_action": "CONTACT_SUPPLIER",
+        "needs_supplier_contact": true,
+        "ready_for_pipeline": false
+      }
     }
   },
   {
@@ -4468,6 +4560,52 @@ const products = [
         "lov_match_grade": "F",
         "grade_basis": "A=95%+, B=85%+, C=70%+, D=50%+, F=<50%"
       }
+    },
+    "mfg": {
+      "pipeline_id": "PL_DEMO_2",
+      "normalisation_timestamp": "2026-08-17T08:14:48.399Z",
+      "raw_input_signals": {
+        "Mfg_Part_Num": "SV050-24VDC-NC-NBR",
+        "E1_Brand": null,
+        "Unilog_Brand": null,
+        "DIB_Brand": null,
+        "Part_Manuf": "FlowMaster Controls"
+      },
+      "placeholder_detected": {
+        "E1_Brand": true,
+        "Unilog_Brand": true,
+        "DIB_Brand": true,
+        "all_brands_placeholder": true
+      },
+      "canonical_manufacturer": {
+        "resolved": false,
+        "MANUFACTURER_NAME": null,
+        "MANUFACTURER_CODE": null,
+        "match_strategy": "no_match",
+        "match_confidence": 0,
+        "inferred_from_mpn": false,
+        "matched_input_signal": "Part_Manuf",
+        "manufacturer_conflict": false,
+        "conflict_signals": []
+      },
+      "canonical_brand": {
+        "resolved": true,
+        "BRAND_NAME": "FlowMaster Controls",
+        "BRAND_CODE": "BRD_FALLBACK",
+        "brand_source": "manufacturer_fallback",
+        "brand_ambiguous": false,
+        "brand_candidates": [],
+        "casing_verified": false
+      },
+      "normalisation_summary": {
+        "overall_confidence": 0,
+        "confidence_label": "unresolved",
+        "review_flag": "MFG_UNRESOLVED",
+        "review_priority": "critical",
+        "reviewer_action": "CONTACT_SUPPLIER",
+        "needs_supplier_contact": true,
+        "ready_for_pipeline": false
+      }
     }
   },
   {
@@ -5728,6 +5866,52 @@ const products = [
         "lov_match_rate": "40%",
         "lov_match_grade": "F",
         "grade_basis": "A=95%+, B=85%+, C=70%+, D=50%+, F=<50%"
+      }
+    },
+    "mfg": {
+      "pipeline_id": "PL_DEMO_3",
+      "normalisation_timestamp": "2026-08-17T08:14:49.610Z",
+      "raw_input_signals": {
+        "Mfg_Part_Num": "E90-075-304-NPT",
+        "E1_Brand": null,
+        "Unilog_Brand": null,
+        "DIB_Brand": null,
+        "Part_Manuf": "FitRight Industrial"
+      },
+      "placeholder_detected": {
+        "E1_Brand": true,
+        "Unilog_Brand": true,
+        "DIB_Brand": true,
+        "all_brands_placeholder": true
+      },
+      "canonical_manufacturer": {
+        "resolved": false,
+        "MANUFACTURER_NAME": null,
+        "MANUFACTURER_CODE": null,
+        "match_strategy": "no_match",
+        "match_confidence": 0,
+        "inferred_from_mpn": false,
+        "matched_input_signal": "Part_Manuf",
+        "manufacturer_conflict": false,
+        "conflict_signals": []
+      },
+      "canonical_brand": {
+        "resolved": true,
+        "BRAND_NAME": "FitRight Industrial",
+        "BRAND_CODE": "BRD_FALLBACK",
+        "brand_source": "manufacturer_fallback",
+        "brand_ambiguous": false,
+        "brand_candidates": [],
+        "casing_verified": false
+      },
+      "normalisation_summary": {
+        "overall_confidence": 0,
+        "confidence_label": "unresolved",
+        "review_flag": "MFG_UNRESOLVED",
+        "review_priority": "critical",
+        "reviewer_action": "CONTACT_SUPPLIER",
+        "needs_supplier_contact": true,
+        "ready_for_pipeline": false
       }
     }
   },
@@ -7180,6 +7364,52 @@ const products = [
         "lov_match_grade": "F",
         "grade_basis": "A=95%+, B=85%+, C=70%+, D=50%+, F=<50%"
       }
+    },
+    "mfg": {
+      "pipeline_id": "PL_DEMO_4",
+      "normalisation_timestamp": "2026-08-17T08:14:50.823Z",
+      "raw_input_signals": {
+        "Mfg_Part_Num": "ED-5R0-480-N1",
+        "E1_Brand": null,
+        "Unilog_Brand": null,
+        "DIB_Brand": null,
+        "Part_Manuf": "DriveTech Automation"
+      },
+      "placeholder_detected": {
+        "E1_Brand": true,
+        "Unilog_Brand": true,
+        "DIB_Brand": true,
+        "all_brands_placeholder": true
+      },
+      "canonical_manufacturer": {
+        "resolved": false,
+        "MANUFACTURER_NAME": null,
+        "MANUFACTURER_CODE": null,
+        "match_strategy": "no_match",
+        "match_confidence": 0,
+        "inferred_from_mpn": false,
+        "matched_input_signal": "Part_Manuf",
+        "manufacturer_conflict": false,
+        "conflict_signals": []
+      },
+      "canonical_brand": {
+        "resolved": true,
+        "BRAND_NAME": "DriveTech Automation",
+        "BRAND_CODE": "BRD_FALLBACK",
+        "brand_source": "manufacturer_fallback",
+        "brand_ambiguous": false,
+        "brand_candidates": [],
+        "casing_verified": false
+      },
+      "normalisation_summary": {
+        "overall_confidence": 0,
+        "confidence_label": "unresolved",
+        "review_flag": "MFG_UNRESOLVED",
+        "review_priority": "critical",
+        "reviewer_action": "CONTACT_SUPPLIER",
+        "needs_supplier_contact": true,
+        "ready_for_pipeline": false
+      }
     }
   },
   {
@@ -8520,6 +8750,52 @@ const products = [
         "lov_match_rate": "40%",
         "lov_match_grade": "F",
         "grade_basis": "A=95%+, B=85%+, C=70%+, D=50%+, F=<50%"
+      }
+    },
+    "mfg": {
+      "pipeline_id": "PL_DEMO_5",
+      "normalisation_timestamp": "2026-08-17T08:14:52.035Z",
+      "raw_input_signals": {
+        "Mfg_Part_Num": "RTD-100-12NPT-6IN-316",
+        "E1_Brand": null,
+        "Unilog_Brand": null,
+        "DIB_Brand": null,
+        "Part_Manuf": "TempSense Instruments"
+      },
+      "placeholder_detected": {
+        "E1_Brand": true,
+        "Unilog_Brand": true,
+        "DIB_Brand": true,
+        "all_brands_placeholder": true
+      },
+      "canonical_manufacturer": {
+        "resolved": false,
+        "MANUFACTURER_NAME": null,
+        "MANUFACTURER_CODE": null,
+        "match_strategy": "no_match",
+        "match_confidence": 0,
+        "inferred_from_mpn": false,
+        "matched_input_signal": "Part_Manuf",
+        "manufacturer_conflict": false,
+        "conflict_signals": []
+      },
+      "canonical_brand": {
+        "resolved": true,
+        "BRAND_NAME": "TempSense Instruments",
+        "BRAND_CODE": "BRD_FALLBACK",
+        "brand_source": "manufacturer_fallback",
+        "brand_ambiguous": false,
+        "brand_candidates": [],
+        "casing_verified": false
+      },
+      "normalisation_summary": {
+        "overall_confidence": 0,
+        "confidence_label": "unresolved",
+        "review_flag": "MFG_UNRESOLVED",
+        "review_priority": "critical",
+        "reviewer_action": "CONTACT_SUPPLIER",
+        "needs_supplier_contact": true,
+        "ready_for_pipeline": false
       }
     }
   }
