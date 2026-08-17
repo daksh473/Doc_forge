@@ -586,3 +586,16 @@ h1, h2, h3, h4 {
 .text-amber-600 { color: #d97706; }
 .text-rose-600 { color: #e11d48; }
 
+
+.stage-card.warning {
+  border-color: var(--accent-amber);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.15);
+}
+.stage-card.warning .stage-icon {
+  color: var(--accent-amber);
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+.stage-card.warning .stage-status {
+  color: var(--accent-amber);
+}
+

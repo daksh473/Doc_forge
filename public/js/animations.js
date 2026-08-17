@@ -28,7 +28,7 @@ window.DocForgeAnimations = {
     if (!card) return;
 
     // Remove old states
-    card.classList.remove('idle', 'processing', 'complete', 'error');
+    card.classList.remove('idle', 'processing', 'complete', 'error', 'warning');
     card.classList.add(state);
 
     const statusEl = card.querySelector('.stage-status');
@@ -36,6 +36,7 @@ window.DocForgeAnimations = {
       if (state === 'processing') statusEl.textContent = 'Processing...';
       if (state === 'complete') statusEl.textContent = 'Completed';
       if (state === 'error') statusEl.textContent = 'Failed';
+      if (state === 'warning') statusEl.textContent = 'Warning';
       if (state === 'idle') statusEl.textContent = 'Waiting...';
     }
   },
