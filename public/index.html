@@ -227,27 +227,15 @@
 
     <!-- Results Panel -->
     <section id="results-section" class="results-container glass hidden">
-      <div class="tabs-header">
-        <button class="tab-btn active" data-target="tab-classification">Classification</button>
-        <button class="tab-btn" data-target="tab-preprocessing">Pre-Processing</button>
-        <button class="tab-btn" data-target="tab-chunking">Chunking</button>
-        <button class="tab-btn" data-target="tab-extraction">Raw Extraction</button>
-        <button class="tab-btn" data-target="tab-normalization">Normalization</button>
-        <button class="tab-btn" data-target="tab-enrichment">Taxonomy (Enrich)</button>
-        <button class="tab-btn" data-target="tab-validation">Validation Report</button>
-        <button class="tab-btn" data-target="tab-grounding">Source Grounding</button>
-        <button class="tab-btn" data-target="tab-reasoning">AI Reasoning</button>
-        <button class="tab-btn" data-target="tab-cataloging">Commercial Content</button>
-        <button class="tab-btn" data-target="tab-scoring">Quality Score</button>
-        <button class="tab-btn" data-target="tab-dashboard">Review Dashboard</button>
-        <button class="tab-btn" data-target="tab-approval" id="tab-btn-approval" style="display: none; border: 1px solid var(--accent-emerald); color: var(--accent-emerald);">Final Approval</button>
-        <button class="tab-btn" data-target="tab-export">Export</button>
-        <div class="tab-indicator"></div>
+      <div class="carousel-header" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--bg-card); border-bottom: 1px solid var(--border-glass);">
+        <button id="carousel-prev" class="btn" disabled>? Prev</button>
+        <h3 id="carousel-title" style="margin: 0; font-size: 1.2rem;">Classification</h3>
+        <button id="carousel-next" class="btn">Next ?</button>
       </div>
-
-      <div class="tabs-content">
+      <div class="carousel-viewport">
+        <div class="carousel-track" id="carousel-track">
         <!-- Classification Tab -->
-        <div class="tab-panel active" id="tab-classification">
+        <div class="carousel-slide active" id="tab-classification">
           <div class="classification-summary">
             <div class="summary-card">
               <h4>Document Type</h4>
@@ -272,7 +260,7 @@
         </div>
 
         <!-- Pre-Processing Tab -->
-        <div class="tab-panel" id="tab-preprocessing">
+        <div class="carousel-slide" id="tab-preprocessing">
           <div class="toolbar">
             <h4>Cleaned & Structured Sections</h4>
             <div class="toolbar-actions">
@@ -285,7 +273,7 @@
         </div>
 
         <!-- Chunking Tab -->
-        <div class="tab-panel" id="tab-chunking">
+        <div class="carousel-slide" id="tab-chunking">
           <div class="toolbar">
             <h4>Optimized Data Chunks</h4>
             <div class="toolbar-actions">
@@ -298,7 +286,7 @@
         </div>
 
         <!-- Extraction Tab -->
-        <div class="tab-panel" id="tab-extraction">
+        <div class="carousel-slide" id="tab-extraction">
           <div class="toolbar">
             <h4>Raw Extracted Entities</h4>
             <div class="toolbar-actions">
@@ -311,7 +299,7 @@
         </div>
 
         <!-- Normalization Tab -->
-        <div class="tab-panel" id="tab-normalization">
+        <div class="carousel-slide" id="tab-normalization">
           <div class="toolbar">
             <h4>Normalized Attributes</h4>
             <div class="toolbar-actions">
@@ -324,7 +312,7 @@
         </div>
 
         <!-- Enrichment Tab -->
-        <div class="tab-panel" id="tab-enrichment">
+        <div class="carousel-slide" id="tab-enrichment">
           <div class="toolbar">
             <h4>Normalized Catalog Data</h4>
             <div class="toolbar-actions">
@@ -338,7 +326,7 @@
         </div>
 
         <!-- Cataloging Tab -->
-        <div class="tab-panel" id="tab-cataloging">
+        <div class="carousel-slide" id="tab-cataloging">
           <div class="toolbar">
             <div class="toolbar-actions">
               <button class="btn-icon" id="collapse-catalog" title="Collapse All">[-]</button>
@@ -352,7 +340,7 @@
         </div>
 
         <!-- Scoring Tab -->
-        <div class="tab-panel" id="tab-scoring">
+        <div class="carousel-slide" id="tab-scoring">
           <div class="scoring-header bg-white p-6 rounded shadow mb-6 text-center">
             <h2 class="text-3xl font-bold mb-2">Final Verdict: <span id="score-verdict" class="text-emerald-600">--</span></h2>
             <p class="text-gray-600 italic" id="score-one-line">--</p>
@@ -403,7 +391,7 @@
         </div>
 
         <!-- Validation Tab -->
-        <div class="tab-panel" id="tab-validation">
+        <div class="carousel-slide" id="tab-validation">
           <div class="validation-summary-grid">
             <div class="val-card">
               <h4>Overall Status</h4>
@@ -439,7 +427,7 @@
         </div>
 
         <!-- Grounding Tab -->
-        <div class="tab-panel" id="tab-grounding">
+        <div class="carousel-slide" id="tab-grounding">
           <div class="grounding-header bg-white p-4 rounded shadow mb-6 flex justify-between items-center">
             <div>
               <h3 class="text-xl font-bold">Citation Coverage</h3>
@@ -477,7 +465,7 @@
         </div>
 
         <!-- Reasoning Tab -->
-        <div class="tab-panel" id="tab-reasoning">
+        <div class="carousel-slide" id="tab-reasoning">
           <div class="reasoning-header bg-white p-4 rounded shadow mb-6 flex justify-between items-center">
             <div>
               <h3 class="text-xl font-bold">Reasoning Transparency Engine</h3>
@@ -502,7 +490,7 @@
         </div>
 
         <!-- Final Approval Tab -->
-        <div class="tab-panel" id="tab-approval">
+        <div class="carousel-slide" id="tab-approval">
           <div class="bg-emerald-50 border border-emerald-200 p-4 rounded mb-6 text-emerald-800">
             <h3 class="text-xl font-bold">? Human Review Completed</h3>
             <p>The edits have been processed, confidence scores updated to 100%, and cascade impacts evaluated.</p>
@@ -518,7 +506,7 @@
         </div>
 
         <!-- Dashboard Tab -->
-        <div class="tab-panel" id="tab-dashboard">
+        <div class="carousel-slide" id="tab-dashboard">
           <div class="toolbar">
             <h4>Detailed Dashboard UI Payload JSON</h4>
             <div class="toolbar-actions">
@@ -536,7 +524,7 @@
         </div>
 
         <!-- Export Tab -->
-        <div class="tab-panel" id="tab-export">
+        <div class="carousel-slide" id="tab-export">
           <div class="export-actions">
             <button class="btn btn-primary" id="btn-download-json">Download JSON</button>
             <button class="btn btn-outline" id="btn-copy-json">Copy to Clipboard</button>
@@ -544,6 +532,8 @@
           <textarea id="export-textarea" readonly></textarea>
         </div>
       </div>
+    </div>
+      <div class="carousel-indicators" id="carousel-indicators" style="display: flex; justify-content: center; gap: 8px; padding: 1rem;"></div>
     </section>
   </main>
 
@@ -569,6 +559,8 @@
   <script src="/js/app.js"></script>
 </body>
 </html>
+
+
 
 
 

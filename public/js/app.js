@@ -36,9 +36,12 @@ window.DocForge = {
       textInput: document.getElementById('text-input'),
       startBtn: document.getElementById('start-pipeline-btn'),
 
-      tabs: document.querySelectorAll('.tab-btn'),
-      tabIndicator: document.querySelector('.tab-indicator'),
-      tabPanels: document.querySelectorAll('.tab-panel'),
+      slides: document.querySelectorAll('.carousel-slide'),
+      carouselTrack: document.getElementById('carousel-track'),
+      carouselPrev: document.getElementById('carousel-prev'),
+      carouselNext: document.getElementById('carousel-next'),
+      carouselTitle: document.getElementById('carousel-title'),
+      carouselIndicators: document.getElementById('carousel-indicators'),
 
       historyBtn: document.getElementById('history-btn'),
       closeHistoryBtn: document.getElementById('close-history'),
@@ -90,15 +93,13 @@ window.DocForge = {
     // ── Start Pipeline ──
     this.els.startBtn.addEventListener('click', () => this.runPipeline());
 
-    // ── Tabs ──
-    this.els.tabs.forEach((tab) => {
-      tab.addEventListener('click', () => this.switchTab(tab));
-    });
+    // Carousel initialized at bottom of bindEvents
 
     // ── History Sidebar ──
     this.els.historyBtn.addEventListener('click', () => this.toggleHistory(true));
     this.els.closeHistoryBtn.addEventListener('click', () => this.toggleHistory(false));
     this.els.sidebarOverlay.addEventListener('click', () => this.toggleHistory(false));
+    this.initCarousel();
 
     // ── JSON Viewer Controls ──
     // ── JSON Viewer Controls ──
@@ -224,6 +225,12 @@ window.DocForge = {
     // Show pipeline, hide old results
     this.els.pipelineSection.classList.remove('hidden');
     this.els.resultsSection.classList.add('hidden');
+
+    // Reset carousel
+    const approvalSlide = document.getElementById('tab-approval');
+    if (approvalSlide) approvalSlide.style.display = 'none';
+    this.renderCarouselIndicators();
+    this.goToSlide(0);
 
     // Reset all stages to idle
     DocForgeAnimations.initPipelineConnectors();
@@ -956,11 +963,16 @@ window.DocForge = {
 
       this.renderApproval(reviewResult);
 
-      // Show and switch to the approval tab
-      const approvalBtn = document.getElementById('tab-btn-approval');
-      if (approvalBtn) {
-        approvalBtn.style.display = 'inline-block';
-        approvalBtn.click();
+      // Show and switch to the approval slide in the carousel
+      const approvalSlide = document.getElementById('tab-approval');
+      if (approvalSlide) {
+        approvalSlide.style.display = 'block';
+        this.renderCarouselIndicators();
+        const visibleSlides = this.getVisibleSlides();
+        const approvalIdx = visibleSlides.indexOf(approvalSlide);
+        if (approvalIdx !== -1) {
+          this.goToSlide(approvalIdx);
+        }
       }
 
       this.showToast('Human review processed successfully', 'success');
@@ -1039,31 +1051,101 @@ window.DocForge = {
   },
 
   // ─────────────────────────────────────────────────────
-  // TABS
+  // CAROUSEL SLIDER
   // ─────────────────────────────────────────────────────
 
-  switchTab(clickedTab) {
-    this.els.tabs.forEach(t => t.classList.remove('active'));
-    clickedTab.classList.add('active');
+  initCarousel() {
+    this.state.currentSlide = 0;
+    this.slideTitles = [
+      'Classification', 'Pre-Processing', 'Chunking', 'Raw Extraction',
+      'Normalization', 'Taxonomy (Enrich)', 'Validation Report', 'Source Grounding',
+      'AI Reasoning', 'Commercial Content', 'Quality Score', 'Review Dashboard',
+      'Final Approval', 'Export'
+    ];
 
-    this.updateTabIndicator(clickedTab);
+    // Hide approval slide initially
+    const approvalSlide = document.getElementById('tab-approval');
+    if (approvalSlide) approvalSlide.style.display = 'none';
 
-    const targetId = clickedTab.getAttribute('data-target');
-    this.els.tabPanels.forEach(p => {
-      p.classList.remove('active');
-      if (p.id === targetId) p.classList.add('active');
+    this.els.carouselPrev?.addEventListener('click', () => this.prevSlide());
+    this.els.carouselNext?.addEventListener('click', () => this.nextSlide());
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+      if (e.key === 'ArrowLeft') this.prevSlide();
+      if (e.key === 'ArrowRight') this.nextSlide();
     });
 
-    this.state.activeTab = targetId;
+    this.renderCarouselIndicators();
+    setTimeout(() => this.goToSlide(0), 100);
   },
 
-  updateTabIndicator(activeTab) {
-    if (!activeTab || !this.els.tabIndicator) return;
-    const tabRect = activeTab.getBoundingClientRect();
-    const containerRect = activeTab.parentElement.getBoundingClientRect();
+  getVisibleSlides() {
+    return Array.from(this.els.slides).filter(slide => slide.style.display !== 'none');
+  },
 
-    this.els.tabIndicator.style.width = `${tabRect.width}px`;
-    this.els.tabIndicator.style.transform = `translateX(${tabRect.left - containerRect.left}px)`;
+  renderCarouselIndicators() {
+    if (!this.els.carouselIndicators) return;
+    this.els.carouselIndicators.innerHTML = '';
+    const visibleSlides = this.getVisibleSlides();
+
+    visibleSlides.forEach((slide, idx) => {
+      const btn = document.createElement('button');
+      btn.title = this.slideTitles[idx] || slide.id;
+      if (idx === this.state.currentSlide) btn.classList.add('active');
+      btn.addEventListener('click', () => this.goToSlide(idx));
+      this.els.carouselIndicators.appendChild(btn);
+    });
+  },
+
+  goToSlide(index) {
+    const visibleSlides = this.getVisibleSlides();
+    if (index < 0 || index >= visibleSlides.length) return;
+
+    this.state.currentSlide = index;
+
+    // Slide track
+    if (this.els.carouselTrack) {
+      this.els.carouselTrack.style.transform = `translateX(-${index * 100}%)`;
+    }
+
+    // Update active classes
+    this.els.slides.forEach(slide => {
+      slide.classList.remove('active-slide');
+      slide.classList.remove('active'); // fallback
+    });
+    const activeSlide = visibleSlides[index];
+    if (activeSlide) {
+      activeSlide.classList.add('active-slide');
+      activeSlide.classList.add('active');
+      
+      // Update title
+      if (this.els.carouselTitle) {
+        const slideIdx = Array.from(this.els.slides).indexOf(activeSlide);
+        this.els.carouselTitle.textContent = this.slideTitles[slideIdx] || 'Output';
+      }
+    }
+
+    // Enable/disable buttons
+    if (this.els.carouselPrev) this.els.carouselPrev.disabled = index === 0;
+    if (this.els.carouselNext) this.els.carouselNext.disabled = index === visibleSlides.length - 1;
+
+    // Update dots
+    if (this.els.carouselIndicators) {
+      const dots = this.els.carouselIndicators.querySelectorAll('button');
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === index);
+      });
+    }
+  },
+
+  prevSlide() {
+    this.goToSlide(this.state.currentSlide - 1);
+  },
+
+  nextSlide() {
+    this.goToSlide(this.state.currentSlide + 1);
   },
 
   // ─────────────────────────────────────────────────────
@@ -1154,6 +1236,12 @@ window.DocForge = {
 
     this.state.pipelineResult = item.data;
 
+    // Reset carousel
+    const approvalSlide = document.getElementById('tab-approval');
+    if (approvalSlide) approvalSlide.style.display = 'none';
+    this.renderCarouselIndicators();
+    this.goToSlide(0);
+
     // Show pipeline as all complete
     this.els.pipelineSection.classList.remove('hidden');
     for (let i = 0; i < 13; i++) {
@@ -1216,3 +1304,4 @@ window.DocForge = {
 document.addEventListener('DOMContentLoaded', () => {
   DocForge.init();
 });
+
