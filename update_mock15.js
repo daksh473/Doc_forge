@@ -1,14 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 const mockProducts = require('./server/data/mockProducts');
-const dedupEngine = require('./server/services/dedupEngine');
+const module0A_dedup = require('./server/services/module0A_dedup');
 
 async function updateMockData() {
   const products = mockProducts.getProducts();
 
   for (let i = 0; i < products.length; i++) {
     const p = products[i];
-    p.dedup = await dedupEngine.evaluateDeDuplication({ pipeline_id: p.pipeline_id || `PL_DEMO_${i}` });
+    p.dedup = await module0A_dedup.evaluateDeDuplication({ pipeline_id: p.pipeline_id || `PL_DEMO_${i}` });
   }
 
   const output = `// Mock Data for DocForge

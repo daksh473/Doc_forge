@@ -1,10 +1,11 @@
 /**
- * Module 0A — Pre-Pipeline Batch De-duplication & Merge Engine
- * Runs BEFORE Module 1A (Extraction) on the full raw batch of product rows.
+ * Module 0A — Canonical Pre-Pipeline Batch De-duplication & Merge Engine
+ * Consolidates all de-duplication, candidate blocking, contradiction detection, and transitive DSU merging.
+ *
  * 3-Stage Chain:
- * - Stage 1: Candidate Pre-Filtering (Code Engine: Blocking Keys & Fuzzy Pre-Score >= 55)
- * - Stage 2: Duplicate Decision Engine (Decision Logic: Tiers, Contradictions, Merge Field Resolution)
- * - Stage 3: Merge Execution & Transitive Union-Find (Code Engine: DSU Merging & Review Queue Routing)
+ * - Stage 1: Candidate Pre-Filtering (Blocking Keys & Fuzzy Pre-Score >= 55)
+ * - Stage 2: Duplicate Decision Engine (Tiers, Contradiction Rules, Variant Suffixes, Field Resolution)
+ * - Stage 3: Merge Execution & Transitive Union-Find (DSU Merging & Review Queue Routing)
  */
 
 function normalizeString(str) {
@@ -19,6 +20,21 @@ function stringSimilarity(s1, s2) {
   if (n1 === n2) return 100;
   if (n1.includes(n2) || n2.includes(n1)) return 85;
   return 40;
+}
+
+function checkVariantSuffix(mpn1, mpn2) {
+  if (!mpn1 || !mpn2) return { detected: false, note: null };
+  const norm1 = normalizeString(mpn1);
+  const norm2 = normalizeString(mpn2);
+  if (norm1 === norm2) return { detected: false, note: null };
+
+  const suffixes = ["LF", "NPT", "BSP", "SS", "BR", "NC", "NO"];
+  for (const suf of suffixes) {
+    if ((norm1.endsWith(suf) && !norm2.endsWith(suf)) || (!norm1.endsWith(suf) && norm2.endsWith(suf))) {
+      return { detected: true, note: `Variant suffix difference detected: '-${suf}' (e.g. Lead-Free or Thread Standard variation)` };
+    }
+  }
+  return { detected: false, note: null };
 }
 
 // Disjoint Set Union (DSU / Union-Find) for Transitive Merging
@@ -92,7 +108,6 @@ function stage1PreFilter(rawRows) {
             score = Math.round((mfgSim * 0.3) + (mpnSim * 0.4) + (descSim * 0.3));
           }
 
-          // Filter score >= 55
           if (score >= 55) {
             candidatePairs.push({
               row_index_a: idxA,
@@ -123,19 +138,14 @@ function stage2Decision(candidatePairs) {
     const mfgMatch = rowA.mfg && rowB.mfg && stringSimilarity(rowA.mfg, rowB.mfg) >= 80;
     const descSim = stringSimilarity(rowA.title || rowA.desc, rowB.title || rowB.desc);
 
-    // Contradiction Checks
+    // Contradiction & Variant Checks
     let contradictionFound = false;
     let contradictionReason = null;
-    let variantSuffixDetected = false;
 
-    if (rowA.mpn && rowB.mpn) {
-      const normA = normalizeString(rowA.mpn);
-      const normB = normalizeString(rowB.mpn);
-      if (normA !== normB && (normA.endsWith("LF") || normB.endsWith("LF") || normA.endsWith("NPT") || normB.endsWith("BSP"))) {
-        variantSuffixDetected = true;
-        contradictionFound = true;
-        contradictionReason = `Variant Suffix Detected: '${rowA.mpn}' vs '${rowB.mpn}' represents distinct SKUs.`;
-      }
+    const variantCheck = checkVariantSuffix(rowA.mpn, rowB.mpn);
+    if (variantCheck.detected) {
+      contradictionFound = true;
+      contradictionReason = `Variant Suffix Detected: '${rowA.mpn}' vs '${rowB.mpn}' represents distinct SKUs (${variantCheck.note})`;
     }
 
     if (!contradictionFound && rowA.size && rowB.size && normalizeString(rowA.size) !== normalizeString(rowB.size)) {
@@ -143,7 +153,19 @@ function stage2Decision(candidatePairs) {
       contradictionReason = `Disqualifying contradiction: Core dimension mismatch ('${rowA.size}' vs '${rowB.size}')`;
     }
 
-    // Identity Tier
+    const matA = (rowA.material || "").toLowerCase();
+    const matB = (rowB.material || "").toLowerCase();
+    const matEquiv = (!matA || !matB) || (matA === matB) ||
+      (matA.includes("ss316") && matB.includes("stainless steel 316")) ||
+      (matB.includes("ss316") && matA.includes("stainless steel 316")) ||
+      (matA.includes(matB) || matB.includes(matA));
+
+    if (!contradictionFound && rowA.material && rowB.material && !matEquiv) {
+      contradictionFound = true;
+      contradictionReason = `Disqualifying contradiction: Material mismatch ('${rowA.material}' vs '${rowB.material}')`;
+    }
+
+    // Identity Tiers
     let tier = "4";
     let confidence = 40;
     let isDuplicate = false;
@@ -174,6 +196,7 @@ function stage2Decision(candidatePairs) {
       const allKeys = Array.from(new Set([...Object.keys(rowA), ...Object.keys(rowB)]));
 
       allKeys.forEach(k => {
+        if (k === 'source_type') return;
         const valA = rowA[k];
         const valB = rowB[k];
 
@@ -206,9 +229,9 @@ function stage2Decision(candidatePairs) {
       }
     }
 
-    const reviewRequired = tier === "3" || (tier === "2" && fieldConflicts.length > 0) || variantSuffixDetected;
+    const reviewRequired = tier === "3" || (tier === "2" && fieldConflicts.length > 0) || variantCheck.detected;
     let reviewReason = null;
-    if (variantSuffixDetected) reviewReason = "VARIANT_SUFFIX";
+    if (variantCheck.detected) reviewReason = "VARIANT_SUFFIX";
     else if (tier === "3") reviewReason = "TIER_3_MATCH";
     else if (fieldConflicts.length > 0) reviewReason = "FIELD_CONFLICT";
 
@@ -218,11 +241,12 @@ function stage2Decision(candidatePairs) {
       identity_tier: tier,
       is_duplicate: isDuplicate,
       confidence: confidence,
+      composite_score: confidence,
       contradiction_check: {
         contradiction_found: contradictionFound,
         contradiction_reason: contradictionReason,
-        variant_suffix_detected: variantSuffixDetected,
-        variant_note: variantSuffixDetected ? "Variant suffix mismatch" : null
+        variant_suffix_detected: variantCheck.detected,
+        variant_note: variantCheck.note
       },
       signals_used: {
         gtin_match: gtinMatch,
@@ -265,7 +289,6 @@ function stage3MergeExecution(rawRows, pairEvaluations) {
     }
   });
 
-  // Group connected rows by DSU root
   const groups = {};
   rawRows.forEach((row, idx) => {
     const root = dsu.find(idx);
@@ -273,13 +296,11 @@ function stage3MergeExecution(rawRows, pairEvaluations) {
     groups[root].push(row);
   });
 
-  // Build final deduplicated rows
   const deduplicatedRows = [];
   Object.values(groups).forEach(groupRows => {
     if (groupRows.length === 1) {
       deduplicatedRows.push(groupRows[0]);
     } else {
-      // Merge all rows in group into single Golden Row
       let golden = { ...groupRows[0] };
       for (let i = 1; i < groupRows.length; i++) {
         const nextRow = groupRows[i];
@@ -335,13 +356,33 @@ function runModule0A(rawBatchRows) {
           reduction_percentage: `${totalOriginal > 0 ? Math.round((reduction / totalOriginal) * 100) : 0}%`
         }
       });
-    }, 1000);
+    }, 300);
   });
+}
+
+function evaluateDeDuplication(input) {
+  if (Array.isArray(input)) {
+    return runModule0A(input);
+  }
+  if (input && Array.isArray(input.candidate_pairs)) {
+    return new Promise((resolve) => {
+      const evaluations = stage2Decision(input.candidate_pairs);
+      resolve({
+        pipeline_id: input.pipeline_id || "PL_MODULE_0A_" + Date.now(),
+        dedup_timestamp: new Date().toISOString(),
+        pair_evaluations: evaluations,
+        stage2_evaluations: evaluations
+      });
+    });
+  }
+  return runModule0A(input);
 }
 
 module.exports = {
   runModule0A,
+  evaluateDeDuplication,
   stage1PreFilter,
   stage2Decision,
-  stage3MergeExecution
+  stage3MergeExecution,
+  checkVariantSuffix
 };

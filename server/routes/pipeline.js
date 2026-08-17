@@ -20,7 +20,6 @@ const lovEngine = require('../services/lovEngine');
 const mfgNormalizer = require('../services/mfgNormalizer');
 const uomValidator = require('../services/uomValidator');
 const fractionConverter = require('../services/fractionConverter');
-const dedupEngine = require('../services/dedupEngine');
 const module0A_dedup = require('../services/module0A_dedup');
 const mfgWebEnricher = require('../services/mfgWebEnricher');
 const digitalAssetsManager = require('../services/digitalAssetsManager');
@@ -281,7 +280,7 @@ router.post('/fraction', async (req, res, next) => {
 router.post('/dedup', async (req, res, next) => {
     try {
         const { candidatePairs } = req.body;
-        const result = await dedupEngine.evaluateDeDuplication(candidatePairs);
+        const result = await module0A_dedup.evaluateDeDuplication(candidatePairs);
         res.json(result);
     } catch (err) {
         next(err);
@@ -463,12 +462,6 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const fractionConverted = await fractionConverter.convertFractions(currentAttrSource);
         const fractionEnd = Date.now();
 
-        const dedupStart = Date.now();
-        // TODO: Currently evaluated with only { pipeline_id: jobId }, which triggers internal fallback.
-        // Will be updated in a future item to compare against jobsHistory using the same pattern as Module 0A.
-        const dedupEvaluated = await dedupEngine.evaluateDeDuplication({ pipeline_id: jobId });
-        const dedupEnd = Date.now();
-
         const enrichStart = Date.now();
         const enrichment = await enricher.enrichData(extraction, classification);
         const enrichEnd = Date.now();
@@ -526,7 +519,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
                 mfg: { result: mfgNormal, duration_ms: mfgEnd - mfgStart },
                 uom: { result: uomValid, duration_ms: uomEnd - uomStart },
                 fraction: { result: fractionConverted, duration_ms: fractionEnd - fractionStart },
-                dedup: { result: dedupEvaluated, duration_ms: dedupEnd - dedupStart },
+                dedup: { result: mod0aResult, duration_ms: mod0aEnd - mod0aStart },
                 enrich: { result: enrichment, duration_ms: enrichEnd - enrichStart },
                 validate: { result: validation, duration_ms: validateEnd - validateStart },
                 ground: { result: grounding, duration_ms: groundEnd - groundStart },
