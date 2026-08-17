@@ -264,6 +264,22 @@ router.post('/module0a', async (req, res, next) => {
     }
 });
 
+router.post('/python_pipeline', async (req, res, next) => {
+    try {
+        const { exec } = require('child_process');
+        const path = require('path');
+        const scriptPath = path.join(__dirname, '..', '..', 'python_pipeline', 'unilog_pipeline.py');
+        exec(`python "${scriptPath}"`, (error, stdout, stderr) => {
+            if (error) {
+                return res.status(500).json({ error: error.message, stderr });
+            }
+            res.json({ status: "success", output: stdout });
+        });
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
     try {
         const startTime = Date.now();
