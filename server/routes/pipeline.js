@@ -21,6 +21,7 @@ const mfgNormalizer = require('../services/mfgNormalizer');
 const uomValidator = require('../services/uomValidator');
 const fractionConverter = require('../services/fractionConverter');
 const dedupEngine = require('../services/dedupEngine');
+const module0A_dedup = require('../services/module0A_dedup');
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/', limits: { fileSize: 20 * 1024 * 1024 } });
@@ -253,6 +254,16 @@ router.post('/dedup', async (req, res, next) => {
     }
 });
 
+router.post('/module0a', async (req, res, next) => {
+    try {
+        const { rawBatchRows } = req.body;
+        const result = await module0A_dedup.runModule0A(rawBatchRows);
+        res.json(result);
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
     try {
         const startTime = Date.now();
@@ -290,6 +301,10 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const normalizeStart = Date.now();
         const normalization = await normalizer.normalizeData(extraction, classification);
         const normalizeEnd = Date.now();
+
+        const mod0aStart = Date.now();
+        const mod0aResult = await module0A_dedup.runModule0A();
+        const mod0aEnd = Date.now();
 
         const lovStart = Date.now();
         const lovMatching = await lovEngine.matchLOV(extraction, "valves.ball");
@@ -351,6 +366,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
             filename,
             stages: {
                 upload: { result: metadata, duration_ms: uploadEnd - uploadStart },
+                module0a: { result: mod0aResult, duration_ms: mod0aEnd - mod0aStart },
                 classify: { result: classification, duration_ms: classifyEnd - classifyStart },
                 preprocess: { result: preprocessing, duration_ms: preprocessEnd - preprocessStart },
                 chunk: { result: chunking, duration_ms: chunkEnd - chunkStart },

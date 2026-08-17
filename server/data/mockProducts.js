@@ -1,5 +1,5 @@
 // Mock Data for DocForge
-// Contains full payloads for all stages including De-duplication Decision Engine
+// Contains full payloads for all stages including Module 0A Pre-Pipeline De-duplication
 const products = [
   {
     "keywords": [
@@ -2061,6 +2061,199 @@ const products = [
         "estimated_row_reduction": "0 rows merged into golden records",
         "dedup_confidence_grade": "A"
       }
+    },
+    "module0a": {
+      "pipeline_id": "PL_MODULE_0A_1786961531673",
+      "execution_timestamp": "2026-08-17T10:12:11.673Z",
+      "stage1_candidate_pairs": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "row_a": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer"
+          },
+          "row_b": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok",
+            "mpn": "SS81061",
+            "title": "Ball Valve 1/2 inch Stainless Steel 1000 PSI",
+            "material": "SS316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          "pre_score": 100
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "row_a": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer"
+          },
+          "row_b": {
+            "gtin": null,
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1-LF",
+            "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          "pre_score": 76
+        }
+      ],
+      "stage2_evaluations": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "identity_tier": "1",
+          "is_duplicate": true,
+          "confidence": 100,
+          "contradiction_check": {
+            "contradiction_found": false,
+            "contradiction_reason": null,
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": true,
+            "mfg_match_score": 100,
+            "mpn_match_score": 100,
+            "desc_similarity": 40,
+            "attribute_cross_check": "match"
+          },
+          "merge_result": {
+            "auto_merge_eligible": true,
+            "merged_row": {
+              "gtin": "00885911001234",
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1",
+              "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "manufacturer"
+            },
+            "field_provenance": {
+              "gtin": "row_a",
+              "mfg": "row_a (manufacturer)",
+              "mpn": "row_a",
+              "title": "row_a (manufacturer)",
+              "material": "row_a (manufacturer)",
+              "size": "row_a",
+              "source_type": "row_a (manufacturer)"
+            },
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "identity_tier": "4",
+          "is_duplicate": false,
+          "confidence": 40,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Variant Suffix Detected: 'SS-810-6-1' vs 'SS-810-6-1-LF' represents distinct SKUs.",
+            "variant_suffix_detected": true,
+            "variant_note": "Variant suffix mismatch"
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 40,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": true,
+          "review_reason": "VARIANT_SUFFIX"
+        }
+      ],
+      "stage3_execution": {
+        "deduplicated_rows": [
+          {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer",
+            "is_golden_row": true,
+            "merged_from_count": 2
+          },
+          {
+            "gtin": null,
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1-LF",
+            "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          {
+            "gtin": null,
+            "mfg": "Parker-Hannifin",
+            "mpn": "6A-B6LJ-SSP",
+            "title": "3/4 in SS Ball Valve 1500 PSI",
+            "material": "Stainless Steel 316",
+            "size": "3/4 IN",
+            "source_type": "distributor"
+          }
+        ],
+        "review_queue": [
+          {
+            "row_a": {
+              "gtin": "00885911001234",
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1",
+              "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "manufacturer"
+            },
+            "row_b": {
+              "gtin": null,
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1-LF",
+              "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "distributor"
+            },
+            "conflict_details": [],
+            "review_reason": "VARIANT_SUFFIX"
+          }
+        ]
+      },
+      "module0a_summary": {
+        "total_batch_rows_input": 4,
+        "candidate_pairs_prefiltered": 2,
+        "confirmed_duplicates": 1,
+        "auto_merged_count": 1,
+        "review_queue_count": 1,
+        "final_deduplicated_rows_count": 3,
+        "row_reduction_count": 1,
+        "reduction_percentage": "25%"
+      }
     }
   },
   {
@@ -4028,6 +4221,199 @@ const products = [
         "estimated_row_reduction": "0 rows merged into golden records",
         "dedup_confidence_grade": "A"
       }
+    },
+    "module0a": {
+      "pipeline_id": "PL_MODULE_0A_1786961532680",
+      "execution_timestamp": "2026-08-17T10:12:12.680Z",
+      "stage1_candidate_pairs": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "row_a": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer"
+          },
+          "row_b": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok",
+            "mpn": "SS81061",
+            "title": "Ball Valve 1/2 inch Stainless Steel 1000 PSI",
+            "material": "SS316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          "pre_score": 100
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "row_a": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer"
+          },
+          "row_b": {
+            "gtin": null,
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1-LF",
+            "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          "pre_score": 76
+        }
+      ],
+      "stage2_evaluations": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "identity_tier": "1",
+          "is_duplicate": true,
+          "confidence": 100,
+          "contradiction_check": {
+            "contradiction_found": false,
+            "contradiction_reason": null,
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": true,
+            "mfg_match_score": 100,
+            "mpn_match_score": 100,
+            "desc_similarity": 40,
+            "attribute_cross_check": "match"
+          },
+          "merge_result": {
+            "auto_merge_eligible": true,
+            "merged_row": {
+              "gtin": "00885911001234",
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1",
+              "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "manufacturer"
+            },
+            "field_provenance": {
+              "gtin": "row_a",
+              "mfg": "row_a (manufacturer)",
+              "mpn": "row_a",
+              "title": "row_a (manufacturer)",
+              "material": "row_a (manufacturer)",
+              "size": "row_a",
+              "source_type": "row_a (manufacturer)"
+            },
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "identity_tier": "4",
+          "is_duplicate": false,
+          "confidence": 40,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Variant Suffix Detected: 'SS-810-6-1' vs 'SS-810-6-1-LF' represents distinct SKUs.",
+            "variant_suffix_detected": true,
+            "variant_note": "Variant suffix mismatch"
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 40,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": true,
+          "review_reason": "VARIANT_SUFFIX"
+        }
+      ],
+      "stage3_execution": {
+        "deduplicated_rows": [
+          {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer",
+            "is_golden_row": true,
+            "merged_from_count": 2
+          },
+          {
+            "gtin": null,
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1-LF",
+            "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          {
+            "gtin": null,
+            "mfg": "Parker-Hannifin",
+            "mpn": "6A-B6LJ-SSP",
+            "title": "3/4 in SS Ball Valve 1500 PSI",
+            "material": "Stainless Steel 316",
+            "size": "3/4 IN",
+            "source_type": "distributor"
+          }
+        ],
+        "review_queue": [
+          {
+            "row_a": {
+              "gtin": "00885911001234",
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1",
+              "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "manufacturer"
+            },
+            "row_b": {
+              "gtin": null,
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1-LF",
+              "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "distributor"
+            },
+            "conflict_details": [],
+            "review_reason": "VARIANT_SUFFIX"
+          }
+        ]
+      },
+      "module0a_summary": {
+        "total_batch_rows_input": 4,
+        "candidate_pairs_prefiltered": 2,
+        "confirmed_duplicates": 1,
+        "auto_merged_count": 1,
+        "review_queue_count": 1,
+        "final_deduplicated_rows_count": 3,
+        "row_reduction_count": 1,
+        "reduction_percentage": "25%"
+      }
     }
   },
   {
@@ -5875,6 +6261,199 @@ const products = [
         "estimated_row_reduction": "0 rows merged into golden records",
         "dedup_confidence_grade": "A"
       }
+    },
+    "module0a": {
+      "pipeline_id": "PL_MODULE_0A_1786961533692",
+      "execution_timestamp": "2026-08-17T10:12:13.692Z",
+      "stage1_candidate_pairs": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "row_a": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer"
+          },
+          "row_b": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok",
+            "mpn": "SS81061",
+            "title": "Ball Valve 1/2 inch Stainless Steel 1000 PSI",
+            "material": "SS316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          "pre_score": 100
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "row_a": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer"
+          },
+          "row_b": {
+            "gtin": null,
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1-LF",
+            "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          "pre_score": 76
+        }
+      ],
+      "stage2_evaluations": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "identity_tier": "1",
+          "is_duplicate": true,
+          "confidence": 100,
+          "contradiction_check": {
+            "contradiction_found": false,
+            "contradiction_reason": null,
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": true,
+            "mfg_match_score": 100,
+            "mpn_match_score": 100,
+            "desc_similarity": 40,
+            "attribute_cross_check": "match"
+          },
+          "merge_result": {
+            "auto_merge_eligible": true,
+            "merged_row": {
+              "gtin": "00885911001234",
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1",
+              "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "manufacturer"
+            },
+            "field_provenance": {
+              "gtin": "row_a",
+              "mfg": "row_a (manufacturer)",
+              "mpn": "row_a",
+              "title": "row_a (manufacturer)",
+              "material": "row_a (manufacturer)",
+              "size": "row_a",
+              "source_type": "row_a (manufacturer)"
+            },
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "identity_tier": "4",
+          "is_duplicate": false,
+          "confidence": 40,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Variant Suffix Detected: 'SS-810-6-1' vs 'SS-810-6-1-LF' represents distinct SKUs.",
+            "variant_suffix_detected": true,
+            "variant_note": "Variant suffix mismatch"
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 40,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": true,
+          "review_reason": "VARIANT_SUFFIX"
+        }
+      ],
+      "stage3_execution": {
+        "deduplicated_rows": [
+          {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer",
+            "is_golden_row": true,
+            "merged_from_count": 2
+          },
+          {
+            "gtin": null,
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1-LF",
+            "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          {
+            "gtin": null,
+            "mfg": "Parker-Hannifin",
+            "mpn": "6A-B6LJ-SSP",
+            "title": "3/4 in SS Ball Valve 1500 PSI",
+            "material": "Stainless Steel 316",
+            "size": "3/4 IN",
+            "source_type": "distributor"
+          }
+        ],
+        "review_queue": [
+          {
+            "row_a": {
+              "gtin": "00885911001234",
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1",
+              "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "manufacturer"
+            },
+            "row_b": {
+              "gtin": null,
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1-LF",
+              "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "distributor"
+            },
+            "conflict_details": [],
+            "review_reason": "VARIANT_SUFFIX"
+          }
+        ]
+      },
+      "module0a_summary": {
+        "total_batch_rows_input": 4,
+        "candidate_pairs_prefiltered": 2,
+        "confirmed_duplicates": 1,
+        "auto_merged_count": 1,
+        "review_queue_count": 1,
+        "final_deduplicated_rows_count": 3,
+        "row_reduction_count": 1,
+        "reduction_percentage": "25%"
+      }
     }
   },
   {
@@ -7604,6 +8183,199 @@ const products = [
         "variant_suffix_pairs_flagged": 1,
         "estimated_row_reduction": "0 rows merged into golden records",
         "dedup_confidence_grade": "A"
+      }
+    },
+    "module0a": {
+      "pipeline_id": "PL_MODULE_0A_1786961534704",
+      "execution_timestamp": "2026-08-17T10:12:14.704Z",
+      "stage1_candidate_pairs": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "row_a": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer"
+          },
+          "row_b": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok",
+            "mpn": "SS81061",
+            "title": "Ball Valve 1/2 inch Stainless Steel 1000 PSI",
+            "material": "SS316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          "pre_score": 100
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "row_a": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer"
+          },
+          "row_b": {
+            "gtin": null,
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1-LF",
+            "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          "pre_score": 76
+        }
+      ],
+      "stage2_evaluations": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "identity_tier": "1",
+          "is_duplicate": true,
+          "confidence": 100,
+          "contradiction_check": {
+            "contradiction_found": false,
+            "contradiction_reason": null,
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": true,
+            "mfg_match_score": 100,
+            "mpn_match_score": 100,
+            "desc_similarity": 40,
+            "attribute_cross_check": "match"
+          },
+          "merge_result": {
+            "auto_merge_eligible": true,
+            "merged_row": {
+              "gtin": "00885911001234",
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1",
+              "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "manufacturer"
+            },
+            "field_provenance": {
+              "gtin": "row_a",
+              "mfg": "row_a (manufacturer)",
+              "mpn": "row_a",
+              "title": "row_a (manufacturer)",
+              "material": "row_a (manufacturer)",
+              "size": "row_a",
+              "source_type": "row_a (manufacturer)"
+            },
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "identity_tier": "4",
+          "is_duplicate": false,
+          "confidence": 40,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Variant Suffix Detected: 'SS-810-6-1' vs 'SS-810-6-1-LF' represents distinct SKUs.",
+            "variant_suffix_detected": true,
+            "variant_note": "Variant suffix mismatch"
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 40,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": true,
+          "review_reason": "VARIANT_SUFFIX"
+        }
+      ],
+      "stage3_execution": {
+        "deduplicated_rows": [
+          {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer",
+            "is_golden_row": true,
+            "merged_from_count": 2
+          },
+          {
+            "gtin": null,
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1-LF",
+            "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          {
+            "gtin": null,
+            "mfg": "Parker-Hannifin",
+            "mpn": "6A-B6LJ-SSP",
+            "title": "3/4 in SS Ball Valve 1500 PSI",
+            "material": "Stainless Steel 316",
+            "size": "3/4 IN",
+            "source_type": "distributor"
+          }
+        ],
+        "review_queue": [
+          {
+            "row_a": {
+              "gtin": "00885911001234",
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1",
+              "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "manufacturer"
+            },
+            "row_b": {
+              "gtin": null,
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1-LF",
+              "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "distributor"
+            },
+            "conflict_details": [],
+            "review_reason": "VARIANT_SUFFIX"
+          }
+        ]
+      },
+      "module0a_summary": {
+        "total_batch_rows_input": 4,
+        "candidate_pairs_prefiltered": 2,
+        "confirmed_duplicates": 1,
+        "auto_merged_count": 1,
+        "review_queue_count": 1,
+        "final_deduplicated_rows_count": 3,
+        "row_reduction_count": 1,
+        "reduction_percentage": "25%"
       }
     }
   },
@@ -9525,6 +10297,199 @@ const products = [
         "estimated_row_reduction": "0 rows merged into golden records",
         "dedup_confidence_grade": "A"
       }
+    },
+    "module0a": {
+      "pipeline_id": "PL_MODULE_0A_1786961535715",
+      "execution_timestamp": "2026-08-17T10:12:15.715Z",
+      "stage1_candidate_pairs": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "row_a": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer"
+          },
+          "row_b": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok",
+            "mpn": "SS81061",
+            "title": "Ball Valve 1/2 inch Stainless Steel 1000 PSI",
+            "material": "SS316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          "pre_score": 100
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "row_a": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer"
+          },
+          "row_b": {
+            "gtin": null,
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1-LF",
+            "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          "pre_score": 76
+        }
+      ],
+      "stage2_evaluations": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "identity_tier": "1",
+          "is_duplicate": true,
+          "confidence": 100,
+          "contradiction_check": {
+            "contradiction_found": false,
+            "contradiction_reason": null,
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": true,
+            "mfg_match_score": 100,
+            "mpn_match_score": 100,
+            "desc_similarity": 40,
+            "attribute_cross_check": "match"
+          },
+          "merge_result": {
+            "auto_merge_eligible": true,
+            "merged_row": {
+              "gtin": "00885911001234",
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1",
+              "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "manufacturer"
+            },
+            "field_provenance": {
+              "gtin": "row_a",
+              "mfg": "row_a (manufacturer)",
+              "mpn": "row_a",
+              "title": "row_a (manufacturer)",
+              "material": "row_a (manufacturer)",
+              "size": "row_a",
+              "source_type": "row_a (manufacturer)"
+            },
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "identity_tier": "4",
+          "is_duplicate": false,
+          "confidence": 40,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Variant Suffix Detected: 'SS-810-6-1' vs 'SS-810-6-1-LF' represents distinct SKUs.",
+            "variant_suffix_detected": true,
+            "variant_note": "Variant suffix mismatch"
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 40,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": true,
+          "review_reason": "VARIANT_SUFFIX"
+        }
+      ],
+      "stage3_execution": {
+        "deduplicated_rows": [
+          {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer",
+            "is_golden_row": true,
+            "merged_from_count": 2
+          },
+          {
+            "gtin": null,
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1-LF",
+            "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          {
+            "gtin": null,
+            "mfg": "Parker-Hannifin",
+            "mpn": "6A-B6LJ-SSP",
+            "title": "3/4 in SS Ball Valve 1500 PSI",
+            "material": "Stainless Steel 316",
+            "size": "3/4 IN",
+            "source_type": "distributor"
+          }
+        ],
+        "review_queue": [
+          {
+            "row_a": {
+              "gtin": "00885911001234",
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1",
+              "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "manufacturer"
+            },
+            "row_b": {
+              "gtin": null,
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1-LF",
+              "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "distributor"
+            },
+            "conflict_details": [],
+            "review_reason": "VARIANT_SUFFIX"
+          }
+        ]
+      },
+      "module0a_summary": {
+        "total_batch_rows_input": 4,
+        "candidate_pairs_prefiltered": 2,
+        "confirmed_duplicates": 1,
+        "auto_merged_count": 1,
+        "review_queue_count": 1,
+        "final_deduplicated_rows_count": 3,
+        "row_reduction_count": 1,
+        "reduction_percentage": "25%"
+      }
     }
   },
   {
@@ -11334,6 +12299,199 @@ const products = [
         "variant_suffix_pairs_flagged": 1,
         "estimated_row_reduction": "0 rows merged into golden records",
         "dedup_confidence_grade": "A"
+      }
+    },
+    "module0a": {
+      "pipeline_id": "PL_MODULE_0A_1786961536728",
+      "execution_timestamp": "2026-08-17T10:12:16.728Z",
+      "stage1_candidate_pairs": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "row_a": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer"
+          },
+          "row_b": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok",
+            "mpn": "SS81061",
+            "title": "Ball Valve 1/2 inch Stainless Steel 1000 PSI",
+            "material": "SS316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          "pre_score": 100
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "row_a": {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer"
+          },
+          "row_b": {
+            "gtin": null,
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1-LF",
+            "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          "pre_score": 76
+        }
+      ],
+      "stage2_evaluations": [
+        {
+          "row_index_a": 0,
+          "row_index_b": 1,
+          "identity_tier": "1",
+          "is_duplicate": true,
+          "confidence": 100,
+          "contradiction_check": {
+            "contradiction_found": false,
+            "contradiction_reason": null,
+            "variant_suffix_detected": false,
+            "variant_note": null
+          },
+          "signals_used": {
+            "gtin_match": true,
+            "mfg_match_score": 100,
+            "mpn_match_score": 100,
+            "desc_similarity": 40,
+            "attribute_cross_check": "match"
+          },
+          "merge_result": {
+            "auto_merge_eligible": true,
+            "merged_row": {
+              "gtin": "00885911001234",
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1",
+              "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "manufacturer"
+            },
+            "field_provenance": {
+              "gtin": "row_a",
+              "mfg": "row_a (manufacturer)",
+              "mpn": "row_a",
+              "title": "row_a (manufacturer)",
+              "material": "row_a (manufacturer)",
+              "size": "row_a",
+              "source_type": "row_a (manufacturer)"
+            },
+            "field_conflicts": []
+          },
+          "review_required": false,
+          "review_reason": null
+        },
+        {
+          "row_index_a": 0,
+          "row_index_b": 2,
+          "identity_tier": "4",
+          "is_duplicate": false,
+          "confidence": 40,
+          "contradiction_check": {
+            "contradiction_found": true,
+            "contradiction_reason": "Variant Suffix Detected: 'SS-810-6-1' vs 'SS-810-6-1-LF' represents distinct SKUs.",
+            "variant_suffix_detected": true,
+            "variant_note": "Variant suffix mismatch"
+          },
+          "signals_used": {
+            "gtin_match": null,
+            "mfg_match_score": 100,
+            "mpn_match_score": 0,
+            "desc_similarity": 40,
+            "attribute_cross_check": "conflict"
+          },
+          "merge_result": {
+            "auto_merge_eligible": false,
+            "merged_row": null,
+            "field_provenance": null,
+            "field_conflicts": []
+          },
+          "review_required": true,
+          "review_reason": "VARIANT_SUFFIX"
+        }
+      ],
+      "stage3_execution": {
+        "deduplicated_rows": [
+          {
+            "gtin": "00885911001234",
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1",
+            "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "manufacturer",
+            "is_golden_row": true,
+            "merged_from_count": 2
+          },
+          {
+            "gtin": null,
+            "mfg": "Swagelok Company",
+            "mpn": "SS-810-6-1-LF",
+            "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+            "material": "Stainless Steel 316",
+            "size": "1/2 IN",
+            "source_type": "distributor"
+          },
+          {
+            "gtin": null,
+            "mfg": "Parker-Hannifin",
+            "mpn": "6A-B6LJ-SSP",
+            "title": "3/4 in SS Ball Valve 1500 PSI",
+            "material": "Stainless Steel 316",
+            "size": "3/4 IN",
+            "source_type": "distributor"
+          }
+        ],
+        "review_queue": [
+          {
+            "row_a": {
+              "gtin": "00885911001234",
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1",
+              "title": "1/2 in SS316 Ball Valve 1000 WOG NPT",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "manufacturer"
+            },
+            "row_b": {
+              "gtin": null,
+              "mfg": "Swagelok Company",
+              "mpn": "SS-810-6-1-LF",
+              "title": "1/2 in SS316 Ball Valve Lead-Free 1000 WOG",
+              "material": "Stainless Steel 316",
+              "size": "1/2 IN",
+              "source_type": "distributor"
+            },
+            "conflict_details": [],
+            "review_reason": "VARIANT_SUFFIX"
+          }
+        ]
+      },
+      "module0a_summary": {
+        "total_batch_rows_input": 4,
+        "candidate_pairs_prefiltered": 2,
+        "confirmed_duplicates": 1,
+        "auto_merged_count": 1,
+        "review_queue_count": 1,
+        "final_deduplicated_rows_count": 3,
+        "row_reduction_count": 1,
+        "reduction_percentage": "25%"
       }
     }
   }
