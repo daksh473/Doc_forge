@@ -457,10 +457,12 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
 
         const mfgStart = Date.now();
         const mfgNormal = await mfgNormalizer.normalizeMfgBrand({
-            Mfg_Part_Num: extraction?.product_identification?.part_number || "PDSH4816AF",
-            E1_Brand: "-- No E1 Brand --",
-            Unilog_Brand: "-- Unbranded --",
-            Part_Manuf: extraction?.product_identification?.manufacturer || "Emerson"
+            Mfg_Part_Num: originalRow?.Mfg_Part_Num || extraction?.product_identification?.part_number || "",
+            E1_Brand: originalRow?.E1_Brand || "-- Unbranded --",
+            Unilog_Brand: originalRow?.Unilog_Brand || "-- No Unilog Brand --",
+            DIB_Brand: originalRow?.DIB_Brand || "-- No DIB Brand --",
+            Part_Manuf: originalRow?.Part_Manuf || extraction?.product_identification?.manufacturer || "",
+            Part_Desc: originalRow?.Part_Desc || extraction?.product_identification?.raw_title || ""
         });
         const mfgEnd = Date.now();
 
@@ -473,7 +475,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const fractionEnd = Date.now();
 
         const taxonomyStart = Date.now();
-        const taxonomyResult = await taxonomyClassifier.classifyTaxonomy(extraction);
+        const taxonomyResult = await taxonomyClassifier.classifyTaxonomy(extraction, originalRow);
         const taxonomyEnd = Date.now();
 
         const enrichStart = Date.now();
@@ -493,7 +495,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const reasonEnd = Date.now();
         
         const catalogStart = Date.now();
-        const cataloging = await cataloger.catalogData(extraction, taxonomyResult);
+        const cataloging = await cataloger.catalogData(extraction, taxonomyResult, originalRow);
         const catalogEnd = Date.now();
         
         const scoreStart = Date.now();

@@ -90,7 +90,8 @@ function build252ColumnMap(job) {
 
   const extraction = stages.extract?.result || job.extraction || {};
   const normalization = stages.normalize?.result || job.normalization || {};
-  const taxonomy = stages.classify?.result || job.taxonomy || {};
+  // BUG 2 FIX: Read from stages.taxonomy (real LLM product taxonomy), NOT stages.classify (document format classifier)
+  const taxonomy = stages.taxonomy?.result || job.taxonomyResult || {};
   const cataloging = stages.catalog?.result || job.cataloging || {};
   const mfg = stages.mfg?.result || job.mfg || {};
   const webEnrich = stages.webEnrichment?.result || job.webEnrichment || {};
@@ -105,19 +106,18 @@ function build252ColumnMap(job) {
   const dibBrand = original.DIB_Brand || "";
   const partManuf = original.Part_Manuf || pId.manufacturer || "";
 
-  // Taxonomy
-  const catPath = taxonomy.taxonomy?.category_path || taxonomy.category_path || (taxonomy.document_type ? ["Industrial", taxonomy.document_type] : []);
+  // Taxonomy — read from real LLM taxonomy classification (category_path array)
+  const catPath = taxonomy.taxonomy?.category_path || taxonomy.category_path || [];
   const dept = catPath[0] || "";
   const classCol = catPath[1] || "";
   const fine = catPath[2] || "";
   const classPathStr = catPath.length > 0 ? catPath.join(">") : "";
 
-  // Manufacturer / Brand
-  const rawCanonicalMfg = typeof mfg.canonical_mfg === 'string' ? mfg.canonical_mfg : (mfg.canonical_mfg?.normalized || mfg.canonical_mfg?.raw || mfg.Unilog_Brand || pId.manufacturer || partManuf || "");
-  const canonicalMfg = typeof rawCanonicalMfg === 'string' ? rawCanonicalMfg : "";
-
-  const rawBrand = typeof mfg.canonical_brand === 'string' ? mfg.canonical_brand : (mfg.canonical_brand?.normalized || mfg.canonical_brand?.raw || (canonicalMfg ? canonicalMfg + "®" : ""));
-  const brandName = typeof rawBrand === 'string' ? rawBrand : "";
+  // BUG 3 FIX: Manufacturer / Brand — read from mfgNormalizer's canonical_manufacturer / canonical_brand objects
+  const mfgObj = mfg.canonical_manufacturer || {};
+  const brandObj = mfg.canonical_brand || {};
+  const canonicalMfg = mfgObj.MANUFACTURER_NAME || pId.manufacturer || "";
+  const brandName = brandObj.BRAND_NAME || (canonicalMfg ? canonicalMfg + "®" : "");
 
   // Product Name & Descriptions
   const productName = pId.raw_title || comm.product_title || partDesc || "";

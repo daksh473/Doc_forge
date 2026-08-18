@@ -30,9 +30,39 @@ const MFG_ABBREVIATIONS = {
 const MPN_PREFIXES = [
   { prefix: "PDSH", mfg: "Electrolux Home Products, Inc.", brand: "FRIGIDAIRE®" },
   { prefix: "FFID", mfg: "Electrolux Home Products, Inc.", brand: "FRIGIDAIRE®" },
+  { prefix: "FFCD", mfg: "Electrolux Home Products, Inc.", brand: "FRIGIDAIRE®" },
+  { prefix: "FGID", mfg: "Electrolux Home Products, Inc.", brand: "FRIGIDAIRE®" },
   { prefix: "WDT", mfg: "Whirlpool Corporation", brand: "WHIRLPOOL®" },
   { prefix: "WDF", mfg: "Whirlpool Corporation", brand: "WHIRLPOOL®" },
-  { prefix: "LDF", mfg: "LG Electronics", brand: "LG®" }
+  { prefix: "LDF", mfg: "LG Electronics", brand: "LG®" },
+  { prefix: "DCB", mfg: "Freud Inc.", brand: "Diablo®" },
+  { prefix: "GDT", mfg: "General Electric Company", brand: "GE Appliances®" },
+  { prefix: "DDT", mfg: "General Electric Company", brand: "GE Profile®" },
+  { prefix: "SHP", mfg: "Bosch Home Appliances", brand: "Bosch®" },
+  { prefix: "SHE", mfg: "Bosch Home Appliances", brand: "Bosch®" },
+  { prefix: "SHV", mfg: "Bosch Home Appliances", brand: "Bosch®" },
+  { prefix: "MDB", mfg: "Whirlpool Corporation", brand: "Maytag®" }
+];
+
+// Brand keywords found in Part_Desc text
+const BRAND_FROM_DESC_KEYWORDS = [
+  { keyword: "3m", mfg: "3M Company", brand: "3M™" },
+  { keyword: "diablo", mfg: "Freud Inc.", brand: "Diablo®" },
+  { keyword: "cubitron", mfg: "3M Company", brand: "3M™" },
+  { keyword: "hiolit", mfg: "Mirka Abrasives Inc.", brand: "Mirka®" },
+  { keyword: "mirka", mfg: "Mirka Abrasives Inc.", brand: "Mirka®" },
+  { keyword: "frigidaire", mfg: "Electrolux Home Products, Inc.", brand: "FRIGIDAIRE®" },
+  { keyword: "whirlpool", mfg: "Whirlpool Corporation", brand: "WHIRLPOOL®" },
+  { keyword: "bosch", mfg: "Bosch Home Appliances", brand: "Bosch®" },
+  { keyword: "dewalt", mfg: "Stanley Black & Decker", brand: "DeWalt®" },
+  { keyword: "makita", mfg: "Makita Corporation", brand: "Makita®" },
+  { keyword: "swagelok", mfg: "Swagelok Company", brand: "SWAGELOK®" },
+  { keyword: "parker", mfg: "Parker-Hannifin Corporation", brand: "PARKER™" },
+  { keyword: "emerson", mfg: "Emerson Electric Co.", brand: "ASCO®" },
+  { keyword: "nibco", mfg: "NIBCO Inc.", brand: "NIBCO®" },
+  { keyword: "stikit", mfg: "3M Company", brand: "3M™" },
+  { keyword: "norton", mfg: "Saint-Gobain Abrasives", brand: "Norton®" },
+  { keyword: "klingspor", mfg: "Klingspor Abrasives Inc.", brand: "Klingspor®" }
 ];
 
 function isPlaceholder(val) {
@@ -170,6 +200,40 @@ function normalizeMfgBrand(inputSignals = {}, candidates = UNICAT_MFG_REFERENCE)
           matchConfidence = 50;
           inferredFromMpn = true;
           matchedField = "Mfg_Part_Num";
+        }
+      }
+
+      // Strategy 7: Extract manufacturer/brand from Part_Desc text keywords
+      const partDesc = inputSignals.Part_Desc || "";
+      if (!resolvedMfg && partDesc) {
+        const descLower = partDesc.toLowerCase();
+        const descMatch = BRAND_FROM_DESC_KEYWORDS.find(k => descLower.includes(k.keyword));
+        if (descMatch) {
+          resolvedMfg = {
+            MANUFACTURER_NAME: descMatch.mfg,
+            MANUFACTURER_CODE: "MFG_INFERRED_DESC",
+            BRAND_NAME: descMatch.brand,
+            BRAND_CODE: "BRD_INFERRED_DESC"
+          };
+          matchStrategy = "part_desc_keyword";
+          matchConfidence = 65;
+          inferredFromMpn = false;
+          matchedField = "Part_Desc";
+        }
+      }
+
+      // Strategy 8: Check if Part_Manuf is a real manufacturer (not a distributor with code pattern)
+      if (!resolvedMfg && partManuf) {
+        const isDistributor = /\(\w+\)\s*$/.test(partManuf.trim());
+        if (!isDistributor) {
+          // Part_Manuf doesn't have distributor code pattern — might be real manufacturer
+          let directMatch = candidates.find(c => c.MANUFACTURER_NAME.toLowerCase().includes(partManuf.toLowerCase().split(' ')[0]));
+          if (directMatch) {
+            resolvedMfg = directMatch;
+            matchStrategy = "part_manuf_direct";
+            matchConfidence = 60;
+            matchedField = "Part_Manuf";
+          }
         }
       }
 
