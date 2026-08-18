@@ -24,6 +24,7 @@ const module0A_dedup = require('../services/module0A_dedup');
 const mfgWebEnricher = require('../services/mfgWebEnricher');
 const digitalAssetsManager = require('../services/digitalAssetsManager');
 const evaluationEngine = require('../services/evaluationEngine');
+const taxonomyClassifier = require('../services/taxonomyClassifier');
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/', limits: { fileSize: 20 * 1024 * 1024 } });
@@ -471,12 +472,16 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const fractionConverted = await fractionConverter.convertFractions(currentAttrSource);
         const fractionEnd = Date.now();
 
+        const taxonomyStart = Date.now();
+        const taxonomyResult = await taxonomyClassifier.classifyTaxonomy(extraction);
+        const taxonomyEnd = Date.now();
+
         const enrichStart = Date.now();
         const enrichment = await enricher.enrichData(extraction, classification);
         const enrichEnd = Date.now();
         
         const validateStart = Date.now();
-        const validation = await validator.validateData(normalization, enrichment);
+        const validation = await validator.validateData(normalization, taxonomyResult);
         const validateEnd = Date.now();
         
         const groundStart = Date.now();
@@ -488,11 +493,11 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const reasonEnd = Date.now();
         
         const catalogStart = Date.now();
-        const cataloging = await cataloger.catalogData(extraction, enrichment);
+        const cataloging = await cataloger.catalogData(extraction, taxonomyResult);
         const catalogEnd = Date.now();
         
         const scoreStart = Date.now();
-        const score = await scorer.scoreData(extraction, enrichment, normalization, validation, cataloging);
+        const score = await scorer.scoreData(extraction, taxonomyResult, normalization, validation, cataloging);
         const scoreEnd = Date.now();
 
         const webEnrichStart = Date.now();
@@ -517,6 +522,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
             jobId,
             filename,
             originalRow,
+            taxonomyResult,
             stages: {
                 upload: { result: metadata, duration_ms: uploadEnd - uploadStart },
                 module0a: { result: mod0aResult, duration_ms: mod0aEnd - mod0aStart },
@@ -524,6 +530,7 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
                 preprocess: { result: preprocessing, duration_ms: preprocessEnd - preprocessStart },
                 chunk: { result: chunking, duration_ms: chunkEnd - chunkStart },
                 extract: { result: extraction, duration_ms: extractEnd - extractStart },
+                taxonomy: { result: taxonomyResult, duration_ms: taxonomyEnd - taxonomyStart },
                 normalize: { result: normalization, duration_ms: normalizeEnd - normalizeStart },
                 lov: { result: lovMatching, duration_ms: lovEnd - lovStart },
                 mfg: { result: mfgNormal, duration_ms: mfgEnd - mfgStart },
