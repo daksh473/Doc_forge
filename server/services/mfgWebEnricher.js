@@ -2,13 +2,23 @@
  * Manufacturer Web Enrichment Module
  * 4-Stage Chain:
  * - Stage 1: Gap Detection (code)
- * - Stage 2: Source Resolution (LLM + code)
- * - Stage 3: Fetch & Extract (code)
- * - Stage 4: Validation & Merge (LLM)
+ * - Stage 2: Source Resolution (real search & HTML parsing)
+ * - Stage 3: Fetch & Extract (real HTML fetch & cheerio extraction)
+ * - Stage 4: Validation & Merge (LLM/Rule-based merge)
  */
 
+const axios = require('axios');
+const cheerio = require('cheerio');
 const uomValidator = require('./uomValidator');
 const fractionConverter = require('./fractionConverter');
+const htmlCache = require('./htmlCache');
+
+const http = axios.create({
+  timeout: 60000,
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+  }
+});
 
 const MANUFACTURER_DOMAIN_MAP = {
   "swagelok": { domain: "swagelok.com", allowed: true, search_template: "https://www.swagelok.com/en/search?Ntt={mpn}" },
@@ -51,8 +61,8 @@ function detectGaps(productData = {}) {
   };
 }
 
-function resolveSource(mfgName, mpn) {
-  if (!mfgName) {
+async function resolveSource(mfgName, mpn, brandName = "") {
+  if (!mfgName && !brandName) {
     return {
       source_found: false,
       reason: "missing_manufacturer_name",
@@ -62,7 +72,10 @@ function resolveSource(mfgName, mpn) {
   }
 
   const mfgStr = typeof mfgName === 'object' ? (mfgName.canonical || mfgName.raw || JSON.stringify(mfgName)) : String(mfgName);
-  const mfgKey = Object.keys(MANUFACTURER_DOMAIN_MAP).find(k => mfgStr.toLowerCase().includes(k));
+  const brandStr = typeof brandName === 'object' ? (brandName.canonical || brandName.raw || JSON.stringify(brandName)) : String(brandName);
+  const searchStr = `${mfgStr} ${brandStr}`.toLowerCase();
+  
+  const mfgKey = Object.keys(MANUFACTURER_DOMAIN_MAP).find(k => searchStr.includes(k));
   if (!mfgKey) {
     return {
       source_found: false,
@@ -86,43 +99,192 @@ function resolveSource(mfgName, mpn) {
   }
 
   const targetMpn = mpn || "SS-810-6-1";
-  const sourceUrl = `https://www.${domainInfo.domain}/products/detail/${targetMpn}`;
+  let foundUrl = null;
+  
+  try {
+    // First try search template
+    if (domainInfo.search_template) {
+       const searchUrl = domainInfo.search_template.replace('{mpn}', encodeURIComponent(targetMpn));
+       try {
+         const searchRes = await http.get(searchUrl);
+         const $s = cheerio.load(searchRes.data);
+         $s('a').each((i, el) => {
+           const href = $s(el).attr('href');
+           if (href && href.toLowerCase().includes(targetMpn.toLowerCase()) && !href.includes('search')) {
+              foundUrl = href.startsWith('http') ? href : `https://www.${domainInfo.domain}${href.startsWith('/') ? '' : '/'}${href}`;
+              return false;
+           }
+         });
+       } catch (err) {
+         // Ignore search template fail
+       }
+    }
+
+    // Fallback to DuckDuckGo HTML search
+    if (!foundUrl) {
+       const ddgQuery = `site:${domainInfo.domain} ${targetMpn}`;
+       const ddgUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(ddgQuery)}`;
+       try {
+         const ddgRes = await http.get(ddgUrl, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' } });
+         const $d = cheerio.load(ddgRes.data);
+         $d('a.result__url').each((i, el) => {
+           const href = $d(el).attr('href');
+           if (href && href.includes(domainInfo.domain)) {
+              if (href.startsWith('//duckduckgo.com/l/?uddg=')) {
+                 foundUrl = decodeURIComponent(href.split('uddg=')[1].split('&')[0]);
+              } else {
+                 foundUrl = href;
+              }
+              return false;
+           }
+         });
+       } catch (err) {
+         // Ignore DDG fail
+       }
+    }
+
+    if (!foundUrl && domainInfo.domain === 'frigidaire.com') {
+      foundUrl = `https://www.frigidaire.com/en/p/kitchen/dishwashers/built-in-dishwashers/${targetMpn}`;
+    }
+
+    if (!foundUrl) {
+      return {
+        source_found: false,
+        manufacturer: mfgName,
+        reason: "no_matching_page_found_in_search",
+        review_required: true
+      };
+    }
+
+    const verifyRes = await http.get(foundUrl);
+    if (verifyRes.status >= 200 && verifyRes.status < 300) {
+       htmlCache.setHtml(foundUrl, verifyRes.data);
+       return {
+         source_found: true,
+         manufacturer: mfgName,
+         official_domain: domainInfo.domain,
+         source_url: foundUrl,
+         reason: "found_and_verified"
+       };
+    } else {
+       return {
+         source_found: false,
+         manufacturer: mfgName,
+         official_domain: domainInfo.domain,
+         source_url: foundUrl,
+         reason: "source_url_verification_failed_status",
+         review_required: true
+       };
+    }
+  } catch (err) {
+      return {
+        source_found: false,
+        manufacturer: mfgName,
+        official_domain: domainInfo.domain,
+        source_url: foundUrl || undefined,
+        reason: "source_url_verification_failed",
+        error_message: err.message,
+        review_required: true,
+        review_reason: "COULD_NOT_VERIFY_SOURCE"
+      };
+  }
 
   return {
-    source_found: true,
+    source_found: false,
     manufacturer: mfgName,
-    official_domain: domainInfo.domain,
-    source_url: sourceUrl,
-    match_confidence: 95,
-    match_method: "mpn_exact_url_resolution",
-    review_required: false
+    reason: "no_matching_page_found",
+    review_required: true
   };
 }
 
-function fetchAndExtract(sourceUrl, gapManifest) {
+async function fetchAndExtract(sourceUrl, gapManifest) {
   const timestamp = new Date().toISOString();
   const extractedCandidates = {};
+  
+  let html = htmlCache.getHtml(sourceUrl);
+  let status = 200;
+  
+  if (!html) {
+     try {
+       const res = await http.get(sourceUrl);
+       html = res.data;
+       status = res.status;
+       htmlCache.setHtml(sourceUrl, html);
+     } catch (err) {
+       return {
+         source_url: sourceUrl,
+         fetch_timestamp: timestamp,
+         http_status: err.response ? err.response.status : 500,
+         error: err.message,
+         extracted_candidates: {}
+       };
+     }
+  }
+
+  const $ = cheerio.load(html);
 
   gapManifest.forEach(gap => {
     if (gap.field_name === "long_description") {
-      extractedCandidates["long_description"] = "Heavy-duty 316 Stainless Steel Ball Valve engineered for high-pressure fluid control systems up to 1000 PSI CWP. Features live-loaded PTFE stem seals, blowout-proof stem design, and NPT female threaded connections per ASME B1.20.1.";
+      const metaDesc = $('meta[name="description"]').attr('content');
+      const ogDesc = $('meta[property="og:description"]').attr('content');
+      const bodyDesc = $('.description, .overview, #product-details, .product-description').first().text().trim();
+      
+      let finalDesc = ogDesc || metaDesc || bodyDesc;
+      if (finalDesc) {
+         finalDesc = finalDesc.replace(/\s+/g, ' ').trim();
+         extractedCandidates["long_description"] = finalDesc;
+      }
     } else if (gap.field_name === "warranty_info") {
-      extractedCandidates["warranty_info"] = "Swagelok Limited Lifetime Warranty — free from defects in material and workmanship.";
+       const pageText = $('body').text();
+       const warrantyMatch = pageText.match(/.{0,30}warranty.{0,80}/i);
+       if (warrantyMatch) {
+         extractedCandidates["warranty_info"] = warrantyMatch[0].replace(/\s+/g, ' ').trim();
+       }
     } else if (gap.field_name === "certifications") {
-      extractedCandidates["certifications"] = [
-        { standard: "NACE MR0175 / ISO 15156", status: "Certified", source_url: sourceUrl },
-        { standard: "API 607 7th Edition Fire Safe", status: "Certified", source_url: sourceUrl }
-      ];
+       const pageText = $('body').text();
+       const certs = [];
+       if (pageText.match(/NACE/i)) certs.push({ standard: "NACE", status: "Mentioned", source_url: sourceUrl });
+       if (pageText.match(/API 607/i)) certs.push({ standard: "API 607", status: "Mentioned", source_url: sourceUrl });
+       if (pageText.match(/ISO 9001/i)) certs.push({ standard: "ISO 9001", status: "Mentioned", source_url: sourceUrl });
+       if (pageText.match(/UL Listed/i)) certs.push({ standard: "UL Listed", status: "Mentioned", source_url: sourceUrl });
+       if (pageText.match(/NSF/i)) certs.push({ standard: "NSF Certified", status: "Mentioned", source_url: sourceUrl });
+       
+       if (certs.length > 0) {
+         extractedCandidates["certifications"] = certs;
+       }
     } else if (gap.field_name === "spec_sheet_fields") {
-      extractedCandidates["spec_sheet_pdf"] = `${sourceUrl}/datasheet.pdf`;
-      extractedCandidates["scraped_pressure_rating"] = "1000 PSI CWP";
+       let pdfLink = null;
+       $('a').each((i, el) => {
+         const href = $(el).attr('href');
+         const text = $(el).text().toLowerCase();
+         if (href && (href.toLowerCase().endsWith('.pdf') || text.includes('spec') || text.includes('datasheet') || text.includes('manual'))) {
+            if (href.startsWith('http')) {
+               pdfLink = href;
+            } else if (href.startsWith('/')) {
+               const urlObj = new URL(sourceUrl);
+               pdfLink = `${urlObj.protocol}//${urlObj.host}${href}`;
+            }
+            return false;
+         }
+       });
+       if (pdfLink) {
+         extractedCandidates["spec_sheet_pdf"] = pdfLink;
+       }
+       
+       $('table tr').each((i, el) => {
+          const th = $(el).find('th').first().text().trim();
+          const td = $(el).find('td').first().text().trim();
+          if (th && td && th.toLowerCase().includes('pressure')) {
+             extractedCandidates["scraped_pressure_rating"] = td;
+          }
+       });
     }
   });
 
   return {
     source_url: sourceUrl,
     fetch_timestamp: timestamp,
-    http_status: 200,
+    http_status: status,
     retry_count: 0,
     extracted_candidates: extractedCandidates
   };
@@ -251,7 +413,7 @@ async function enrichFromManufacturerWeb(productData = {}) {
   }
 
   const mpn = productData.product_identification?.model_number || productData.mpn || "SS-810-6-1";
-  const sourceResult = resolveSource(gapResult.manufacturer_canonical, mpn);
+  const sourceResult = await resolveSource(gapResult.manufacturer_canonical, mpn, productData.brand);
 
   if (!sourceResult.source_found) {
     return {
@@ -264,7 +426,7 @@ async function enrichFromManufacturerWeb(productData = {}) {
     };
   }
 
-  const fetchResult = fetchAndExtract(sourceResult.source_url, gapResult.gap_manifest);
+  const fetchResult = await fetchAndExtract(sourceResult.source_url, gapResult.gap_manifest);
   const mergeResult = await validateAndMerge(productData, gapResult.gap_manifest, fetchResult);
 
   return {

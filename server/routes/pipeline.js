@@ -512,6 +512,8 @@ router.post('/pipeline/full', upload.single('file'), async (req, res, next) => {
         const scoreEnd = Date.now();
 
         const webEnrichStart = Date.now();
+        extraction.mfg = mfgNormal?.canonical_manufacturer?.MANUFACTURER_NAME || extraction.mfg;
+        extraction.brand = mfgNormal?.canonical_brand?.BRAND_NAME || extraction.brand;
         const webEnrichment = await mfgWebEnricher.enrichFromManufacturerWeb(extraction);
         const webEnrichEnd = Date.now();
 
