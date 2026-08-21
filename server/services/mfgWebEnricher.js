@@ -143,10 +143,6 @@ async function resolveSource(mfgName, mpn, brandName = "") {
        }
     }
 
-    if (!foundUrl && domainInfo.domain === 'frigidaire.com') {
-      foundUrl = `https://www.frigidaire.com/en/p/kitchen/dishwashers/built-in-dishwashers/${targetMpn}`;
-    }
-
     if (!foundUrl) {
       return {
         source_found: false,
@@ -156,26 +152,112 @@ async function resolveSource(mfgName, mpn, brandName = "") {
       };
     }
 
-    const verifyRes = await http.get(foundUrl);
-    if (verifyRes.status >= 200 && verifyRes.status < 300) {
-       htmlCache.setHtml(foundUrl, verifyRes.data);
-       return {
-         source_found: true,
-         manufacturer: mfgName,
-         official_domain: domainInfo.domain,
-         source_url: foundUrl,
-         reason: "found_and_verified"
-       };
-    } else {
-       return {
-         source_found: false,
-         manufacturer: mfgName,
-         official_domain: domainInfo.domain,
-         source_url: foundUrl,
-         reason: "source_url_verification_failed_status",
-         review_required: true
-       };
+    let currentUrl = foundUrl;
+    let isHubPage = false;
+    let finalHtml = "";
+    const mpnLower = targetMpn.toLowerCase();
+
+    for (let hop = 0; hop < 2; hop++) {
+      const verifyRes = await http.get(currentUrl);
+      if (verifyRes.status >= 200 && verifyRes.status < 300) {
+        finalHtml = verifyRes.data;
+        const $c = cheerio.load(finalHtml);
+        
+        const h1Text = $c('h1').text().toLowerCase();
+        const titleText = $c('title').text().toLowerCase();
+        const pageText = $c('body').text().toLowerCase();
+        
+        const mpnProminent = h1Text.includes(mpnLower) || titleText.includes(mpnLower);
+        
+        const hasManyLinks = $c('a').length > 50;
+        const looksLikeHub = !mpnProminent && (hasManyLinks || pageText.includes('search results') || pageText.includes('filter') || pageText.includes('support'));
+
+        if (!looksLikeHub) {
+          isHubPage = false;
+          htmlCache.setHtml(currentUrl, finalHtml);
+          break; 
+        }
+
+        isHubPage = true;
+
+        if (hop === 1) {
+           htmlCache.setHtml(currentUrl, finalHtml);
+           break; // Stop after 2 hops
+        }
+        
+        // Attempt to find a better link on this hub page
+        let nextHopUrl = null;
+        $c('a').each((i, el) => {
+          const href = $c(el).attr('href');
+          const text = $c(el).text().toLowerCase();
+          if (href && (href.toLowerCase().includes(mpnLower) || text.includes(mpnLower))) {
+             if (href.startsWith('http')) {
+                 nextHopUrl = href;
+             } else {
+                 const baseDomain = currentUrl.split('/').slice(0,3).join('/');
+                 nextHopUrl = `${baseDomain}${href.startsWith('/') ? '' : '/'}${href}`;
+             }
+             return false;
+          }
+        });
+        
+        if (nextHopUrl) {
+          currentUrl = nextHopUrl;
+          continue;
+        }
+
+        // Try on-page search box
+        let searchFormAction = null;
+        let searchInputName = null;
+        $c('form').each((i, el) => {
+           const action = $c(el).attr('action');
+           const formMethod = ($c(el).attr('method') || 'GET').toUpperCase();
+           if (formMethod === 'GET') {
+              const $inputs = $c(el).find('input[type="text"], input[type="search"]');
+              $inputs.each((j, inp) => {
+                const name = $c(inp).attr('name');
+                const id = $c(inp).attr('id') || '';
+                if (name && (name.includes('search') || name.includes('q') || id.includes('search'))) {
+                  searchFormAction = action || currentUrl;
+                  searchInputName = name;
+                  return false;
+                }
+              });
+              if (searchFormAction) return false;
+           }
+        });
+
+        if (searchFormAction && searchInputName) {
+           const baseSearchUrl = searchFormAction.startsWith('http') ? searchFormAction : `${currentUrl.split('/').slice(0,3).join('/')}${searchFormAction.startsWith('/') ? '' : '/'}${searchFormAction}`;
+           const searchUrlObj = new URL(baseSearchUrl);
+           searchUrlObj.searchParams.set(searchInputName, targetMpn);
+           currentUrl = searchUrlObj.toString();
+           continue;
+        }
+        
+        htmlCache.setHtml(currentUrl, finalHtml);
+        break; 
+
+      } else {
+         return {
+           source_found: false,
+           manufacturer: mfgName,
+           official_domain: domainInfo.domain,
+           source_url: currentUrl,
+           reason: "source_url_verification_failed_status",
+           review_required: true
+         };
+      }
     }
+
+    return {
+      source_found: true,
+      manufacturer: mfgName,
+      official_domain: domainInfo.domain,
+      source_url: currentUrl,
+      reason: "found_and_verified",
+      resolution_depth: isHubPage ? "hub_page_only" : "product_page"
+    };
   } catch (err) {
       return {
         source_found: false,
