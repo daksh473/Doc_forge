@@ -138,14 +138,15 @@ async function parseText(text) {
  */
 async function parseFile(filePath, mimetype) {
   const ext = path.extname(filePath).toLowerCase();
+  const mime = (mimetype || '').toLowerCase();
 
-  if (ext === '.pdf' || (mimetype && mimetype.includes('pdf'))) {
+  if (ext === '.pdf' || mime.includes('pdf')) {
     return parsePDF(filePath);
-  } else if (ext === '.csv' || (mimetype && mimetype.includes('csv'))) {
+  } else if (ext === '.csv' || mime.includes('csv') || mime.includes('vnd.ms-excel') || mime.includes('text/csv')) {
     return parseCSV(filePath);
-  } else if (['.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp'].includes(ext) || (mimetype && mimetype.startsWith('image/'))) {
+  } else if (['.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp'].includes(ext) || mime.startsWith('image/')) {
     return parseImage(filePath);
-  } else if (ext === '.txt' || (mimetype && mimetype.includes('text'))) {
+  } else if (ext === '.txt' || mime.includes('text/plain')) {
     const content = fs.readFileSync(filePath, 'utf-8');
     return parseText(content);
   } else {

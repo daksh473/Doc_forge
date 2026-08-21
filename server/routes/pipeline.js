@@ -26,8 +26,17 @@ const digitalAssetsManager = require('../services/digitalAssetsManager');
 const evaluationEngine = require('../services/evaluationEngine');
 const taxonomyClassifier = require('../services/taxonomyClassifier');
 
+const path = require('path');
 const router = express.Router();
-const upload = multer({ dest: 'uploads/', limits: { fileSize: 20 * 1024 * 1024 } });
+
+const storage = multer.diskStorage({
+    destination: 'uploads/',
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
+    }
+});
+const upload = multer({ storage, limits: { fileSize: 20 * 1024 * 1024 } });
 
 const jobsHistory = [];
 const MAX_JOBS = 50;
